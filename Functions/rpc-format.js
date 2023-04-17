@@ -2,39 +2,66 @@
  * Description: Decides what information to display based on the nature of the media (video, music, etc)
  */
 
-const config = require("../Storage/config.js");
+const { getAlbumArt } = require("./Images/getAlbumArt.js");
 
 module.exports = async (status) => {
-  const axios = require("axios");
+  async function searchShow(showName) {
+    try {
+      // Use the TVmaze API to search for the show by name
+      const response = await fetch(`http://api.tvmaze.com/search/shows?q=${showName}`);
+      const data = await response.json();
 
-  async function getAlbumArt(artist, track) {
-    const response = await axios.get(
-      `http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${config.lastFMAPIKey}&artist=${encodeURIComponent(
-        artist
-      )}&track=${encodeURIComponent(track)}&format=json`
-    );
-    const albumArt = response.data?.track?.album?.image?.[3]["#text"];
-    return albumArt;
+      // Get the first result (most relevant)
+      const show = data[0].show;
+
+      // Use the TVmaze API to get the show's image URL
+      const imageResponse = await fetch(`http://api.tvmaze.com/shows/${show.id}/images`);
+      const imageData = await imageResponse.json();
+
+      // Get the first image (most common)
+      const image = imageData[0].resolutions.original.url;
+
+      return {
+        name: show.name,
+        image,
+      };
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
   }
-
-  const albumArtUrl = await getAlbumArt(status.information.category.meta.artist, status.information.category.meta.title);
 
   // if playback is stopped
   if (status.state === "stopped") {
+    const meta = status.information.category.meta;
+    if (meta.artist) {
+      var image = await getAlbumArt(meta.album);
+    } else if (meta.showName) {
+      const show = await searchShow(meta.showName);
+      var image = show.image;
+    }
     return {
       state: "Stopped",
       details: "Nothing is playing",
-      largeImageKey: albumArtUrl || "vlc",
+      largeImageKey: image,
       smallImageKey: "stopped",
       instance: true,
     };
   } // else
 
   if (status.state == "paused") {
+    const meta = status.information.category.meta;
+    if (meta.artist) {
+      console.log(status.information.category.meta);
+      var image = await getAlbumArt(status.information.category.meta.album);
+    } else if (meta.showName) {
+      const show = await searchShow(meta.showName);
+      var image = show.image;
+    }
     return {
       state: "Paused",
       details: "Video is paused",
-      largeImageKey: albumArtUrl || "vlc",
+      largeImageKey: image,
       smallImageKey: "paused",
       instance: true,
     };
@@ -42,7 +69,7 @@ module.exports = async (status) => {
   const { meta } = status.information.category;
   const output = {
     details: meta.title || meta.filename,
-    largeImageKey: albumArtUrl || "vlc",
+    largeImageKey: await getAlbumArt(status.information.category.meta.artist, status.information.category.meta.title),
     smallImageKey: status.state,
     smallImageText: `Volume: ${Math.round(status.volume / 2.56)}%`,
     instance: true,
@@ -54,7 +81,7 @@ module.exports = async (status) => {
       output.largeImageKey = "youtube";
       output.largeImageText = meta.url;
     }
-    // if a tv show
+    // If it's a tv show
     if (meta.showName) output.details = meta.showName;
     if (meta.episodeNumber) {
       output.state = `Episode ${meta.episodeNumber}`;
@@ -66,6 +93,10 @@ module.exports = async (status) => {
     } else {
       output.state = `${status.date || ""} Video`;
     }
+
+    const show = await searchShow(meta.showName);
+    console.log(show);
+    output.largeImageKey = show.image;
   } else if (meta.now_playing) {
     // if a stream
     output.state = meta.now_playing || "Stream";

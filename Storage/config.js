@@ -24,8 +24,14 @@ const vlcConfig = {
   address: "localhost",
 };
 
+// Must fill these out for album covers
+const spotify = {
+  clientID: "",
+  clientSecret: "",
+};
+
 // Must add your lastFM api key (https://www.last.fm/api/account/create)
 const lastFMAPIKey = "";
 
 // Modules to load
-module.exports = { platformDefaults, vlcPath, richPresenseSettings, vlcConfig, lastFMAPIKey };
+module.exports = { platformDefaults, vlcPath, richPresenseSettings, vlcConfig, lastFMAPIKey, spotify };

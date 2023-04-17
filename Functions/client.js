@@ -2,6 +2,7 @@ const RPC = require("discord-rpc");
 const config = require("../Storage/config.js");
 const diff = require("./status.js");
 const format = require("./rpc-format.js");
+const { getAlbumArt } = require("./Images/getAlbumArt.js");
 
 const client = new RPC.Client({ transport: "ipc" });
 let awake = true;
@@ -10,7 +11,11 @@ let timeInactive = 0;
 async function update() {
   diff(async (status, difference) => {
     if (difference) {
+      if (status.information.category.meta.artist) {
+        var albumCover = await getAlbumArt(status.information.category.meta.album);
+      }
       let formatted = await format(status);
+      formatted.largeImageKey = albumCover;
       client.setActivity(formatted);
       console.log("Presence updated");
 
@@ -28,7 +33,6 @@ async function update() {
         } else {
           let formatted = await format(status);
           client.setActivity(formatted);
-          client.setActivity(format(status));
           console.log("Presence updated");
           awake = false;
         }
