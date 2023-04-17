@@ -52,7 +52,6 @@ module.exports = async (status) => {
   if (status.state == "paused") {
     const meta = status.information.category.meta;
     if (meta.artist) {
-      console.log(status.information.category.meta);
       var image = await getAlbumArt(status.information.category.meta.album);
     } else if (meta.showName) {
       const show = await searchShow(meta.showName);
@@ -95,7 +94,6 @@ module.exports = async (status) => {
     }
 
     const show = await searchShow(meta.showName);
-    console.log(show);
     output.largeImageKey = show.image;
   } else if (meta.now_playing) {
     // if a stream
