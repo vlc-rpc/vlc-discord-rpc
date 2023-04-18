@@ -39,4 +39,4 @@ const vlcConfig = {
 };
 
 // Modules to load
-module.exports = { platformDefaults, vlcPath, richPresenseSettings, vlcConfig, lastFMAPIKey, spotify, iconNames };
+module.exports = { platformDefaults, vlcPath, richPresenseSettings, vlcConfig, spotify, iconNames };
