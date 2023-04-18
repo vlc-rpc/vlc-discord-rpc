@@ -3,73 +3,37 @@
  */
 
 const { getAlbumArt } = require("./Images/getAlbumArt.js");
+const { searchShow } = require("./Images/searchShow.js");
+const { pause } = require("./States/paused.js");
+const config = require("../Storage/config.js");
 
 module.exports = async (status) => {
-  async function searchShow(showName) {
-    try {
-      // Use the TVmaze API to search for the show by name
-      const response = await fetch(`http://api.tvmaze.com/search/shows?q=${showName}`);
-      const data = await response.json();
-
-      // Get the first result (most relevant)
-      const show = data[0].show;
-
-      // Use the TVmaze API to get the show's image URL
-      const imageResponse = await fetch(`http://api.tvmaze.com/shows/${show.id}/images`);
-      const imageData = await imageResponse.json();
-
-      // Get the first image (most common)
-      const image = imageData[0].resolutions.original.url;
-
-      return {
-        name: show.name,
-        image,
-      };
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  }
-
-  // if playback is stopped
-  if (status.state === "stopped") {
-    const meta = status.information.category.meta;
-    if (meta.artist) {
-      var image = await getAlbumArt(meta.album);
-    } else if (meta.showName) {
-      const show = await searchShow(meta.showName);
-      var image = show.image;
-    }
-    return {
-      state: "Stopped",
-      details: "Nothing is playing",
-      largeImageKey: image,
-      smallImageKey: "stopped",
-      instance: true,
-    };
-  } // else
-
+  // Add a pause function so the file does not get too long (makes editing easier as well)
   if (status.state == "paused") {
-    const meta = status.information.category.meta;
-    if (meta.artist) {
-      var image = await getAlbumArt(status.information.category.meta.album);
-    } else if (meta.showName) {
+    pause(status);
+  }
+
+  const { meta } = status.information.category;
+
+  if (meta.artist) {
+    try {
+      var image = await getAlbumArt(meta.album);
+    } catch {
+      var image = config.iconNames.vlc;
+    }
+  } else if (meta.showName) {
+    try {
       const show = await searchShow(meta.showName);
       var image = show.image;
+    } catch {
+      var image = config.iconNames.vlc;
     }
-    return {
-      state: "Paused",
-      details: "Video is paused",
-      largeImageKey: image,
-      smallImageKey: "paused",
-      instance: true,
-    };
   }
-  const { meta } = status.information.category;
+
   const output = {
     details: meta.title || meta.filename,
-    largeImageKey: await getAlbumArt(status.information.category.meta.artist, status.information.category.meta.title),
-    smallImageKey: status.state,
+    largeImageKey: image,
+    smallImageKey: "playing",
     smallImageText: `Volume: ${Math.round(status.volume / 2.56)}%`,
     instance: true,
   };
@@ -82,10 +46,11 @@ module.exports = async (status) => {
     }
     // If it's a tv show
     if (meta.showName) output.details = meta.showName;
-    if (meta.episodeNumber) {
-      output.state = `Episode ${meta.episodeNumber}`;
-      if (meta.seasonNumber) {
-        output.state += ` - Season ${meta.seasonNumber}`;
+
+    if (meta.seasonNumber) {
+      output.state = ` Season ${meta.seasonNumber}`;
+      if (meta.episodeNumber) {
+        output.state += ` - Episode ${meta.episodeNumber}`;
       }
     } else if (meta.artist) {
       output.state = meta.artist;
@@ -96,14 +61,11 @@ module.exports = async (status) => {
     const show = await searchShow(meta.showName);
     output.largeImageKey = show.image;
   } else if (meta.now_playing) {
-    // if a stream
     output.state = meta.now_playing || "Stream";
   } else if (meta.artist) {
-    // if in an album
     output.state = meta.artist;
-    // if the song is part of an album
+
     if (meta.album) output.state += ` - ${meta.album}`;
-    // display track #
     if (meta.track_number && meta.track_total) {
       output.partySize = parseInt(meta.track_number, 10);
       output.partyMax = parseInt(meta.track_total, 10);

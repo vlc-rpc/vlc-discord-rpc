@@ -1,4 +1,4 @@
-// Where to look for VLC (Do not change unless you know what you are doing)
+// Where to look for VLC
 const platformDefaults = {
   win32: "C:/Program Files/VideoLAN/VLC/vlc.exe",
   winalt: "C:/Program Files (x86)/VideoLAN/VLC/vlc.exe",
@@ -7,21 +7,22 @@ const platformDefaults = {
   darwin: "/Applications/VLC.app/Contents/MacOS/VLC",
 };
 
-// Is VLC somewhere else? (Do not change unless you know what you are doing)
+// Is VLC somewhere else?
 const vlcPath = "";
 
-// Settings (Must add application ID)
+// Settings
 const richPresenseSettings = {
-  id: "", // Application ID
-  updateInterval: 500, // How often to check for status updates in MS
-  removeAfter: 5000, // How long to remove status after no activity in MS
+  id: "",
+  updateInterval: 500,
+  removeAfter: 5000,
 };
 
-// Local VLC Config (Do not change unless you know what you are doing)
-const vlcConfig = {
-  password: "",
-  port: 8080,
-  address: "localhost",
+// What did you name your icons in the developer portal? Type it exactly how you see it in the developer portal.
+const iconNames = {
+  pause: "pause",
+  playing: "playing",
+  stopped: "stopped",
+  vlc: "vlc",
 };
 
 // Must fill these out for album covers
@@ -30,5 +31,14 @@ const spotify = {
   clientSecret: "",
 };
 
+// Local VLC Config
+const vlcConfig = {
+  password: "",
+  port: 8080,
+  address: "localhost",
+};
+
+const lastFMAPIKey = "";
+
 // Modules to load
-module.exports = { platformDefaults, vlcPath, richPresenseSettings, vlcConfig, lastFMAPIKey, spotify };
+module.exports = { platformDefaults, vlcPath, richPresenseSettings, vlcConfig, lastFMAPIKey, spotify, iconNames };
