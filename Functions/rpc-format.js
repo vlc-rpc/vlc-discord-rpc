@@ -14,37 +14,25 @@ module.exports = async (status) => {
   } else {
     const { meta } = status.information.category;
 
-    if (meta.artist) {
-      try {
-        var image = await getAlbumArt(meta.album);
-      } catch {
-        var image = config.iconNames.vlc;
-      }
-    } else if (meta.showName) {
-      try {
-        const show = await searchShow(meta.showName);
-        var image = show.image;
-      } catch {
-        var image = config.iconNames.vlc;
-      }
-    }
-
     var output = {
-      details: meta.title || meta.filename,
+      details: "",
       largeImageKey: image,
       smallImageKey: "playing",
       smallImageText: `Volume: ${Math.round(status.volume / 2.56)}%`,
       instance: true,
     };
-    // if video
+    // If it's a video
     if (status.stats.decodedvideo > 0) {
-      // if youtube video
-      if (meta["YouTube Start Time"] !== undefined) {
-        output.largeImageKey = "youtube";
-        output.largeImageText = meta.url;
-      }
       // If it's a tv show
-      if (meta.showName) output.details = meta.showName;
+      if (meta.showName) {
+        output.details = meta.showName;
+        try {
+          const show = await searchShow(meta.showName);
+          output.largeImageKey = show.image;
+        } catch {
+          (await output).largeImageKey = config.iconNames.vlc;
+        }
+      }
 
       if (meta.seasonNumber) {
         output.state = ` Season ${meta.seasonNumber}`;
@@ -53,12 +41,16 @@ module.exports = async (status) => {
         }
       } else if (meta.artist) {
         output.state = meta.artist;
+        try {
+          var image = await getAlbumArt(meta.album);
+        } catch {
+          var image = config.iconNames.vlc;
+        }
+        output.largeImageKey = image;
       } else {
         output.state = `${status.date || ""} Video`;
+        output.largeImageKey = config.iconNames.vlc;
       }
-
-      const show = await searchShow(meta.showName);
-      output.largeImageKey = show.image;
     } else if (meta.now_playing) {
       output.state = meta.now_playing || "Stream";
     } else if (meta.artist) {
@@ -75,6 +67,8 @@ module.exports = async (status) => {
     const end = Math.floor(Date.now() / 1000 + (status.length - status.time) / status.rate);
     if (status.state === "playing" && status.length != 0) {
       output.endTimestamp = end;
+      output.details = meta.filename;
+      output.largeImageKey = config.iconNames.vlc;
     }
   }
   return output;
