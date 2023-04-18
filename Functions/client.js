@@ -12,15 +12,7 @@ let timeInactive = 0;
 async function update() {
   diff(async (status, difference) => {
     if (difference) {
-      console.log(status.information.category.meta.artist);
-      if (status.information.category.meta.artist) {
-        var discordImage = await getAlbumArt(status.information.category.meta.album);
-      } else if (status.information.category.meta.showName) {
-        const show = await searchShow(status.information.category.meta.showName);
-        var discordImage = show.image;
-      }
       let formatted = await format(status);
-      formatted.largeImageKey = discordImage;
       client.setActivity(formatted);
       console.log("Presence updated");
 

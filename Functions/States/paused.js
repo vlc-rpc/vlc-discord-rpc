@@ -7,7 +7,7 @@ async function pause(status) {
   var details = "";
   const meta = status.information.category.meta;
 
-  // Check if it's a song
+  // If it's a song
   if (meta.artist) {
     try {
       var image = await getAlbumArt(meta.album);
@@ -24,9 +24,9 @@ async function pause(status) {
       state += parseInt(meta.track_number, 10);
       state += parseInt(meta.track_total, 10);
     }
-    // Check if it's a show
   }
-  if (meta.showName) {
+  // If it's a show
+  else if (meta.showName) {
     try {
       const show = await searchShow(meta.showName);
       var image = show.image;
@@ -42,8 +42,11 @@ async function pause(status) {
         state += ` - Episode ${meta.episodeNumber}`;
       }
     }
+    // Default to filename and vlc logo
+  } else {
+    var details = meta.filename;
+    var image = config.iconNames.vlc;
   }
-
   return {
     state: state,
     details: details,
