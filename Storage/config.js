@@ -38,7 +38,5 @@ const vlcConfig = {
   address: "localhost",
 };
 
-const lastFMAPIKey = "";
-
 // Modules to load
 module.exports = { platformDefaults, vlcPath, richPresenseSettings, vlcConfig, lastFMAPIKey, spotify, iconNames };
