@@ -47,6 +47,7 @@ async function getAlbumArt(albumName) {
     return album.images[0].url;
   } catch (error) {
     console.error(error);
+    return null;
   }
 }
 

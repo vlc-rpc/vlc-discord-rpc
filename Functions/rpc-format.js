@@ -38,11 +38,10 @@ module.exports = async (status) => {
     }
 
     // Try to search for the show and get its image
-    try {
-      const show = await searchShow(meta.showName);
-      image = show.image;
-    } catch {
-      console.log("Could not grab show image!");
+    const show = await searchShow(meta.showName);
+    image = show.image;
+    if (!image) {
+      image = config.iconNames.vlc;
     }
     // If it's a music video
   } else if (meta.artist) {
@@ -60,11 +59,11 @@ module.exports = async (status) => {
       var partyMax = parseInt(meta.track_total, 10);
     }
     // Try to get the album art for the music
-    try {
-      image = await getAlbumArt(meta.album);
-    } catch {
-      console.log("Could not grab album image!");
+    image = await getAlbumArt(meta.album);
+    if (!image) {
+      image = config.iconNames.vlc;
     }
+
     // If the video is currently playing
   } else if (meta.now_playing) {
     // Set the state to  the value of the "now_playing" meta data (if available) or "Stream"
