@@ -21,7 +21,6 @@ module.exports = async (status) => {
 
   // Extract information about what's playing
   const meta = status.information.category.meta;
-  console.log(meta);
 
   // If it's a TV show
   if (meta.showName) {
@@ -78,7 +77,6 @@ module.exports = async (status) => {
   const end = Math.floor(Date.now() / 1000 + (status.length - status.time) / status.rate);
   if (status.state === "playing" && status.length != 0) {
     var endTimestamp = end;
-    details = meta.filename;
   }
 
   return {
