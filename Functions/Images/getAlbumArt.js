@@ -42,7 +42,6 @@ async function getAlbumArt(albumName, albumArtist) {
 
     // Extract the first album from the response
     const album = response.data.albums.items[0];
-    console.log(response);
 
     // Return the album cover image URL
     return album.images[0].url;

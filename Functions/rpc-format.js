@@ -59,7 +59,6 @@ module.exports = async (status) => {
       var partyMax = parseInt(meta.track_total, 10);
     }
     // Try to get the album art for the music
-    console.log(meta.album);
     image = await getAlbumArt(meta.album, meta.artist);
     if (!image) {
       image = config.iconNames.vlc;
