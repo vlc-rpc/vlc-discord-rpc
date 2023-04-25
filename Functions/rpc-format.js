@@ -50,7 +50,7 @@ module.exports = async (status) => {
 
     // If there is an album add it to the state
     if (meta.album) {
-      state += ` - ${meta.album}`;
+      state += ` | ${meta.album}`;
     }
 
     // If there's a track number and total number of tracks, set the party size and max
@@ -87,5 +87,11 @@ module.exports = async (status) => {
     endTimestamp: endTimestamp,
     partySize: partySize,
     partyMax: partyMax,
+    buttons: [
+      {
+        label: "GitHub Repo",
+        url: "https://github.com/jamesestes1711/vlc-rpc",
+      },
+    ],
   };
 };
