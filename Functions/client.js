@@ -2,8 +2,6 @@ const RPC = require("discord-rpc");
 const config = require("../Storage/config.js");
 const diff = require("./status.js");
 const format = require("./rpc-format.js");
-const { getAlbumArt } = require("./Images/getAlbumArt.js");
-const { searchShow } = require("./Images/searchShow.js");
 
 const client = new RPC.Client({ transport: "ipc" });
 let awake = true;
