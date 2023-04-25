@@ -17,12 +17,11 @@ const richPresenseSettings = {
   removeAfter: 5000,
 };
 
-// What did you name your icons in the developer portal? Type it exactly how you see it in the developer portal.
+// Default icons. Change if you would like.
 const iconNames = {
-  pause: "pause",
-  playing: "playing",
-  stopped: "stopped",
-  vlc: "vlc",
+  pause: "https://i.imgur.com/CCg9fxf.png",
+  playing: "https://i.imgur.com/8IYhOc2.png",
+  vlc: "https://i.imgur.com/7CRaCeT.png",
 };
 
 // Must fill these out for album covers
