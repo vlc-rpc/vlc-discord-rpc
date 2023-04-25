@@ -13,7 +13,7 @@ const client_secret = config.spotify.clientSecret;
 const credentials = Buffer.from(`${client_id}:${client_secret}`).toString("base64");
 
 // Function to search for an album by name and retrieve its cover image
-async function getAlbumArt(albumName) {
+async function getAlbumArt(albumName, albumArtist) {
   try {
     // Make POST request to obtain an access token using the Client Credentials Flow
     const tokenResponse = await axios.post("https://accounts.spotify.com/api/token", "grant_type=client_credentials", {
@@ -35,18 +35,18 @@ async function getAlbumArt(albumName) {
     const response = await axios.get(url, {
       headers: headers,
       params: {
-        q: albumName,
+        q: albumName + " " + albumArtist,
         type: "album",
       },
     });
 
     // Extract the first album from the response
     const album = response.data.albums.items[0];
+    console.log(response);
 
     // Return the album cover image URL
     return album.images[0].url;
   } catch (error) {
-    console.error(error);
     return null;
   }
 }
