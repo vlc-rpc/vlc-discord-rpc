@@ -1,10 +1,9 @@
-// Checks for status changes (volume, playing, pausing, etc)
-
 const VLC = require("vlc.js");
 const config = require("../Storage/config.js");
 
 const VLCClient = new VLC.VLCClient(config.vlcConfig);
-const last = {
+
+let lastStatus = {
   filename: "",
   now_playing: "",
   state: "",
@@ -17,32 +16,34 @@ module.exports = async (callback) => {
     const status = await VLCClient.getStatus();
     if (status.information) {
       const { meta } = status.information.category;
-      if (meta.now_playing !== last.now_playing) {
+
+      if (meta.now_playing !== lastStatus.now_playing) {
+        lastStatus.now_playing = meta.now_playing;
+        lastStatus.icon_url = meta.artwork_url || "vlc";
         callback(status, true);
-        last.now_playing = meta.now_playing;
-        if (meta.artwork_url) {
-          last.icon_url = meta.artwork_url;
-        } else {
-          last.icon_url = "vlc";
-        }
-      } else if (meta.filename !== last.filename) {
+      } else if (meta.filename !== lastStatus.filename) {
+        lastStatus.filename = meta.filename;
         callback(status, true);
-        last.filename = meta.filename;
-      } else if (status.state !== last.state) {
+      } else if (status.state !== lastStatus.state) {
+        lastStatus.state = status.state;
         callback(status, true);
-        last.state = status.state;
-      } else if (status.time - (last.time + config.richPresenseSettings.updateInterval / 1000) > 3 || last.time > status.time) {
+      } else if (status.time - (lastStatus.time + config.richPresenseSettings.updateInterval / 1000) > 3 || lastStatus.time > status.time) {
         callback(status, true);
-      } else if (status.volume !== last.volume) {
-        last.volume = status.volume;
+      } else if (status.volume !== lastStatus.volume) {
+        lastStatus.volume = status.volume;
         callback(status, true);
+      } else {
+        callback(status, false);
       }
-      last.filename = status.information ? meta.filename : undefined;
-      last.now_playing = meta.now_playing;
-      callback(status, false);
-    } else callback(status);
-    last.state = status.state;
-    last.time = status.time;
+
+      lastStatus.filename = status.information ? meta.filename : undefined;
+      lastStatus.now_playing = meta.now_playing;
+    } else {
+      callback(status);
+    }
+
+    lastStatus.state = status.state;
+    lastStatus.time = status.time;
   } catch (err) {
     if (err.code === "ECONNREFUSED") {
       console.log("Failed to reach VLC. Is it open?");
