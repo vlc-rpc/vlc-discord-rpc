@@ -40,23 +40,19 @@ client.on("ready", () => {
   console.log("Logged in as", client.user.username);
 });
 
-function discordLogin() {
-  console.log("Connecting to Discord...");
-  client
-    .login({ clientId: config.richPresenseSettings.id })
-    .then(() => {
-      setInterval(update, config.richPresenseSettings.updateInterval);
-    })
-    .catch((err) => {
-      if (err.toString() === "Error: Could not connect") {
-        console.log("Failed to connect to Discord. Is your Discord client open? Retrying in 20 seconds...");
-        // Retry login
-        setTimeout(discordLogin, 20000);
-      } else {
-        console.log("An unknown error occurred when connecting to Discord");
-        throw err;
-      }
-    });
-}
-
-discordLogin();
+console.log("Connecting to Discord...");
+client
+  .login({ clientId: config.richPresenseSettings.id })
+  .then(() => {
+    setInterval(update, config.richPresenseSettings.updateInterval);
+  })
+  .catch((err) => {
+    if (err.toString() === "Error: Could not connect") {
+      console.log("Failed to connect to Discord. Is your Discord client open? Retrying in 20 seconds...");
+      // Retry login
+      setTimeout(discordLogin, 20000);
+    } else {
+      console.log("An unknown error occurred when connecting to Discord");
+      throw err;
+    }
+  });
