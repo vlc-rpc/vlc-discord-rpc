@@ -39,9 +39,9 @@ module.exports = async (status) => {
 
     // Try to search for the show and get its image
     const show = await searchShow(meta.showName);
-    image = show.image;
-    if (!image) {
-      image = config.iconNames.vlc;
+
+    if (show.image) {
+      image = show.image;
     }
     // If it's a music video
   } else if (meta.artist) {
@@ -59,9 +59,9 @@ module.exports = async (status) => {
       var partyMax = parseInt(meta.track_total, 10);
     }
     // Try to get the album art for the music
-    image = await getAlbumArt(meta.album, meta.artist);
-    if (!image) {
-      image = config.iconNames.vlc;
+    const art = await getAlbumArt(meta.album, meta.artist);
+    if (art) {
+      image = art;
     }
 
     // If the video is currently playing
