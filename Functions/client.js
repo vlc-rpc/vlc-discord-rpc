@@ -12,7 +12,6 @@ async function update() {
     if (shouldUpdate) {
       const formatted = await format(status);
       client.setActivity(formatted);
-      console.log("Presence updated");
 
       if (!awake) {
         awake = true;
@@ -28,7 +27,6 @@ async function update() {
         } else {
           const formattedStatus = await format(status);
           client.setActivity(formattedStatus);
-          console.log("Presence updated");
           awake = false;
         }
       }

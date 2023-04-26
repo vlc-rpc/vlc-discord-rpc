@@ -25,22 +25,40 @@ module.exports = async (callback) => {
 
       // Check if the current now playing track has changed
       if (meta.now_playing !== lastStatus.now_playing) {
+        if (config.logUpdates) {
+          console.log("Track has changed!");
+        }
+
         lastStatus.now_playing = meta.now_playing;
         lastStatus.icon_url = meta.artwork_url || "vlc";
         callback(status, true);
         // Check if the current filename has changed
       } else if (meta.filename !== lastStatus.filename) {
+        if (config.logUpdates) {
+          console.log("File has changed!");
+        }
         lastStatus.filename = meta.filename;
         callback(status, true);
         // Check if the state (playing, paused, stopped) has changed
       } else if (status.state !== lastStatus.state) {
+        if (config.logUpdates) {
+          console.log("State has changed!");
+        }
         lastStatus.state = status.state;
         callback(status, true);
         // Check if the time has changed by more than the update interval or if the time has gone backwards
       } else if (status.time - (lastStatus.time + config.richPresenseSettings.updateInterval / 1000) > 3 || lastStatus.time > status.time) {
+        if (config.logUpdates) {
+          console.log("Time has changed!");
+        }
+
         callback(status, true);
         // Check if the volume has changed
       } else if (status.volume !== lastStatus.volume) {
+        if (config.logUpdates) {
+          console.log("Volume has changed!");
+        }
+
         lastStatus.volume = status.volume;
         callback(status, true);
         // If none of the above conditions are met, call the callback function with 'false'
