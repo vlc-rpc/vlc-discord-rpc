@@ -12,23 +12,17 @@ async function update() {
     if (shouldUpdate) {
       const formatted = await format(status);
       client.setActivity(formatted);
-
-      if (!awake) {
-        awake = true;
-        timeInactive = 0;
-      }
-    } else if (awake) {
-      if (status.state !== "playing") {
-        timeInactive += config.richPresenseSettings.updateInterval;
-        if (timeInactive >= config.richPresenseSettings.sleepTime || status.state === "stopped") {
-          console.log("VLC not playing; going to sleep.", true);
-          awake = false;
-          client.clearActivity();
-        } else {
-          const formattedStatus = await format(status);
-          client.setActivity(formattedStatus);
-          awake = false;
-        }
+      awake = true;
+      timeInactive = 0;
+    } else if (awake && status.state !== "playing") {
+      timeInactive += config.richPresenseSettings.updateInterval;
+      if (timeInactive >= config.richPresenseSettings.sleepTime || status.state === "stopped") {
+        console.log("VLC not playing; going to sleep.");
+        awake = false;
+        client.clearActivity();
+      } else {
+        const formattedStatus = await format(status);
+        client.setActivity(formattedStatus);
       }
     }
   });
@@ -44,14 +38,14 @@ async function connectToDiscord() {
     await client.login({ clientId: config.richPresenseSettings.id });
     setInterval(update, config.richPresenseSettings.updateInterval);
   } catch (error) {
-    if (error.toString() === "Error: Could not connect") {
+    if (error.message === "Could not connect") {
       console.log("Failed to connect to Discord. Is your Discord client open? Retrying in 20 seconds...");
       // Retry login
       setTimeout(connectToDiscord, 20000);
     } else {
-      console.log("An unknown error occurred when connecting to Discord");
-      throw error;
+      console.error("An unknown error occurred when connecting to Discord:", error.message);
     }
   }
 }
+
 connectToDiscord();
