@@ -41,4 +41,12 @@ const vlcConfig = {
 const logUpdates = false;
 
 // Modules to load
-module.exports = { platformDefaults, vlcPath, richPresenseSettings, vlcConfig, spotify, iconNames, logUpdates };
+module.exports = {
+  platformDefaults,
+  vlcPath,
+  richPresenseSettings,
+  vlcConfig,
+  spotify,
+  iconNames,
+  logUpdates,
+};
