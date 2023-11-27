@@ -17,7 +17,7 @@ function getVariable(variable, defaultValue) {
  * @param {string} variable
  * @param {boolean?} defaultValue
  */
-function isEnabled(variable, defaultValue) {
+function isEnabled(variable, defaultValue = false) {
   const value = getVariable(variable, defaultValue?.toString());
   return value?.toLowerCase() === 'true';
 }
