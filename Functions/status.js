@@ -47,7 +47,7 @@ module.exports = async (callback) => {
         lastStatus.state = status.state;
         callback(status, true);
         // Check if the time has changed by more than the update interval or if the time has gone backwards
-      } else if (status.time - (lastStatus.time + config.richPresenseSettings.updateInterval / 1000) > 3 || lastStatus.time > status.time) {
+      } else if (status.time - (lastStatus.time + config.richPresenceSettings.updateInterval / 1000) > 3 || lastStatus.time > status.time) {
         if (config.logUpdates) {
           console.log(`Time has changed from: ${lastStatus.time} to ${status.time}`);
         }

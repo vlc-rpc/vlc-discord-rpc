@@ -11,7 +11,7 @@ const platformDefaults = {
 const vlcPath = "";
 
 // Settings
-const richPresenseSettings = {
+const richPresenceSettings = {
   id: "",
   updateInterval: 500,
   removeAfter: 5000,
@@ -41,4 +41,4 @@ const vlcConfig = {
 const logUpdates = false;
 
 // Modules to load
-module.exports = { platformDefaults, vlcPath, richPresenseSettings, vlcConfig, spotify, iconNames, logUpdates };
+module.exports = { platformDefaults, vlcPath, richPresenceSettings, vlcConfig, spotify, iconNames, logUpdates };

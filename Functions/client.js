@@ -19,8 +19,8 @@ async function update() {
       }
     } else if (awake) {
       if (status.state !== "playing") {
-        timeInactive += config.richPresenseSettings.updateInterval;
-        if (timeInactive >= config.richPresenseSettings.sleepTime || status.state === "stopped") {
+        timeInactive += config.richPresenceSettings.updateInterval;
+        if (timeInactive >= config.richPresenceSettings.sleepTime || status.state === "stopped") {
           console.log("VLC not playing; going to sleep.", true);
           awake = false;
           await client.clearActivity();
@@ -41,8 +41,8 @@ client.on("ready", () => {
 export async function connectToDiscord() {
   try {
     console.log("Connecting to Discord...");
-    await client.login({ clientId: config.richPresenseSettings.id });
-    setInterval(update, config.richPresenseSettings.updateInterval);
+    await client.login({ clientId: config.richPresenceSettings.id });
+    setInterval(update, config.richPresenceSettings.updateInterval);
   } catch (error) {
     if (error.toString() === "Error: Could not connect") {
       console.log("Failed to connect to Discord. Is your Discord client open? Retrying in 20 seconds...");
