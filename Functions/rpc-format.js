@@ -2,9 +2,9 @@
  * Description: Decides what information to display based on the nature of the media (video, music, etc)
  */
 
-const { getAlbumArt } = require("./Images/getAlbumArt.js");
-const { searchShow } = require("./Images/searchShow.js");
-const config = require("../Storage/config.js");
+import { getAlbumArt } from "./Images/getAlbumArt.js";
+import { searchShow } from "./Images/searchShow.js";
+import config from "../Storage/config.js";
 
 /**
  * @param {"playing" | "paused" | string} state
@@ -20,7 +20,7 @@ function getSmallImageKey(state) {
   }
 }
 
-module.exports = async (status) => {
+export default async (status) => {
   // Initialize variables
   let details = "";
   let image = config.iconNames.vlc;

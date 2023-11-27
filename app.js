@@ -1,10 +1,10 @@
-// Require modules and configuations
-const { spawn } = require("child_process");
-const fs = require("fs");
-const config = require("./Storage/config.js");
+// Require modules and configurations
+import { spawn } from "child_process";
+import * as fs from "fs";
 
-const { isWindows } = require("./utils");
-const { connectToDiscord } = require("./Functions/client");
+import config from "./Storage/config.js";
+import { isWindows } from "./utils.js";
+import { connectToDiscord } from "./Functions/client.js";
 
 // Function to generate a random password
 function randomPass() {

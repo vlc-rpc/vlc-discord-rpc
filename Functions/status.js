@@ -1,6 +1,6 @@
 // Import the 'vlc.js' library and the configuration file
-const VLC = require("vlc.js");
-const config = require("../Storage/config.js");
+import VLC from "vlc.js";
+import config from "../Storage/config.js";
 
 // Create a new instance of the VLC client
 const VLCClient = new VLC.VLCClient(config.vlcConfig);
@@ -15,7 +15,7 @@ let lastStatus = {
 };
 
 // Export a function that takes a callback as an argument
-module.exports = async (callback) => {
+export default async (callback) => {
   try {
     // Get the current status of VLC
     const status = await VLCClient.getStatus();

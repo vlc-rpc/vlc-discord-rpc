@@ -1,7 +1,7 @@
-const RPC = require("discord-rpc");
-const config = require("../Storage/config.js");
-const diff = require("./status.js");
-const format = require("./rpc-format.js");
+import RPC from "discord-rpc";
+import config from "../Storage/config.js";
+import diff from "./status.js";
+import format from "./rpc-format.js";
 
 const client = new RPC.Client({ transport: "ipc" });
 let awake = true;

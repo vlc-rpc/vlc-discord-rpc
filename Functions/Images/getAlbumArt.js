@@ -1,6 +1,5 @@
-const config = require("../../Storage/config.js");
-
-const axios = require("axios");
+import axios from "axios";
+import config from "../../Storage/config.js";
 
 // Spotify API endpoint for searching albums
 const url = "https://api.spotify.com/v1/search";
@@ -13,7 +12,7 @@ const client_secret = config.spotify.clientSecret;
 const credentials = Buffer.from(`${client_id}:${client_secret}`).toString("base64");
 
 // Function to search for an album by name and retrieve its cover image
-async function getAlbumArt(albumName, albumArtist) {
+export async function getAlbumArt(albumName, albumArtist) {
   try {
     // Make POST request to obtain an access token using the Client Credentials Flow
     const tokenResponse = await axios.post("https://accounts.spotify.com/api/token", "grant_type=client_credentials", {
@@ -49,5 +48,3 @@ async function getAlbumArt(albumName, albumArtist) {
     return null;
   }
 }
-
-module.exports = { getAlbumArt };

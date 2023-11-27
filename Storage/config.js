@@ -38,7 +38,7 @@ const vlcConfig = {
 };
 
 // Do you want it to log every time your presence is updated? (Useful for debug)
-const logUpdates = false;
+const logUpdates = true;
 
 // Modules to load
-module.exports = { platformDefaults, vlcPath, richPresenceSettings, vlcConfig, spotify, iconNames, logUpdates };
+export default { platformDefaults, vlcPath, richPresenceSettings, vlcConfig, spotify, iconNames, logUpdates };

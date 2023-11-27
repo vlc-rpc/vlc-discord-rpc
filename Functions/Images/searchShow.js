@@ -1,4 +1,4 @@
-async function searchShow(showName) {
+export async function searchShow(showName) {
   try {
     // Use the TVmaze API to search for the show by name
     const response = await fetch(`http://api.tvmaze.com/search/shows?q=${showName}`);
@@ -23,4 +23,3 @@ async function searchShow(showName) {
     return null;
   }
 }
-module.exports = { searchShow };
