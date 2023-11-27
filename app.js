@@ -3,7 +3,7 @@ import { spawn } from "child_process";
 import * as fs from "fs";
 
 import config from "./Storage/config.js";
-import { isWindows } from "./utils.js";
+import { isWindows } from "./Utils/utils.js";
 import { connectToDiscord } from "./Functions/client.js";
 
 // Function to generate a random password
