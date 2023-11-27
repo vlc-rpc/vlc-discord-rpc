@@ -4,6 +4,7 @@ const fs = require("fs");
 const config = require("./Storage/config.js");
 
 require("./Functions/client.js");
+const { isWindows } = require("./utils");
 
 // Function to generate a random password
 function randomPass() {
@@ -15,8 +16,8 @@ if (config.vlcConfig.password === "") {
   config.vlcConfig.password = randomPass();
 }
 
-// If windows OS and default path cannot be found try other path
-if (process.platform == "win32" && !fs.existsSync(config.platformDefaults.win32)) {
+// If Windows OS and default path cannot be found try other path
+if (isWindows() && !fs.existsSync(config.platformDefaults.win32)) {
   config.platformDefaults.win32 = config.platformDefaults.winalt;
 }
 
