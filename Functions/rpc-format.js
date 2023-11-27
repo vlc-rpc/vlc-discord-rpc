@@ -6,18 +6,26 @@ const { getAlbumArt } = require("./Images/getAlbumArt.js");
 const { searchShow } = require("./Images/searchShow.js");
 const config = require("../Storage/config.js");
 
+/**
+ * @param {"playing" | "paused" | string} state
+ */
+function getSmallImageKey(state) {
+  switch (state) {
+    case "playing":
+      return config.iconNames.playing
+    case "paused":
+      return config.iconNames.pause;
+    default:
+      return "";
+  }
+}
+
 module.exports = async (status) => {
   // Initialize variables
   let details = "";
   let image = config.iconNames.vlc;
   let state = "";
-  let smallImageKey = "";
-
-  if (status.state == "playing") {
-    smallImageKey = config.iconNames.playing;
-  } else if (status.state == "paused") {
-    smallImageKey = config.iconNames.pause;
-  }
+  let smallImageKey = getSmallImageKey(status.state);
 
   // Extract information about what's playing
   const meta = status.information.category.meta;
@@ -83,7 +91,7 @@ module.exports = async (status) => {
     state: state,
     details: details,
     largeImageKey: image,
-    smallImageKey: smallImageKey,
+    smallImageKey,
     smallImageText: `Volume: ${Math.round(status.volume / 2.56)}%`,
     instance: true,
     endTimestamp: endTimestamp,
