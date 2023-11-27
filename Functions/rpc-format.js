@@ -20,6 +20,13 @@ function getSmallImageKey(state) {
   }
 }
 
+const BUTTONS = [
+  {
+    label: "GitHub Repo",
+    url: "https://github.com/vlc-rpc/vlc-discord-rpc",
+  },
+];
+
 export default async (status) => {
   // Initialize variables
   let details = "";
@@ -87,6 +94,8 @@ export default async (status) => {
     var endTimestamp = end;
   }
 
+  const buttons = config.showButtons ? BUTTONS : undefined;
+
   return {
     state: state,
     details: details,
@@ -97,11 +106,6 @@ export default async (status) => {
     endTimestamp: endTimestamp,
     partySize: partySize,
     partyMax: partyMax,
-    buttons: [
-      {
-        label: "GitHub Repo",
-        url: "https://github.com/vlc-rpc/vlc-discord-rpc",
-      },
-    ],
+    buttons,
   };
 };
