@@ -3,8 +3,8 @@ const { spawn } = require("child_process");
 const fs = require("fs");
 const config = require("./Storage/config.js");
 
-require("./Functions/client.js");
 const { isWindows } = require("./utils");
+const { connectToDiscord } = require("./Functions/client");
 
 // Function to generate a random password
 function randomPass() {
@@ -40,6 +40,9 @@ const child = spawn(
     stdio: "inherit",
   }
 );
+
+child.on("spawn", connectToDiscord);
+
 // When VLC closes
 child.on("exit", () => {
   console.log("VLC closed... exiting program.");

@@ -38,7 +38,7 @@ client.on("ready", () => {
   console.log("Logged in as", client.user.username);
 });
 
-async function connectToDiscord() {
+export async function connectToDiscord() {
   try {
     console.log("Connecting to Discord...");
     await client.login({ clientId: config.richPresenseSettings.id });
@@ -54,4 +54,3 @@ async function connectToDiscord() {
     }
   }
 }
-connectToDiscord();
