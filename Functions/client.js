@@ -8,10 +8,10 @@ let awake = true;
 let timeInactive = 0;
 
 async function update() {
-  diff(async (status, shouldUpdate) => {
+  await diff(async (status, shouldUpdate) => {
     if (shouldUpdate) {
       const formatted = await format(status);
-      client.setActivity(formatted);
+      await client.setActivity(formatted);
 
       if (!awake) {
         awake = true;
@@ -23,10 +23,10 @@ async function update() {
         if (timeInactive >= config.richPresenseSettings.sleepTime || status.state === "stopped") {
           console.log("VLC not playing; going to sleep.", true);
           awake = false;
-          client.clearActivity();
+          await client.clearActivity();
         } else {
           const formattedStatus = await format(status);
-          client.setActivity(formattedStatus);
+          await client.setActivity(formattedStatus);
           awake = false;
         }
       }
