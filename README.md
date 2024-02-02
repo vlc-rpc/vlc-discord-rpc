@@ -25,5 +25,5 @@ This is a modified version of the [Pigpog/vlc-discord-rpc project](https://githu
 7. Back where we selected Main Interfaces, select the carat next to it.
 8. Select Lua.
 9. Enter your configuration information into the bottom box.
-10. Update any needed values in your config. Change detached to true.
+10. Update any needed values in your config. Change detached to true. You MUST set your own password and make sure to include it in VLC.
 11. Start VLC, then run the program as normal.
