@@ -15,7 +15,7 @@ This is a modified version of the [Pigpog/vlc-discord-rpc project](https://githu
 5. Add both of these values in the `./Storage/config.js` file under the `richPresenceSettings` and `spotify` area.
 6. Open a terminal, move to the folder you downloaded from this repository, and run `npm i` then run `node .`.
 
-## Detatched State
+## Detached State
 1. Open VLC.
 2. Select Tools in the top menu bar.
 3. Select Preferences.
