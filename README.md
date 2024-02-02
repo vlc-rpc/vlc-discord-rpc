@@ -15,3 +15,15 @@ This is a modified version of the [Pigpog/vlc-discord-rpc project](https://githu
 5. Add both of these values in the `./Storage/config.js` file under the `richPresenceSettings` and `spotify` area.
 6. Open a terminal, move to the folder you downloaded from this repository, and run `npm i` then run `node .`.
 
+## Detached State
+1. Open VLC.
+2. Select Tools in the top menu bar.
+3. Select Preferences.
+4. At the bottom left, select all.
+5. Select Main Interfaces.
+6. Check the box labelled Web.
+7. Back where we selected Main Interfaces, select the carat next to it.
+8. Select Lua.
+9. Enter your configuration information into the bottom box.
+10. Update any needed values in your config. Change detached to true.
+11. Start VLC, then run the program as normal.

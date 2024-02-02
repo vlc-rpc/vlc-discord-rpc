@@ -22,6 +22,8 @@ if (process.platform == "win32" && !fs.existsSync(config.platformDefaults.win32)
 
 // If VLC path is not specified use the default
 const startCommand = config.vlcPath || config.platformDefaults[process.platform];
+
+if(!config.detached) {
 // Start the process
 const child = spawn(
   startCommand,
@@ -52,3 +54,4 @@ child.on("error", () => {
   );
   setTimeout(process.exit, 30000, 1);
 });
+}
