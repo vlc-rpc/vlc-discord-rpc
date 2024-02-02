@@ -22,7 +22,7 @@ This is a modified version of the [Pigpog/vlc-discord-rpc project](https://githu
 4. At the bottom left, select all.
 5. Select Main Interfaces.
 6. Check the box labelled Web.
-7. Back where we selected Main Interfaces, select the carat next to it.
+7. Back where we selected Main Interfaces, select the caret next to it.
 8. Select Lua.
 9. Enter your configuration information into the bottom box.
 10. Update any needed values in your config. Change detached to true. You MUST set your own password and make sure to include it in VLC.
