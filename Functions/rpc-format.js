@@ -21,6 +21,7 @@ module.exports = async (status) => {
 
   // Extract information about what's playing
   const meta = status.information.category.meta;
+  console.log(meta)
 
   // If it's a TV show
   if (meta.showName) {
@@ -68,6 +69,7 @@ module.exports = async (status) => {
   } else if (meta.now_playing) {
     // Set the state to  the value of the "now_playing" meta data (if available) or "Stream"
     state = meta.now_playing || "Stream";
+    details = meta.filename;
   } else {
     details = meta.filename;
     state = meta.title || "Video";
