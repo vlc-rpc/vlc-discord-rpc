@@ -41,7 +41,7 @@ module.exports = async (status) => {
     // Try to search for the show and get its image
     const show = await searchShow(meta.showName);
 
-    if (show.image) {
+    if (show && show.image) {
       image = show.image;
     }
     // If it's a music video
