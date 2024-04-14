@@ -59,10 +59,12 @@ module.exports = async (status) => {
       var partyMax = parseInt(meta.track_total, 10);
     }
     // Try to get the album art for the music
-    const art = await getAlbumArt(meta.album, meta.artist);
-    if (art) {
-      image = art;
-    }
+    if(config.useSpotify) {
+      const art = await getAlbumArt(meta.album, meta.artist);
+      if (art) {
+        image = art;
+      }
+  }
 
     // If the video is currently playing
   } else if (meta.now_playing) {
