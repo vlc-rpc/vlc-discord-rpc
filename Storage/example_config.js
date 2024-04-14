@@ -25,6 +25,7 @@ const platformDefaults = {
   };
   
   // Must fill these out for album covers
+  const useSpotify = false;
   const spotify = {
     clientID: "",
     clientSecret: "",
@@ -44,5 +45,5 @@ const platformDefaults = {
   const detached = false;
   
   // Modules to load
-  module.exports = { platformDefaults, vlcPath, richPresenseSettings, vlcConfig, spotify, iconNames, logUpdates, detached };
+  module.exports = { platformDefaults, vlcPath, richPresenseSettings, vlcConfig, useSpotify, spotify, iconNames, logUpdates, detached };
   
