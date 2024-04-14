@@ -4,7 +4,9 @@ async function searchShow(showName) {
     const response = await fetch(`http://api.tvmaze.com/search/shows?q=${showName}`);
     const data = await response.json();
 
-    // Get the first result (most relevant)
+    // Make sure we actually found a show
+    if (data) {
+        // Get the first result (most relevant)
     const show = data[0].show;
 
     // Use the TVmaze API to get the show's image URL
@@ -18,6 +20,9 @@ async function searchShow(showName) {
       name: show.name,
       image,
     };
+  } else {
+    return null;
+  }
   } catch (error) {
     console.error(error);
     return null;
