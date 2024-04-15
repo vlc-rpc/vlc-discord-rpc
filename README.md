@@ -42,7 +42,7 @@ If you would like to change the default icons for pause, play, or VLC in your di
 
 ### File method
 To use an uploaded file instead of a link you need to do the following:
-1) Sign in to the (Discord Developer Portal)[https://discord.com/developers/applications]
+1) Sign in to the [Discord Developer Portal](https://discord.com/developers/applications)
 2) Go to your application you created during setup
 3) On the left sidebar, click Rich Presence
 4) You should be under the Art Assets section, but if not click the Art Assets button
