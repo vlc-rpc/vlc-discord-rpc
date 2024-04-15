@@ -30,7 +30,7 @@ If you have any issues, that may not be a bug related, or any ideas for the proj
 8. Select Lua.
 9. Enter a password into the Lua HTTP box. It does not matter what this is, but you will need to add it to your config.
 10. Update any needed values in your config. Change detached to true. You MUST set your own password and make sure to include it in VLC.
-11. Start VLC and add something to the queue, then run the program as normal. If nothing is in the queue you will get a JSON error, which will be replaced with a prettier error message in a later commit to this repo.
+11. Start VLC, then run the program as normal.
 ![image](https://github.com/vlc-rpc/vlc-discord-rpc/assets/61550272/4aa489d9-269c-4333-b595-bb3d0444fa24)
 ![image](https://github.com/vlc-rpc/vlc-discord-rpc/assets/61550272/292e8748-b6c6-4ff8-88a5-225e5dd2b467)
 
