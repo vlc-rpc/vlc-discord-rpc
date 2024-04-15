@@ -28,9 +28,12 @@ This is a modified version of the [Pigpog/vlc-discord-rpc project](https://githu
 8. Select Lua.
 9. Enter a password into the Lua HTTP box. It does not matter what this is, but you will need to add it to your config.
 10. Update any needed values in your config. Change detached to true. You MUST set your own password and make sure to include it in VLC.
-11. Start VLC, then run the program as normal.
+11. Start VLC and add something to the queue, then run the program as normal. If nothing is in the queue you will get a JSON error, which will be replaced with a prettier error message in a later commit to this repo.
 
 Note: Do not touch the port or address unless you know what you are doing! 8080 is VLC's default HTTP port. 
+
+## Custom Images
+If you would like to change the default icons for pause, play, or VLC in your discord status, you will need to have a link to an image (which must end in .png, .jpg, or something similar). You can do this by using imgur, or any site of your choosing. Then, simply replace the link in the iconNames part of the config.js.
 
 ![image](https://github.com/vlc-rpc/vlc-discord-rpc/assets/61550272/4aa489d9-269c-4333-b595-bb3d0444fa24)
 
