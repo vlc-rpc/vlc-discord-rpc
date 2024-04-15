@@ -26,6 +26,12 @@ This is a modified version of the [Pigpog/vlc-discord-rpc project](https://githu
 6. Check the box labelled Web.
 7. Back where we selected Main Interfaces, select the caret next to it.
 8. Select Lua.
-9. Enter your configuration information into the bottom box.
+9. Enter a password into the Lua HTTP box. It does not matter what this is, but you will need to add it to your config.
 10. Update any needed values in your config. Change detached to true. You MUST set your own password and make sure to include it in VLC.
 11. Start VLC, then run the program as normal.
+
+Note: Do not touch the port or address unless you know what you are doing! 8080 is VLC's default HTTP port. 
+
+![image](https://github.com/vlc-rpc/vlc-discord-rpc/assets/61550272/4aa489d9-269c-4333-b595-bb3d0444fa24)
+
+![image](https://github.com/vlc-rpc/vlc-discord-rpc/assets/61550272/292e8748-b6c6-4ff8-88a5-225e5dd2b467)
