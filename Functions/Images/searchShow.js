@@ -5,7 +5,8 @@ async function searchShow(showName) {
     const data = await response.json();
 
     // Make sure we actually found a show
-    if (data) {
+    if (data && data.length > 0) {
+      console.log(data)
         // Get the first result (most relevant)
     const show = data[0].show;
 
