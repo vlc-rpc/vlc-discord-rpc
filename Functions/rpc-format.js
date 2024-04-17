@@ -82,6 +82,11 @@ module.exports = async (status) => {
     var endTimestamp = end;
   }
 
+  if (details.length > 125) {
+    details = details.substring(0, 125) + "...";
+  }
+
+
   return {
     state: state,
     details: details,
