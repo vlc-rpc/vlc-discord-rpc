@@ -82,7 +82,7 @@ module.exports = async (callback) => {
     //  If there is an error connecting to VLC, log an error message and call the callback function with a stopped state
     if (err.code === "ECONNREFUSED") {
       console.log("Failed to reach VLC. Is it open?");
-      callback({ status: { state: "stopped" }, updated: false });
+      callback({ state: "stopped" }, false);
       // If there is any other error, throw it
     } else {
       throw err;
