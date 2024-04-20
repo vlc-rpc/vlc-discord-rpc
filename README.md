@@ -53,7 +53,7 @@ To use an uploaded file instead of a link you need to do the following:
 ![image](https://github.com/vlc-rpc/vlc-discord-rpc/assets/61550272/692b569e-7483-45a6-9ec8-0961c21f947e)
 ![image](https://github.com/vlc-rpc/vlc-discord-rpc/assets/61550272/cd84551e-0437-40ec-95ed-5dbd76968a7a)
 
-### Shows and Movies
+## Shows and Movies
 If you would like to display shows and movies as such, instead of a video, you will need to use our custom metadata script. 
 1) Install [FFMPEG](ffmpeg.org/download.html)
 2) Add [FFMPEG to PATH](https://www.hostinger.com/tutorials/how-to-install-ffmpeg). 
