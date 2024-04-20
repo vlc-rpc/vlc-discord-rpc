@@ -4,6 +4,7 @@
 
 const { getAlbumArt } = require("./Images/getAlbumArt.js");
 const { searchShow } = require("./Images/searchShow.js");
+const { fetchMovieData } = require("./Images/searchMovie.js");
 const config = require("../Storage/config.js");
 
 module.exports = async (status) => {
@@ -23,28 +24,46 @@ module.exports = async (status) => {
   const meta = status.information.category.meta;
 
   // If it's a TV show
-  if (meta.showName) {
+  if (meta.SHOWNAME) {
     // Set the details variable to the name of the show
-    details = meta.showName;
+    details = meta.SHOWNAME;
 
     // If there's a season number, append it to the state variable
-    if (meta.seasonNumber) {
-      state = ` Season ${meta.seasonNumber}`;
+    if (meta.SEASON) {
+      state = ` Season ${meta.SEASON}`;
 
       // If there's an episode number, append it to the state variable
-      if (meta.episodeNumber) {
-        state += ` - Episode ${meta.episodeNumber}`;
+      if (meta.EPISODE) {
+        state += ` - Episode ${meta.EPISODE}`;
       }
     }
 
     // Try to search for the show and get its image
-    const show = await searchShow(meta.showName);
+    const show = await searchShow(meta.SHOWNAME);
 
     if (show && show.image) {
       image = show.image;
     }
-    // If it's a music video
-  } else if (meta.artist) {
+  } 
+
+  // If it's a movie
+  else if (meta.genre === "movie" && meta.title && config.movieApiKey != "") {
+    // Set the details variable to the name of the show
+    details = meta.title;
+
+    // Try to search for the movie and get its image
+    const movie = await fetchMovieData(meta.title);
+
+    if (movie) {
+      details = movie.Title
+      state = `Release Year: ${movie.Year}`
+      image = movie.Poster;
+    }
+  } 
+  
+  
+      // If it's a music video
+  else if (meta.artist) {
     details = meta.title;
     state = meta.artist;
 
