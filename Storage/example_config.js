@@ -43,7 +43,9 @@ const platformDefaults = {
   
   // READ THE READ ME. This is complicated to set up!
   const detached = false;
+
+  const movieApiKey = ""
   
   // Modules to load
-  module.exports = { platformDefaults, vlcPath, richPresenseSettings, vlcConfig, useSpotify, spotify, iconNames, logUpdates, detached };
+  module.exports = { platformDefaults, vlcPath, richPresenseSettings, vlcConfig, useSpotify, spotify, iconNames, logUpdates, detached, movieApiKey };
   

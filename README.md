@@ -17,7 +17,8 @@ If you have any issues, that may not be a bug related, or any ideas for the proj
 5. OPTIONAL: Retrieve your [Spotify API key](https://developer.spotify.com/documentation/web-api/tutorials/getting-started). 
 6. Add both of these values in the `./Storage/config.js` file under the `richPresenceSettings` and `spotify` area if you are choosing to use the album art.
 7. In `./Storage/config.js` right before the `spotify` area, set useSpotify to true.
-8. Open a terminal, move to the folder you downloaded from this repository, and run `npm i` then run `node .`.
+8. OPTIONAL: Add your [OMDb Api Key](https://www.omdbapi.com/apikey.aspx) as the movieApiKey. This will allow you to display movies as movies, instead of videos. 
+9. Open a terminal, move to the folder you downloaded from this repository, and run `npm i` then run `node .`.
 
 ## Detached State
 1. Open VLC.
@@ -52,4 +53,13 @@ To use an uploaded file instead of a link you need to do the following:
 ![image](https://github.com/vlc-rpc/vlc-discord-rpc/assets/61550272/692b569e-7483-45a6-9ec8-0961c21f947e)
 ![image](https://github.com/vlc-rpc/vlc-discord-rpc/assets/61550272/cd84551e-0437-40ec-95ed-5dbd76968a7a)
 
+### Shows and Movies
+If you would like to display shows and movies as such, instead of a video, you will need to use our custom metadata script. 
+1) Install [FFMPEG](ffmpeg.org/download.html)
+2) Add [FFMPEG to PATH](https://www.hostinger.com/tutorials/how-to-install-ffmpeg). 
+3) In the vlc-rpc project folder, change directories into the Metadata folder.
+4) Run `node metadata.js`
+5) Fill in the prompts
+6) Optional: Add your movie api key to `config.js`. Movies will be displayed as videos otherwise.
+7) Start watching your new file in VLC.
 
