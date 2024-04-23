@@ -7,17 +7,19 @@ This is a modified version of the [Pigpog/vlc-discord-rpc project](https://githu
 ![image](https://user-images.githubusercontent.com/61550272/234403580-4a910bd7-41a5-4ceb-8a31-180c2efda417.png)
 
 ## Support
-If you have any issues, that may not be a bug related, or any ideas for the project stop by our [Discord](https://discord.gg/CsKzGpt82s)
+If you have any issues, that may not be a bug related, or any ideas for the project stop by our [Discord](https://discord.gg/GDwxX8gQ)
 
 ## Setup
 1. Download the code from this repository, then unzip it.
 2. Install [Node.js](https://nodejs.org/en/download).
 3. Make an application and get your [Discord Application ID](https://discord.com/developers/applications).
-4. Proceed to the next step if you would like to use spotify art, or just go to step 8.
-5. OPTIONAL: Retrieve your [Spotify API key](https://developer.spotify.com/documentation/web-api/tutorials/getting-started). 
-6. Add both of these values in the `./Storage/config.js` file under the `richPresenceSettings` and `spotify` area if you are choosing to use the album art.
-7. In `./Storage/config.js` right before the `spotify` area, set useSpotify to true.
-8. Open a terminal, move to the folder you downloaded from this repository, and run `npm i` then run `node .`.
+4. In the storage folder, make a file called `config.js`, and copy over the contents of `example_config.js`
+5. Proceed to the next step if you would like to use spotify art, or just go to step 8.
+6. OPTIONAL: Retrieve your [Spotify API key](https://developer.spotify.com/documentation/web-api/tutorials/getting-started). 
+7. Add both of these values in the `./Storage/config.js` file under the `richPresenceSettings` and `spotify` area if you are choosing to use the album art.
+8. In `./Storage/config.js` right before the `spotify` area, set useSpotify to true.
+9. OPTIONAL: Add your [OMDb Api Key](https://www.omdbapi.com/apikey.aspx) as the movieApiKey. This will allow you to display movies as movies, instead of videos. 
+10. Open a terminal, move to the folder you downloaded from this repository, and run `npm i` then run `node .`.
 
 ## Detached State
 1. Open VLC.
@@ -51,5 +53,3 @@ To use an uploaded file instead of a link you need to do the following:
 7) Give it a minute or two, and then you should see it working. For other users, it may take a few hours for your images to show up.
 ![image](https://github.com/vlc-rpc/vlc-discord-rpc/assets/61550272/692b569e-7483-45a6-9ec8-0961c21f947e)
 ![image](https://github.com/vlc-rpc/vlc-discord-rpc/assets/61550272/cd84551e-0437-40ec-95ed-5dbd76968a7a)
-
-
