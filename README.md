@@ -57,7 +57,7 @@ To use an uploaded file instead of a link you need to do the following:
 If you would like to display shows and movies as such, instead of a video, you will need to use our custom metadata script. 
 1) Install [FFMPEG](https://www.ffmpeg.org/download.html)
 2) Add [FFMPEG to PATH](https://www.hostinger.com/tutorials/how-to-install-ffmpeg). 
-3) In the vlc-rpc project folder, change directories into the Metadata folder.
+3) In the vlc-rpc project folder, change directories into the Metadata folder by using `cd Metdata` in the terminal/console.
 4) Run `node metadata.js`
 5) Fill in the prompts
 6) Optional: Add your movie api key to `config.js`. Movies will be displayed as videos otherwise.
