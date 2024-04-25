@@ -23,11 +23,12 @@ module.exports = async (status) => {
   // Extract information about what's playing
   const meta = status.information.category.meta;
 
-  // If it's a TV show
+  // If it's a TV show 
   if (meta.genre === "show") {
     // Set the details variable to the name of the show
     details = meta.title;
 
+    // MKV Handling
     // If there's a season number, append it to the state variable
     if (meta.SEASON) {
       state = ` Season ${meta.SEASON}`;
@@ -38,6 +39,7 @@ module.exports = async (status) => {
       }
     }
 
+    // MP4
     if (meta.description && meta.description.includes("S:") && meta.description.includes("E:")) {
       const sIndex = meta.description.indexOf("S:");
       const eIndex = meta.description.indexOf("E:");
@@ -45,6 +47,18 @@ module.exports = async (status) => {
       let seasonNumber = meta.description.slice(sIndex + 2, eIndex).trim(); 
 
       let episodeNumber = meta.description.slice(eIndex + 2).trim(); 
+    
+      state = ` Season ${seasonNumber} - Episode ${episodeNumber}`;
+    }
+
+    // WMV
+    if (meta.Description && meta.Description.includes("S:") && meta.Description.includes("E:")) {
+      const sIndex = meta.Description.indexOf("S:");
+      const eIndex = meta.Description.indexOf("E:");
+    
+      let seasonNumber = meta.Description.slice(sIndex + 2, eIndex).trim(); 
+
+      let episodeNumber = meta.Description.slice(eIndex + 2).trim(); 
     
       state = ` Season ${seasonNumber} - Episode ${episodeNumber}`;
     }

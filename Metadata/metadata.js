@@ -55,7 +55,7 @@ async function addMetadata() {
 
             if(extension === ".mkv") {
                 metadataCommand += ` -metadata season="${season}" -metadata episode="${episode}"`;
-            } else if (extension === ".mp4") {
+            } else if (extension === ".mp4" || extension === ".wmv") {
                 metadataCommand += ` -metadata comment="S:${season} E:${episode}"`;
             }
         }
