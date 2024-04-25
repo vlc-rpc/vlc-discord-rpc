@@ -58,7 +58,7 @@ module.exports = async (status) => {
       image = movie.Poster;
     } else {
       // Fallback in case we don't have a movie
-      console.log("WARNING: Movie name not found!")
+      console.log("WARNING: Movie with that name not found! Please try and find it on IMDB and use that name!")
       details = "Watching a movie";
       state = meta.title || "Video";
     }
