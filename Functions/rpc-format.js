@@ -54,7 +54,7 @@ module.exports = async (status) => {
     // Make sure we actually got a movie
     if (movie && movie.Response != 'False') {
       details = movie.Title
-      state = `Release Year: ${movie.Year}`
+      state = `${movie.Year}`
       image = movie.Poster;
     } else {
       // Fallback in case we don't have a movie
