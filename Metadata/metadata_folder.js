@@ -38,20 +38,28 @@ async function addMetadata() {
                 overwrite = await handleExistingOutputFile();
             }
 
-            const content_type = await getContentType();
+        // Retrieve and validate content type
+        const content_type = await getContentType();
 
-            const name = await askQuestion(`Enter the ${content_type} name: `);
+        // Get the name of the show or movie
+        const name = await askQuestion(`Enter the ${content_type} name: `);
 
-            const parameter_name = content_type == "show" ? "showName" : "title"; 
-            const videoType = content_type == "show" ? "contentType" : "genre";
+        // Execute the ffmpeg command
+        let metadataCommand = `ffmpeg ${overwrite} -i "${input_file}" -c copy -metadata title="${name}" -metadata genre="${content_type}"`;
 
-            let metadataCommand = `ffmpeg ${overwrite} -i "${input_file}" -c copy -metadata ${parameter_name}="${name}" -metadata ${videoType}="${content_type}"`;
+        if (content_type === "show") {
+            const season = await askQuestion("Enter the season number: ");
+            const episode = await askQuestion("Enter the episode number: ");
 
-            if (content_type === "show") {
-                const season = await askQuestion("Enter the season number: ");
-                const episode = await askQuestion("Enter the episode number: ");
+            const extension = input_file.slice(input_file.lastIndexOf('.'));
+
+
+            if(extension === ".mkv") {
                 metadataCommand += ` -metadata season="${season}" -metadata episode="${episode}"`;
+            } else if (extension === ".mp4") {
+                metadataCommand += ` -metadata comment="S:${season} E:${episode}"`;
             }
+        }
 
             metadataCommand += ` "${output_file}"`;
             execSync(metadataCommand);
