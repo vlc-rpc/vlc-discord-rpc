@@ -53,10 +53,12 @@ async function addMetadata() {
 
             const extension = input_file.slice(input_file.lastIndexOf('.'));
 
+            // Tested extensions. Can add more.
+            const extenstionsWithComments = [".mp4", ".wmv", ".mov"]
 
             if(extension === ".mkv") {
                 metadataCommand += ` -metadata season="${season}" -metadata episode="${episode}"`;
-            } else if (extension === ".mp4" || extension === ".wmv") {
+            } else if (extenstionsWithComments.some(extension)) {
                 metadataCommand += ` -metadata comment="S:${season} E:${episode}"`;
             }
         }
