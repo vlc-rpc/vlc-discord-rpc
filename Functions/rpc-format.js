@@ -24,9 +24,9 @@ module.exports = async (status) => {
   const meta = status.information.category.meta;
 
   // If it's a TV show
-  if (meta.SHOWNAME) {
+  if (meta.genre === "show") {
     // Set the details variable to the name of the show
-    details = meta.SHOWNAME;
+    details = meta.title;
 
     // If there's a season number, append it to the state variable
     if (meta.SEASON) {
@@ -38,8 +38,18 @@ module.exports = async (status) => {
       }
     }
 
-    // Try to search for the show and get its image
-    const show = await searchShow(meta.SHOWNAME);
+    if (meta.description && meta.description.includes("S:") && meta.description.includes("E:")) {
+      const sIndex = meta.description.indexOf("S:");
+      const eIndex = meta.description.indexOf("E:");
+    
+      let seasonNumber = meta.description.slice(sIndex + 2, eIndex).trim(); 
+
+      let episodeNumber = meta.description.slice(eIndex + 2).trim(); 
+    
+      state = ` Season ${seasonNumber} - Episode ${episodeNumber}`;
+    }
+
+    const show = await searchShow(meta.title);
 
     if (show && show.image) {
       image = show.image;
