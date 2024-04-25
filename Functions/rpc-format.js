@@ -28,40 +28,8 @@ module.exports = async (status) => {
     // Set the details variable to the name of the show
     details = meta.title;
 
-    // MKV Handling
-    // If there's a season number, append it to the state variable
-    if (meta.SEASON) {
-      state = ` Season ${meta.SEASON}`;
-
-      // If there's an episode number, append it to the state variable
-      if (meta.EPISODE) {
-        state += ` - Episode ${meta.EPISODE}`;
-      }
-    }
-
-    // MP4
-    if (meta.description && meta.description.includes("S:") && meta.description.includes("E:")) {
-      const sIndex = meta.description.indexOf("S:");
-      const eIndex = meta.description.indexOf("E:");
+    state = setShowState(meta, state);
     
-      let seasonNumber = meta.description.slice(sIndex + 2, eIndex).trim(); 
-
-      let episodeNumber = meta.description.slice(eIndex + 2).trim(); 
-    
-      state = ` Season ${seasonNumber} - Episode ${episodeNumber}`;
-    }
-
-    // WMV
-    if (meta.Description && meta.Description.includes("S:") && meta.Description.includes("E:")) {
-      const sIndex = meta.Description.indexOf("S:");
-      const eIndex = meta.Description.indexOf("E:");
-    
-      let seasonNumber = meta.Description.slice(sIndex + 2, eIndex).trim(); 
-
-      let episodeNumber = meta.Description.slice(eIndex + 2).trim(); 
-    
-      state = ` Season ${seasonNumber} - Episode ${episodeNumber}`;
-    }
 
     const show = await searchShow(meta.title);
 
@@ -151,3 +119,16 @@ module.exports = async (status) => {
     ],
   };
 };
+function setShowState(meta, state) {
+  const description = meta.description || meta.Description
+  const sIndex = description.indexOf("S:");
+  const eIndex = description.indexOf("E:");
+
+  let seasonNumber = description.slice(sIndex + 2, eIndex).trim();
+
+  let episodeNumber = description.slice(eIndex + 2).trim();
+
+  state = ` Season ${seasonNumber} - Episode ${episodeNumber}`;
+  return state;
+}
+
