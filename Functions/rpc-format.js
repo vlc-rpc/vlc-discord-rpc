@@ -48,16 +48,19 @@ module.exports = async (status) => {
 
   // If it's a movie
   else if (meta.genre === "movie" && meta.title && config.movieApiKey != "") {
-    // Set the details variable to the name of the show
-    details = meta.title;
-
     // Try to search for the movie and get its image
     const movie = await fetchMovieData(meta.title);
 
-    if (movie) {
+    // Make sure we actually got a movie
+    if (movie && movie.Response != 'False') {
       details = movie.Title
       state = `Release Year: ${movie.Year}`
       image = movie.Poster;
+    } else {
+      // Fallback in case we don't have a movie
+      console.log("WARNING: Movie name not found!")
+      details = "Watching a movie";
+      state = meta.title || "Video";
     }
   } 
   
