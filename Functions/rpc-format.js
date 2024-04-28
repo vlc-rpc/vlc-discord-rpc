@@ -4,6 +4,7 @@
 
 const { getAlbumArt } = require("./Images/getAlbumArt.js");
 const { searchShow } = require("./Images/searchShow.js");
+const { fetchMovieData } = require("./Images/searchMovie.js");
 const config = require("../Storage/config.js");
 
 module.exports = async (status) => {
@@ -22,29 +23,42 @@ module.exports = async (status) => {
   // Extract information about what's playing
   const meta = status.information.category.meta;
 
-  // If it's a TV show
-  if (meta.showName) {
+  // If it's a TV show 
+  if (meta.genre === "show") {
     // Set the details variable to the name of the show
-    details = meta.showName;
+    details = meta.title;
 
-    // If there's a season number, append it to the state variable
-    if (meta.seasonNumber) {
-      state = ` Season ${meta.seasonNumber}`;
+    state = setShowState(meta, state);
+    
 
-      // If there's an episode number, append it to the state variable
-      if (meta.episodeNumber) {
-        state += ` - Episode ${meta.episodeNumber}`;
-      }
-    }
-
-    // Try to search for the show and get its image
-    const show = await searchShow(meta.showName);
+    const show = await searchShow(meta.title);
 
     if (show && show.image) {
       image = show.image;
     }
-    // If it's a music video
-  } else if (meta.artist) {
+  } 
+
+  // If it's a movie
+  else if (meta.genre === "movie" && meta.title && config.movieApiKey != "") {
+    // Try to search for the movie and get its image
+    const movie = await fetchMovieData(meta.title);
+
+    // Make sure we actually got a movie
+    if (movie && movie.Response != 'False') {
+      details = movie.Title
+      state = `${movie.Year}`
+      image = movie.Poster;
+    } else {
+      // Fallback in case we don't have a movie
+      console.log("WARNING: Movie with that name not found! Please try and find it on IMDB and use that name!")
+      details = "Watching a movie";
+      state = meta.title || "Video";
+    }
+  } 
+  
+  
+      // If it's a music video
+  else if (meta.artist) {
     details = meta.title;
     state = meta.artist;
 
@@ -105,3 +119,16 @@ module.exports = async (status) => {
     ],
   };
 };
+function setShowState(meta, state) {
+  const description = meta.description || meta.Description
+  const sIndex = description.indexOf("S:");
+  const eIndex = description.indexOf("E:");
+
+  let seasonNumber = description.slice(sIndex + 2, eIndex).trim();
+
+  let episodeNumber = description.slice(eIndex + 2).trim();
+
+  state = ` Season ${seasonNumber} - Episode ${episodeNumber}`;
+  return state;
+}
+

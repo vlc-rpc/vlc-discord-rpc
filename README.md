@@ -53,3 +53,13 @@ To use an uploaded file instead of a link you need to do the following:
 7) Give it a minute or two, and then you should see it working. For other users, it may take a few hours for your images to show up.
 ![image](https://github.com/vlc-rpc/vlc-discord-rpc/assets/61550272/692b569e-7483-45a6-9ec8-0961c21f947e)
 ![image](https://github.com/vlc-rpc/vlc-discord-rpc/assets/61550272/cd84551e-0437-40ec-95ed-5dbd76968a7a)
+
+## Shows and Movies
+If you would like to display shows and movies as such, instead of a video, you will need to use our custom metadata script. 
+1) Install [FFMPEG](https://www.ffmpeg.org/download.html)
+2) Add [FFMPEG to PATH](https://www.hostinger.com/tutorials/how-to-install-ffmpeg). 
+3) In the vlc-rpc project folder, change directories into the Metadata folder by using `cd Metdata` in the terminal/console.
+4) Run `node metadata.js`
+5) Fill in the prompts
+6) Optional: Add your movie api key to `config.js`. Movies will be displayed as videos otherwise.
+7) Start watching your new file in VLC.
