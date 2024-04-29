@@ -1,13 +1,12 @@
-const config = require("../../Storage/config.js");
-
-const axios = require("axios");
+import axios from 'axios';
+import { spotify } from "../../Storage/config.js";
 
 // Spotify API endpoint for searching albums
 const url = "https://api.spotify.com/v1/search";
 
 // Your Spotify app client ID and client secret
-const client_id = config.spotify.clientID;
-const client_secret = config.spotify.clientSecret;
+const client_id = spotify.clientID;
+const client_secret = spotify.clientSecret;
 
 // Base64-encoded string of the form "client_id:client_secret"
 const credentials = Buffer.from(`${client_id}:${client_secret}`).toString("base64");
@@ -19,16 +18,16 @@ async function getAlbumArt(albumName, albumArtist) {
     const tokenResponse = await axios.post("https://accounts.spotify.com/api/token", "grant_type=client_credentials", {
       headers: {
         Authorization: `Basic ${credentials}`,
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
+        "Content-Type": "application/x-www-form-urlencoded"
+      }
     });
 
     // Extract the access token from the response
-    const access_token = tokenResponse.data.access_token;
+    const {access_token} = tokenResponse.data;
 
     // Set headers with access token for authorization
     const headers = {
-      Authorization: `Bearer ${access_token}`,
+      Authorization: `Bearer ${access_token}`
     };
 
     // Make GET request to search for the album
@@ -36,18 +35,20 @@ async function getAlbumArt(albumName, albumArtist) {
       headers: headers,
       params: {
         q: albumName + " " + albumArtist,
-        type: "album",
-      },
+        type: "album"
+      }
     });
 
     // Extract the first album from the response
-    const album = response.data.albums.items[0];
+    const [album] = response.data.albums.items; 
 
     // Return the album cover image URL
     return album.images[0].url;
   } catch (error) {
+    console.log("Please report this issue to the VLC-RPC devs!");
+    console.log(error);
     return null;
   }
 }
 
-module.exports = { getAlbumArt };
+export {getAlbumArt};
