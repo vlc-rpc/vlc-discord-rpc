@@ -1,4 +1,9 @@
 import { movieApiKey } from "../../Storage/config.js";
+/**
+ * Searches for a movie by name using the OMDb API.
+ * @param {string} movieName - The name of the movie to search for.
+ * @returns {object | null} An object containing the name of the show and its image URL if found, or null if not found or an error occurs.
+ */
 async function fetchMovieData(movieName) {
   const url = `https://www.omdbapi.com/?apiKey=${movieApiKey}&t=${movieName}&plot=full`;
   const options = {

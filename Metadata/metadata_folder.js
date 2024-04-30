@@ -5,6 +5,11 @@ import { askQuestion, createReadline, getContentType, handleExistingOutputFile, 
 
 const rl = createReadline();
 
+/**
+ * Retrieves the list of files in a directory.
+ * @param {string} directory - The path to the directory.
+ * @returns {Promise<Array<string>>} A promise that resolves with an array of filenames in the directory.
+ */
 async function directoryFiles(directory) {
   return fs.readdir(directory).catch(err => {
     console.error(`Failed to read directory ${directory}:`, err);
@@ -12,6 +17,9 @@ async function directoryFiles(directory) {
   });
 }
 
+/**
+ * Adds metadata to media files in a specified directory.
+ */
 async function addMetadata() {
   try {
     const directory = await askQuestion("Enter the directory to add metadata to: ");
@@ -34,9 +42,9 @@ async function addMetadata() {
       output_file = await validateFileExtensions(input_file, output_file);
     
       /** 
-             * Check if output file exists and handle overwrite scenario. 
-             * If the file doesn't already exist, just use -n (no)
-             **/
+       * Check if output file exists and handle overwrite scenario. 
+       * If the file doesn't already exist, just use -n (no)
+       */
       let overwrite = "-n"; 
       if (fs.existsSync(output_file)) {
         overwrite = await handleExistingOutputFile();

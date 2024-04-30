@@ -1,3 +1,8 @@
+/**
+ * Searches for a TV show by name using the TVmaze API.
+ * @param {string} showName - The name of the show to search for.
+ * @returns {object | null} An object containing the name of the show and its image URL if found, or null if not found or an error occurs.
+ */
 async function searchShow(showName) {
   try {
     // Use the TVmaze API to search for the show by name

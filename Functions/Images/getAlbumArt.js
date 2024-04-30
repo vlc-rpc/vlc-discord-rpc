@@ -11,7 +11,12 @@ const client_secret = spotify.clientSecret;
 // Base64-encoded string of the form "client_id:client_secret"
 const credentials = Buffer.from(`${client_id}:${client_secret}`).toString("base64");
 
-// Function to search for an album by name and retrieve its cover image
+/**
+ * Retrieves the album cover art from Spotify based on the album name and artist.
+ * @param {string} albumName - The name of the album.
+ * @param {string} albumArtist - The artist of the album.
+ * @returns {string|null} The URL of the album cover image if found, or null if not found or an error occurs.
+ */
 async function getAlbumArt(albumName, albumArtist) {
   try {
     // Make POST request to obtain an access token using the Client Credentials Flow

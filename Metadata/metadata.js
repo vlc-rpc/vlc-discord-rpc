@@ -5,7 +5,9 @@ import { askQuestion, createReadline, getContentType, handleExistingOutputFile, 
 // Setup readline interface for user input
 const rl = createReadline();
 
-// Add custom metadata to a file using ffmpeg
+/**
+ * Adds metadata to a media file.
+ */
 async function addMetadata() {
   try {
     // Request input and output file paths from user
@@ -20,9 +22,9 @@ async function addMetadata() {
     output_file = await validateFileExtensions(input_file, output_file);
 
     /** 
-         * Check if output file exists and handle overwrite scenario. 
-         * If the file doesn't already exist, just use -n (no)
-         **/
+     * Check if output file exists and handle overwrite scenario. 
+     * If the file doesn't already exist, just use -n (no)
+     */
     let overwrite = "-n"; 
     if (fs.existsSync(output_file)) {
       overwrite = await handleExistingOutputFile(rl);

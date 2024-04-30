@@ -1,4 +1,8 @@
 const readline = require('readline');
+/**
+ * Creates a readline interface for user input.
+ * @returns {readline.Interface} A readline interface for user input.
+ */
 function createReadline() {
   // Setup readline interface for user input
   const rl = readline.createInterface({
@@ -8,12 +12,22 @@ function createReadline() {
   return rl;
 } 
 
-// Ask questions and return user input as a promise
+/**
+ * Prompts the user with a question and returns their input as a promise.
+ * @param {readline.Interface} rl - The readline interface.
+ * @param {string} query - The question to ask the user.
+ * @returns {Promise<string>} A promise that resolves with the user's input.
+ */
 function askQuestion(rl, query) {
   return new Promise(resolve => {return rl.question(query, resolve);});
 }
 
-// Make sure the input and output file extensions are the same
+/**
+ * Ensures that the output file extension matches the input file extension.
+ * @param {string} input_file - The path to the input file.
+ * @param {string} output_file - The path to the output file.
+ * @returns {Promise<string>} A promise that resolves with the validated output file path.
+ */
 async function validateFileExtensions(input_file, output_file) {
   const inputExt = input_file.slice(input_file.lastIndexOf('.'));
   let outputExt = output_file.slice(output_file.lastIndexOf('.'));
@@ -26,7 +40,11 @@ async function validateFileExtensions(input_file, output_file) {
   return output_file;
 }
 
-// Get content type from user
+/**
+ * Prompts the user to specify the content type (movie or show) and returns it.
+ * @param {readline.Interface} rl - The readline interface.
+ * @returns {Promise<string>} A promise that resolves with the content type entered by the user.
+ */
 async function getContentType(rl) {
   // This is async
   let content_type = await askQuestion(rl, "Enter the content type (movie/show): ");
@@ -43,7 +61,11 @@ async function getContentType(rl) {
   return content_type;
 }
 
-// Handle existing output file
+/**
+ * Handles the scenario when the output file already exists.
+ * @param {readline.Interface} rl - The readline interface.
+ * @returns {Promise<string>} A promise that resolves with the overwrite flag ("-y" or "-n").
+ */
 async function handleExistingOutputFile(rl) {
   // This is async
   let overwrite = await askQuestion(rl, "That file already exists! Would you like to overwrite it (y/n): ");

@@ -4,7 +4,10 @@ import { detached, platformDefaults, vlcConfig, vlcPath } from "./Storage/config
 import { existsSync } from "fs";
 import { spawn } from "child_process";
 
-// Function to generate a random password
+/**
+ * Generates a random password.
+ * @returns {string} A randomly generated password.
+ */
 function randomPass() {
   return Math.random().toString(36).slice(-8);
 }

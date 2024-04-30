@@ -3,10 +3,11 @@ module.exports = {
     es2021: true,
     node: true
   },
-  extends: 'eslint:recommended',
+  extends: ['eslint:recommended', "plugin:jsdoc/recommended-error"],
   parser: '@babel/eslint-parser',
   plugins: [
-    '@stylistic/js'
+    '@stylistic/js',
+    'jsdoc'
   ],
   overrides: [
     {

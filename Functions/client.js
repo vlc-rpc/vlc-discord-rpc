@@ -7,6 +7,10 @@ const client = new Client({ transport: "ipc" });
 let awake = true;
 let timeInactive = 0;
 
+/**
+ * Main function for updating Discord Rich Presence based on status changes.
+ * @returns {void}
+ */
 async function update() {
   diff(async (status, shouldUpdate) => {
     if (shouldUpdate) {
@@ -38,6 +42,9 @@ client.on("ready", () => {
   console.log("Logged in as", client.user.username);
 });
 
+/**
+ *
+ */
 async function connectToDiscord() {
   try {
     console.log("Connecting to Discord...");
