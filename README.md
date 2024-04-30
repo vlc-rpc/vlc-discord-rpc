@@ -7,7 +7,7 @@ This is a modified version of the [Pigpog/vlc-discord-rpc project](https://githu
 ![image](https://user-images.githubusercontent.com/61550272/234403580-4a910bd7-41a5-4ceb-8a31-180c2efda417.png)
 
 ## Support
-If you have any issues, that may not be a bug related, or any ideas for the project stop by our [Discord](https://discord.gg/GDwxX8gQ)
+If you have any issues, that may not be a bug related, or any ideas for the project stop by our [Discord](https://discord.gg/CsKzGpt82s)
 
 ## Setup
 1. Download the code from this repository, then unzip it.
