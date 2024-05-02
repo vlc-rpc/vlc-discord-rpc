@@ -21,12 +21,15 @@ async function addMetadata() {
 
     output_file = await validateFileExtensions(input_file, output_file);
 
+    const cleaned_input_file = input_file.replaceAll('"', '');
+    const cleaned_ouput_file = output_file.replaceAll('"', '');
+
     /** 
      * Check if output file exists and handle overwrite scenario. 
      * If the file doesn't already exist, just use -n (no)
      */
     let overwrite = "-n"; 
-    if (fs.existsSync(output_file)) {
+    if (fs.existsSync(cleaned_ouput_file)) {
       overwrite = await handleExistingOutputFile(rl);
     }
 
@@ -37,13 +40,13 @@ async function addMetadata() {
     const name = await askQuestion(rl, `Enter the ${content_type} name: `);
 
     // Execute the ffmpeg command
-    let metadataCommand = `ffmpeg ${overwrite} -i "${input_file}" -c copy -metadata title="${name}" -metadata genre="${content_type}"`;
+    let metadataCommand = `ffmpeg ${overwrite} -i "${cleaned_input_file}" -c copy -metadata title="${name}" -metadata genre="${content_type}"`;
 
     if (content_type === "show") {
       const season = await askQuestion(rl, "Enter the season number: ");
       const episode = await askQuestion(rl, "Enter the episode number: ");
 
-      const extension = input_file.slice(input_file.lastIndexOf('.'));
+      const extension = cleaned_input_file.slice(cleaned_input_file.lastIndexOf('.'));
 
       // Tested extensions. Can add more.
       const testedExtensions = [".mp4", ".wmv", ".mov", ".mkv"];
@@ -56,7 +59,7 @@ async function addMetadata() {
 
     }
 
-    metadataCommand += ` "${output_file}"`;
+    metadataCommand += ` "${cleaned_ouput_file}"`;
     execSync(metadataCommand);
     console.log("Metadata added successfully.");
 
