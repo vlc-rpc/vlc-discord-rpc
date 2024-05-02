@@ -84,4 +84,4 @@ async function handleExistingOutputFile(rl) {
   return overwrite === 'y' ? '-y' : '-n'; 
 }
 
-export {createReadline, validateFileExtensions, askQuestion, getContentType, handleExistingOutputFile};
+module.exports = {createReadline, validateFileExtensions, askQuestion, getContentType, handleExistingOutputFile};

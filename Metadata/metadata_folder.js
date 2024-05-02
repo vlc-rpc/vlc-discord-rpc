@@ -1,7 +1,7 @@
 const { execSync } = require('child_process');
 const fs = require("fs").promises;  
 const path = require('path');   
-import { askQuestion, createReadline, getContentType, handleExistingOutputFile, validateFileExtensions } from './metadata_functions';    
+import { askQuestion, createReadline, getContentType, handleExistingOutputFile, validateFileExtensions } from './metadata_functions.cjs';    
 
 const rl = createReadline();
 
