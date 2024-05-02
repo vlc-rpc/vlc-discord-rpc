@@ -11,7 +11,7 @@ If you have any issues, that may not be a bug related, or any ideas for the proj
 
 ## Setup
 1. Download the code from this repository, then unzip it.
-2. Install [Node.js](https://nodejs.org/en/download).
+2. Install [Node.js](https://nodejs.org/en/download). You must use version 17.5 at the minimum due to [fetch](https://nodejs.org/dist/latest-v18.x/docs/api/globals.html#fetch)!
 3. Make an application and get your [Discord Application ID](https://discord.com/developers/applications).
 4. In the storage folder, make a file called `config.js`, and copy over the contents of `example_config.js`
 5. Proceed to the next step if you would like to use spotify art, or just go to step 8.
