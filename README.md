@@ -59,7 +59,7 @@ If you would like to display shows and movies as such, instead of a video, you w
 1) Install [FFMPEG](https://www.ffmpeg.org/download.html)
 2) Add [FFMPEG to PATH](https://www.hostinger.com/tutorials/how-to-install-ffmpeg). 
 3) In the vlc-rpc project folder, change directories into the Metadata folder by using `cd Metdata` in the terminal/console.
-4) Run `node metadata.js`
-5) Fill in the prompts
+4) Run `node metadata.js` or `node metadata_folder.js`. The folder option will automatically go through each file in the folder (excluding any file names including "meta") and just ask if it's a show/movie. The file will be named the original name + `_meta`.
+5) Fill in the prompts. For the movie name, please use the one found on IMDB (generally you do not have to worry about this). 
 6) Optional: Add your movie api key to `config.js`. Movies will be displayed as videos otherwise.
 7) Start watching your new file in VLC.
