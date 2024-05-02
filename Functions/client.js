@@ -1,12 +1,16 @@
-const RPC = require("discord-rpc");
-const config = require("../Storage/config.js");
-const diff = require("./status.js");
-const format = require("./rpc-format.js");
+import { Client } from "discord-rpc";
+import {diff} from "./status.js";
+import {format} from "./rpc-format.js";
+import {richPresenseSettings} from "../Storage/config.js";
 
-const client = new RPC.Client({ transport: "ipc" });
+const client = new Client({ transport: "ipc" });
 let awake = true;
 let timeInactive = 0;
 
+/**
+ * Main function for updating Discord Rich Presence based on status changes.
+ * @returns {void}
+ */
 async function update() {
   diff(async (status, shouldUpdate) => {
     if (shouldUpdate) {
@@ -19,8 +23,8 @@ async function update() {
       }
     } else if (awake) {
       if (status.state !== "playing") {
-        timeInactive += config.richPresenseSettings.updateInterval;
-        if (timeInactive >= config.richPresenseSettings.sleepTime || status.state === "stopped") {
+        timeInactive += richPresenseSettings.updateInterval;
+        if (timeInactive >= richPresenseSettings.sleepTime || status.state === "stopped") {
           console.log("VLC not playing; going to sleep.", true);
           awake = false;
           client.clearActivity();
@@ -38,11 +42,14 @@ client.on("ready", () => {
   console.log("Logged in as", client.user.username);
 });
 
+/**
+ *
+ */
 async function connectToDiscord() {
   try {
     console.log("Connecting to Discord...");
-    await client.login({ clientId: config.richPresenseSettings.id });
-    setInterval(update, config.richPresenseSettings.updateInterval);
+    await client.login({ clientId: richPresenseSettings.id });
+    setInterval(update, richPresenseSettings.updateInterval);
   } catch (error) {
     if (error.toString() === "Error: Could not connect") {
       console.log("Failed to connect to Discord. Is your Discord client open? Retrying in 20 seconds...");

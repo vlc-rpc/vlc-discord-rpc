@@ -1,3 +1,8 @@
+/**
+ * Searches for a TV show by name using the TVmaze API.
+ * @param {string} showName - The name of the show to search for.
+ * @returns {object | null} An object containing the name of the show and its image URL if found, or null if not found or an error occurs.
+ */
 async function searchShow(showName) {
   try {
     // Use the TVmaze API to search for the show by name
@@ -6,26 +11,26 @@ async function searchShow(showName) {
 
     // Make sure we actually found a show
     if (data && data.length > 0) {
-        // Get the first result (most relevant)
-    const show = data[0].show;
+      // Get the first result (most relevant)
+      const [{show}] = data;
 
-    // Use the TVmaze API to get the show's image URL
-    const imageResponse = await fetch(`http://api.tvmaze.com/shows/${show.id}/images`);
-    const imageData = await imageResponse.json();
+      // Use the TVmaze API to get the show's image URL
+      const imageResponse = await fetch(`http://api.tvmaze.com/shows/${show.id}/images`);
+      const imageData = await imageResponse.json();
 
-    // Get the first image (most common)
-    const image = imageData[0].resolutions.original.url;
+      // Get the first image (most common)
+      const image = imageData[0].resolutions.original.url;
 
-    return {
-      name: show.name,
-      image,
-    };
-  } else {
-    return null;
-  }
+      return {
+        name: show.name,
+        image
+      };
+    } else {
+      return null;
+    }
   } catch (error) {
     console.error(error);
     return null;
   }
 }
-module.exports = { searchShow };
+export { searchShow };
