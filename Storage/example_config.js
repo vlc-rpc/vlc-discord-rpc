@@ -47,5 +47,11 @@ const detached = false;
 
 const movieApiKey = "";
 
+// Directories for Metadata/metadata_auto.js to use
+const directories = {
+  "shows": "C:/Users/user/vlc-discord-rpc/Media/Shows",
+  "movies": "C:/Users/user/vlc-discord-rpc/Media/Movies"
+};
+
 // Modules to load
-export { platformDefaults, vlcPath, richPresenseSettings, vlcConfig, useSpotify, spotify, iconNames, logUpdates, detached, movieApiKey };
+export { platformDefaults, vlcPath, richPresenseSettings, vlcConfig, useSpotify, spotify, iconNames, logUpdates, detached, movieApiKey, directories };
