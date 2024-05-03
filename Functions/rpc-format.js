@@ -12,14 +12,18 @@ import { searchShow } from "./Images/searchShow.js";
  * @returns {string} - Formatted state in Season Episode format.
  */
 function setShowState(meta) {
-  const description = meta.description || meta.Description;
-  const sIndex = description.indexOf("S:");
-  const eIndex = description.indexOf("E:");
+  if(meta.description || meta.Description) {
+    const description = meta.description || meta.Description;
+    const sIndex = description.indexOf("S:");
+    const eIndex = description.indexOf("E:");
 
-  if (sIndex !== -1 && eIndex !== -1) {
-    const seasonNumber = description.slice(sIndex + 2, eIndex).trim();
-    const episodeNumber = description.slice(eIndex + 2).trim();
-    return ` Season ${seasonNumber} - Episode ${episodeNumber}`;
+    if (sIndex !== -1 && eIndex !== -1) {
+      const seasonNumber = description.slice(sIndex + 2, eIndex).trim();
+      const episodeNumber = description.slice(eIndex + 2).trim();
+      return ` Season ${seasonNumber} - Episode ${episodeNumber}`;
+    } else {
+      return "Unknown Episode";
+    }
   } else {
     return "Unknown Episode";
   }
