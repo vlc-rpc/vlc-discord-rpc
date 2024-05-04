@@ -22,87 +22,65 @@ const directoryExists = async (directoryPath) => {
 };
 
 /**
- * Adds metadata to a show file.
- * @param {string} input_file - The path to the input show file.
+ * Adds metadata to media files based on their type ('show' or 'movie').
+ * @param {string} input_file - The path to the media file to which metadata should be added.
+ * @param {string} type - The type of media, expected to be either 'show' or 'movie'.
  */
-async function handleShow(input_file) {
+async function addMetadata(input_file, type) {
   if(input_file.includes("_meta")) {
     return;
   }
+
   try {
     const extension = input_file.slice(input_file.lastIndexOf('.'));
 
     if(testedExtensions.includes(extension)) {
       const output_file = input_file.substring(0, input_file.lastIndexOf('.')) + "_meta" + input_file.substring(input_file.lastIndexOf('.'));
+      let finalName = "Unknown";
+
+      let metadataCommand = '';
+
+      if(type === 'show') {
+        const parts = input_file.split('_');
+        finalName = parts.slice(0, parts.length - 1).join(" ").split("/").pop();
+
+        metadataCommand = `ffmpeg -y -i "${input_file}" -c copy ` +
+        `-metadata title="${finalName}" ` +
+        `-metadata genre=${type} `;
+
+        const [lastPart] = parts.slice(-1)[0].split(".");
+        const indexOfS = lastPart.indexOf('S');
+        const indexOfE = lastPart.indexOf('E');
     
-      const parts = input_file.split('_');
-      const finalName = parts.slice(0, parts.length - 1).join(" ").split("/").pop();
-      const [lastPart] = parts.slice(-1)[0].split(".");
-      const indexOfS = lastPart.indexOf('S');
-      const indexOfE = lastPart.indexOf('E');
-  
-      let seasonNumber = 0;
-      let episodeNumber = 0;
-  
-      // If they exist
-      if (indexOfS !== -1 && indexOfE !== -1) {
-        seasonNumber = lastPart.slice(indexOfS + 1, indexOfE);
-        episodeNumber = lastPart.slice(indexOfE + 1);
-      } else {
-        console.log("The show name was not formatted properly! The season and episode number have been set to 0.");
+        let seasonNumber = 0;
+        let episodeNumber = 0;
+    
+        // If they exist
+        if (indexOfS !== -1 && indexOfE !== -1) {
+          seasonNumber = lastPart.slice(indexOfS + 1, indexOfE);
+          episodeNumber = lastPart.slice(indexOfE + 1);
+        } else {
+          console.log("The show name was not formatted properly! The season and episode number have been set to 0.");
+        }  
+
+        metadataCommand += `-metadata comment="S:${seasonNumber} E:${episodeNumber}" `;
+      } else if (type === 'movie') {
+        const splitName = input_file.split("/");
+        finalName = splitName[splitName.length - 1].split(".")[0].split("_").join(" ");
+
+        metadataCommand = `ffmpeg -y -i "${input_file}" -c copy ` +
+        `-metadata title="${finalName}" ` +
+        `-metadata genre=${type} `;
       }
 
-      // Execute the ffmpeg command
-      const metadataCommand =
-      `ffmpeg -y -i "${input_file}" -c copy ` +
-      `-metadata title="${finalName}" ` +
-      `-metadata genre="show" ` +
-      `-metadata comment="S:${seasonNumber} E:${episodeNumber}" ` +
-      `-loglevel error ` +
+      metadataCommand += `-loglevel error ` +
       `"${output_file}"`;
-    
       execSync(metadataCommand);
       console.log(`Metadata added successfully to ${input_file}.`);    
-    } else {
-      console.log(`${extension} files have not been tested yet! If you know what you're doing add it on line 56, or join the discord!`);
     }
   } catch (error) {
     console.error("An error occurred while adding metadata:", error);
-  } 
-}
-
-/**
- * Adds metadata to a movie file.
- * @param {string} input_file - The path to the input movie file.
- */
-async function handleMovie(input_file) {
-  if(input_file.includes("_meta")) {
-    return;
   }
-  try {
-    const extension = input_file.slice(input_file.lastIndexOf('.'));
-    
-    if(testedExtensions.includes(extension)) {
-      const splitName = input_file.split("/");
-      const finalName = splitName[splitName.length - 1].split(".")[0].split("_").join(" ");
-      const output_file = input_file.substring(0, input_file.lastIndexOf('.')) + "_meta" + input_file.substring(input_file.lastIndexOf('.'));
-
-      // Execute the ffmpeg command
-      const metadataCommand =
-      `ffmpeg -y -i "${input_file}" -c copy ` +
-      `-metadata title="${finalName}" ` +
-      `-metadata genre="movie" ` +
-      `-loglevel error ` +
-      `"${output_file}"`;
-    
-      execSync(metadataCommand);
-      console.log(`Metadata added successfully to ${input_file}.`);    
-    } else {
-      console.log(`${extension} files have not been tested yet! If you know what you're doing add it on line 56, or join the discord!`);
-    }
-  } catch (error) {
-    console.error("An error occurred while adding metadata:", error);
-  } 
 }
 
 /**
@@ -112,13 +90,13 @@ async function handleMovie(input_file) {
  */
 async function processFiles(showsPathExists, moviesPathExists) {
   if (showsPathExists) {
-    await fs.readdir(directories.shows, async (err, files) => {
+    fs.readdir(directories.shows, async (err, files) => {
       if (err) {
         console.error('Error reading Shows directory:', err);
         return;
       }
       for (const file of files) {
-        await handleShow(`${directories.shows}/${file}`);
+        await addMetadata(`${directories.shows}/${file}`, 'show');
       }
     });
   } else {
@@ -131,7 +109,7 @@ async function processFiles(showsPathExists, moviesPathExists) {
         return;
       }
       for (const file of files) {
-        await handleMovie(`${directories.movies}/${file}`);
+        await addMetadata(`${directories.movies}/${file}`, 'movie');
       }
     });
   } else {

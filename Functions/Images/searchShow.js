@@ -17,14 +17,18 @@ async function searchShow(showName) {
       // Use the TVmaze API to get the show's image URL
       const imageResponse = await fetch(`http://api.tvmaze.com/shows/${show.id}/images`);
       const imageData = await imageResponse.json();
+      if(imageData && imageData.length > 0) {
 
-      // Get the first image (most common)
-      const image = imageData[0].resolutions.original.url;
+        // Get the first image (most common)
+        const image = imageData[0].resolutions.original.url;
 
-      return {
-        name: show.name,
-        image
-      };
+        return {
+          name: show.name,
+          image
+        };
+      } else {
+        return null;
+      }
     } else {
       return null;
     }
