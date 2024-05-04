@@ -1,6 +1,8 @@
 import { directories } from '../Storage/config.js';
+import { execSync } from 'child_process';
 import fs from 'fs';
-import { spawn } from 'child_process';
+// Tested extensions. Can add more.
+const testedExtensions = [".mp4", ".wmv", ".mov", ".mkv", ".avi"];
 
 /**
  * Shows are expected to have file names in the format of: showName_S#E#.extension. Any spaces in the show name should be underscores.
@@ -29,16 +31,12 @@ async function handleShow(input_file) {
   }
   try {
     const extension = input_file.slice(input_file.lastIndexOf('.'));
-    // Tested extensions. Can add more.
-    const testedExtensions = [".mp4", ".wmv", ".mov", ".mkv"];
-    
+
     if(testedExtensions.includes(extension)) {
       const output_file = input_file.substring(0, input_file.lastIndexOf('.')) + "_meta" + input_file.substring(input_file.lastIndexOf('.'));
     
       const parts = input_file.split('_');
-      const name = parts.slice(0, parts.length - 1).join(" ");
-      const splitName = name.split("/");
-      const finalName = splitName[splitName.length - 1];
+      const finalName = parts.slice(0, parts.length - 1).join(" ").split("/").pop();
       const [lastPart] = parts.slice(-1)[0].split(".");
       const indexOfS = lastPart.indexOf('S');
       const indexOfE = lastPart.indexOf('E');
@@ -63,7 +61,7 @@ async function handleShow(input_file) {
       `-loglevel error ` +
       `"${output_file}"`;
     
-      spawn(metadataCommand);
+      execSync(metadataCommand);
       console.log(`Metadata added successfully to ${input_file}.`);    
     } else {
       console.log(`${extension} files have not been tested yet! If you know what you're doing add it on line 56, or join the discord!`);
@@ -82,14 +80,11 @@ async function handleMovie(input_file) {
     return;
   }
   try {
-
     const extension = input_file.slice(input_file.lastIndexOf('.'));
-    const splitName = input_file.split("/");
-    const finalName = splitName[splitName.length - 1].split(".")[0].split("_").join(" ");
-    // Tested extensions. Can add more.
-    const testedExtensions = [".mp4", ".wmv", ".mov", ".mkv", ".avi"];
     
     if(testedExtensions.includes(extension)) {
+      const splitName = input_file.split("/");
+      const finalName = splitName[splitName.length - 1].split(".")[0].split("_").join(" ");
       const output_file = input_file.substring(0, input_file.lastIndexOf('.')) + "_meta" + input_file.substring(input_file.lastIndexOf('.'));
 
       // Execute the ffmpeg command
@@ -100,7 +95,7 @@ async function handleMovie(input_file) {
       `-loglevel error ` +
       `"${output_file}"`;
     
-      spawn(metadataCommand);
+      execSync(metadataCommand);
       console.log(`Metadata added successfully to ${input_file}.`);    
     } else {
       console.log(`${extension} files have not been tested yet! If you know what you're doing add it on line 56, or join the discord!`);
@@ -117,7 +112,7 @@ async function handleMovie(input_file) {
  */
 async function processFiles(showsPathExists, moviesPathExists) {
   if (showsPathExists) {
-    await fs.promises.readdir(directories.shows, async (err, files) => {
+    await fs.readdir(directories.shows, async (err, files) => {
       if (err) {
         console.error('Error reading Shows directory:', err);
         return;
@@ -126,6 +121,8 @@ async function processFiles(showsPathExists, moviesPathExists) {
         await handleShow(`${directories.shows}/${file}`);
       }
     });
+  } else {
+    console.log("WARNING: Show path not found!");
   }
   if (moviesPathExists) {
     fs.readdir(directories.movies, async (err, files) => {
@@ -137,6 +134,8 @@ async function processFiles(showsPathExists, moviesPathExists) {
         await handleMovie(`${directories.movies}/${file}`);
       }
     });
+  } else {
+    console.log("WARNING: Movie path not found!");
   }
 }
 
