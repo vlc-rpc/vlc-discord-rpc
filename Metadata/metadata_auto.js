@@ -37,19 +37,20 @@ async function addMetadata(input_file, type) {
     let finalName = "Unknown";
 
     let metadataCommand = '';
-    let seasonNumber = 0; // Define seasonNumber variable here
+    let seasonNumber = 0; 
 
     if (testedExtensions.includes(extension)) {
       if (type === 'show') {
         const parts = input_file.split('.');
-        const seasonEpisodePart = parts.find(part => /S\d+E\d+/i.test(part));
+        const seasonEpisodePart = parts.find(part => {return /S\d+E\d+/i.test(part);});
 
         // Find the index where the season and episode part starts
         const indexOfSeasonEpisodePart = parts.indexOf(seasonEpisodePart);
         
         if (seasonEpisodePart && indexOfSeasonEpisodePart > 0) {
           // Extract the show name from the parts before the season and episode part
-          const showNameParts = parts.slice(0, indexOfSeasonEpisodePart).filter(part => !/\b\d{4}\b/.test(part)); // Exclude parts containing 4-digit numbers (assumed to be year)
+          // Exclude parts containing 4-digit numbers (assumed to be year)
+          const showNameParts = parts.slice(0, indexOfSeasonEpisodePart).filter(part => {return !/\b\d{4}\b/.test(part);}); 
 
           finalName = showNameParts.join(" ").split("/").pop();
 
@@ -106,7 +107,6 @@ async function addMetadata(input_file, type) {
     console.error("An error occurred while adding metadata:", error);
   }
 }
-
 
 /**
  * Processes files in the directories based on their existence.
