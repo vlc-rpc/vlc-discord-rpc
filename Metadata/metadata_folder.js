@@ -1,7 +1,7 @@
 const { execSync } = require('child_process');
 const fs = require("fs").promises;  
 const path = require('path');   
-import { askQuestion, createReadline, getContentType, handleExistingOutputFile, validateFileExtensions } from './metadata_functions.cjs';    
+import { askQuestion, createReadline, getContentType, handleExistingOutputFile } from './metadata_functions.cjs';    
 
 const rl = createReadline();
 
@@ -30,16 +30,9 @@ async function addMetadata() {
       }
       const input_file = path.join(directory, file);
 
-      let output_file = input_file.substring(0, input_file.lastIndexOf('.')) + "_meta" + input_file.substring(input_file.lastIndexOf('.'));
+      const output_file = input_file.substring(0, input_file.lastIndexOf('.')) + "_meta" + input_file.substring(input_file.lastIndexOf('.'));
 
       console.log(`Writing to ${output_file}`);
-
-      while (input_file === output_file) {
-        console.log("Output file must be different from the input file. Please choose a different file path.");
-        output_file = await askQuestion("Enter the output file path: ");
-      }
-    
-      output_file = await validateFileExtensions(input_file, output_file);
     
       /** 
        * Check if output file exists and handle overwrite scenario. 
