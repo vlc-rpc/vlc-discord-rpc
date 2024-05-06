@@ -27,56 +27,81 @@ const directoryExists = async (directoryPath) => {
  * @param {string} type - The type of media, expected to be either 'show' or 'movie'.
  */
 async function addMetadata(input_file, type) {
-  if(input_file.includes("_meta")) {
+  if (input_file.includes("_meta")) {
     return;
   }
 
   try {
     const extension = input_file.slice(input_file.lastIndexOf('.'));
+    const output_file = input_file.substring(0, input_file.lastIndexOf('.')) + "_meta" + input_file.substring(input_file.lastIndexOf('.'));
+    let finalName = "Unknown";
 
-    if(testedExtensions.includes(extension)) {
-      const output_file = input_file.substring(0, input_file.lastIndexOf('.')) + "_meta" + input_file.substring(input_file.lastIndexOf('.'));
-      let finalName = "Unknown";
+    let metadataCommand = '';
+    let seasonNumber = 0; 
 
-      let metadataCommand = '';
+    if (testedExtensions.includes(extension)) {
+      if (type === 'show') {
+        const parts = input_file.split('.');
+        const seasonEpisodePart = parts.find(part => {return /S\d+E\d+/i.test(part);});
 
-      if(type === 'show') {
-        const parts = input_file.split('_');
-        finalName = parts.slice(0, parts.length - 1).join(" ").split("/").pop();
+        // Find the index where the season and episode part starts
+        const indexOfSeasonEpisodePart = parts.indexOf(seasonEpisodePart);
+        
+        if (seasonEpisodePart && indexOfSeasonEpisodePart > 0) {
+          // Extract the show name from the parts before the season and episode part
+          // Exclude parts containing 4-digit numbers (assumed to be year)
+          const showNameParts = parts.slice(0, indexOfSeasonEpisodePart).filter(part => {return !/\b\d{4}\b/.test(part);}); 
 
-        metadataCommand = `ffmpeg -y -i "${input_file}" -c copy ` +
-        `-metadata title="${finalName}" ` +
-        `-metadata genre=${type} `;
+          finalName = showNameParts.join(" ").split("/").pop();
 
-        const [lastPart] = parts.slice(-1)[0].split(".");
-        const indexOfS = lastPart.indexOf('S');
-        const indexOfE = lastPart.indexOf('E');
-    
-        let seasonNumber = 0;
-        let episodeNumber = 0;
-    
-        // If they exist
-        if (indexOfS !== -1 && indexOfE !== -1) {
-          seasonNumber = lastPart.slice(indexOfS + 1, indexOfE);
-          episodeNumber = lastPart.slice(indexOfE + 1);
+          // Replace underscores, dashes, and dots with spaces in the final name
+          finalName = finalName.replace(/[_-]/g, ' ');
+
+          // Extract season number from the seasonEpisodePart
+          const matches = seasonEpisodePart.match(/S(\d{1,2})E(\d{1,2})/);
+          if (matches && matches.length >= 3) {
+            seasonNumber = parseInt(matches[1]);
+            const episodeNumber = parseInt(matches[2]);
+
+            metadataCommand = `ffmpeg -y -i "${input_file}" -c copy ` +
+              `-metadata title="${finalName}" ` +
+              `-metadata genre=${type} ` +
+              `-metadata comment="S:${seasonNumber} E:${episodeNumber}" `;
+          } else {
+            console.log("The show name was not formatted properly! The season and episode number have been set to 0.");
+          }
         } else {
-          console.log("The show name was not formatted properly! The season and episode number have been set to 0.");
-        }  
-
-        metadataCommand += `-metadata comment="S:${seasonNumber} E:${episodeNumber}" `;
+          console.log("Season and episode number not found in the filename!");
+        }
       } else if (type === 'movie') {
-        const splitName = input_file.split("/");
-        finalName = splitName[splitName.length - 1].split(".")[0].split("_").join(" ");
+        const splitName = input_file.split(".");
+        
+        // Find the index where the movie name ends
+        let indexOfEndOfMovieName = splitName[0].length;
+        // Check for common delimiters or patterns that indicate the end of the movie name
+        const delimiters = ["(", "1080p", "720p", "BluRay"];
+        for (const delimiter of delimiters) {
+          const index = splitName[0].indexOf(delimiter);
+          if (index !== -1 && index < indexOfEndOfMovieName) {
+            indexOfEndOfMovieName = index;
+          }
+        }
+
+        // Extract the movie name from the beginning of the filename up to the found index
+        finalName = splitName[0].substring(0, indexOfEndOfMovieName).split("/").pop();
+
+        // Replace underscores, dashes, and dots with spaces in the final name
+        finalName = finalName.replace(/[_-]/g, ' ');
 
         metadataCommand = `ffmpeg -y -i "${input_file}" -c copy ` +
-        `-metadata title="${finalName}" ` +
-        `-metadata genre=${type} `;
+          `-metadata title="${finalName}" ` +
+          `-metadata genre=${type} `;
       }
 
       metadataCommand += `-loglevel error ` +
-      `"${output_file}"`;
+        `"${output_file}"`;
       execSync(metadataCommand);
-      console.log(`Metadata added successfully to ${input_file}.`);    
+      console.log(`Metadata added successfully to ${input_file}.`);
     }
   } catch (error) {
     console.error("An error occurred while adding metadata:", error);
