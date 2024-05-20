@@ -1,4 +1,4 @@
-import { directories } from '../Storage/config.js';
+import { directories, separator } from '../Storage/config.js';
 import { execSync } from 'child_process';
 import fs from 'fs';
 
@@ -66,7 +66,7 @@ async function addMetadata(input_file, type) {
 
     if (testedExtensions.includes(extension)) {
       if (type === 'show') {
-        const parts = input_file.split('.');
+        const parts = input_file.split(separator);
         const seasonEpisodePart = parts.find(part => {return /S\d+E\d+/i.test(part);});
 
         // Find the index where the season and episode part starts
