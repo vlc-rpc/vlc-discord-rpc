@@ -19,7 +19,7 @@ function extractMovieName(fileName) {
   const cleanedName = nameWithoutExtension.replace(/\d{4}.*$/, '').replace(/[._]/g, ' ');
 
   // Trim any trailing spaces or special characters
-  return cleanedName.trim().replace(/[\(\[]$/, '');
+  return cleanedName.trim().replace(/[([]$/, '');
 }
 
 const directoryExists = async (directoryPath) => {
@@ -67,7 +67,7 @@ async function addMetadata(input_file, type) {
     if (testedExtensions.includes(extension)) {
       if (type === 'show') {
         const parts = input_file.split('.');
-        const seasonEpisodePart = parts.find(part => /S\d+E\d+/i.test(part));
+        const seasonEpisodePart = parts.find(part => {return /S\d+E\d+/i.test(part);});
 
         // Find the index where the season and episode part starts
         const indexOfSeasonEpisodePart = parts.indexOf(seasonEpisodePart);
@@ -75,7 +75,7 @@ async function addMetadata(input_file, type) {
         if (seasonEpisodePart && indexOfSeasonEpisodePart > 0) {
           // Extract the show name from the parts before the season and episode part
           // Exclude parts containing 4-digit numbers (assumed to be year)
-          const showNameParts = parts.slice(0, indexOfSeasonEpisodePart).filter(part => !/\b\d{4}\b/.test(part));
+          const showNameParts = parts.slice(0, indexOfSeasonEpisodePart).filter(part => {return !/\b\d{4}\b/.test(part);});
 
           finalName = showNameParts.join(" ").split("/").pop();
 
@@ -102,7 +102,8 @@ async function addMetadata(input_file, type) {
           console.log("Season and episode number not found in the filename!");
         }
       } else if (type === 'movie') {
-        const fileName = input_file.split("/").pop(); // Extracting only the file name from the full path
+        // Extracting only the file name from the full path
+        const fileName = input_file.split("/").pop(); 
         finalName = extractMovieName(fileName);
         finalName = removeQualityMarkers(finalName);
 
@@ -118,3 +119,63 @@ async function addMetadata(input_file, type) {
       console.log(`Metadata added successfully to ${input_file}.`);
     }
   } catch (error) {
+    console.error("An error occurred while adding metadata:", error);
+  }
+}
+
+/**
+ * Processes files in the directories based on their existence.
+ * @param {boolean} showsPathExists - Indicates whether the "Shows" directory exists.
+ * @param {boolean} moviesPathExists - Indicates whether the "Movies" directory exists.
+ */
+async function processFiles(showsPathExists, moviesPathExists) {
+  if (showsPathExists) {
+    fs.readdir(directories.shows, async (err, files) => {
+      if (err) {
+        console.error('Error reading Shows directory:', err);
+        return;
+      }
+      for (const file of files) {
+        await addMetadata(`${directories.shows}/${file}`, 'show');
+      }
+    });
+  } else {
+    console.log("WARNING: Show path not found!");
+  }
+  if (moviesPathExists) {
+    fs.readdir(directories.movies, async (err, files) => {
+      if (err) {
+        console.error('Error reading Movies directory:', err);
+        return;
+      }
+      for (const file of files) {
+        await addMetadata(`${directories.movies}/${file}`, 'movie');
+      }
+    });
+  } else {
+    console.log("WARNING: Movie path not found!");
+  }
+}
+
+/**
+ * Checks the existence of directories and processes files accordingly.
+ */
+async function checkDirectories() {
+  try {
+    // Check if the subfolders exist
+    const showsPathExists = await directoryExists(directories.shows);
+    const moviesPathExists = await directoryExists(directories.movies);
+
+    if (!showsPathExists && !moviesPathExists) {
+      console.log("Shows and Movies directory were both non-existent! Exiting program..");
+      process.exit(1);
+    } else {
+      await processFiles(showsPathExists, moviesPathExists);
+    }
+  } catch (error) {
+    console.error('An error occurred while checking directories:', error);
+    process.exit(1);
+  }
+}
+
+await checkDirectories();
