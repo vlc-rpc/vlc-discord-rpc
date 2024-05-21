@@ -107,7 +107,7 @@ async function addMetadata(input_file, type) {
       if (metadataCommand) {
         metadataCommand += `"${output_file}"`;
         execSync(metadataCommand);
-        //console.log(`Metadata added successfully to ${input_file}.`);
+        console.log(`Metadata added successfully to ${input_file}.`);
       }
     }
   } catch (error) {
