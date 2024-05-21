@@ -23,7 +23,7 @@ function cleanName(name) {
   name = name.replace(/\d{4}.*$/, '').replace(/[._]/g, ' ');
 
   // Remove trailing spaces and special characters
-  name = name.trim().replace(/[\(\[]$/, '');
+  name = name.trim().replace(/[(){}\[\]]+$/, '');
 
   // Remove multiple spaces
   name = name.replace(/\s\s+/g, ' ');
@@ -71,7 +71,8 @@ async function addMetadata(inputFile, type) {
 
     if (testedExtensions.includes(extension)) {
       if (type === 'show') {
-        const fileName = inputFile.split('/').pop(); // Extracting only the file name from the full path
+        // Extracting only the file name from the full path
+        const fileName = inputFile.split('/').pop();
         const seasonEpisodeMatch = fileName.match(/S(\d+)E(\d+)/i);
 
         if (seasonEpisodeMatch && seasonEpisodeMatch.length >= 3) {
@@ -94,7 +95,8 @@ async function addMetadata(inputFile, type) {
           console.log('Season and episode number not found in the filename!');
         }
       } else if (type === 'movie') {
-        const fileName = inputFile.split('/').pop(); // Extracting only the file name from the full path
+        // Extracting only the file name from the full path
+        const fileName = inputFile.split('/').pop();
         finalName = extractMovieName(fileName);
 
         console.log('Final movie name:', finalName);
