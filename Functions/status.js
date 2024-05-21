@@ -14,6 +14,9 @@ const lastStatus = {
   time: 0
 };
 
+
+
+
 // Export a function that takes a callback as an argument
 export const diff = async (callback) => {
   try {
