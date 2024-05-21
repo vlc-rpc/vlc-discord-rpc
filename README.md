@@ -68,7 +68,7 @@ If you would like to display shows and movies as such, instead of a video, you w
   1) Run `node metadata_folder.js`. This script will go through a folder and automatically set the output file to the input file with `_meta` appended. For example `bb.mkv` would be changed to `bb_meta.mkv`.
   2) Fill in the prompts that it asks for with the correct information. For the movie/show name use the one found on IMDB. You generally do not need to worry about looking it up on IMDB, but if the show/movie is not found, check IMDB.
   ### Option 3:
-  1) Fill out the `shows` and `movies` options in the `directories` portion of `config.js`
+  1) Fill out the `shows` and `movies` options in the `directories` portion of `config.js` and fill out the `separator` field based on your file names.
   2) Run `node metadata_auto.js`. This script will automatically go through a folder containing shows, or/and a folder containing movies and automatically add metadata to them.
   #### NOTE:
   Files must contain the show or movie name, or else the script will not be able to autmatically fill in the metadata correctly. Shows must also contain the season and episode number. Here are some examples that the script has been tested on:

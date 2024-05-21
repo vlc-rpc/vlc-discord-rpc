@@ -53,5 +53,21 @@ const directories = {
   "movies": "C:/Users/user/vlc-discord-rpc/Media/Movies"
 };
 
+// Separator for file names used in metadata_auto.js
+// For example Breaking_Bad_S1E2.wmv is separated by _
+const separator = '_';
+
 // Modules to load
-export { platformDefaults, vlcPath, richPresenseSettings, vlcConfig, useSpotify, spotify, iconNames, logUpdates, detached, movieApiKey, directories };
+export { 
+  platformDefaults,
+  vlcPath, 
+  richPresenseSettings, 
+  vlcConfig, 
+  useSpotify, 
+  spotify, 
+  iconNames, 
+  logUpdates, 
+  detached, 
+  movieApiKey, 
+  directories, 
+  separator };
