@@ -14,6 +14,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}  
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
@@ -26,5 +28,6 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git commit -am "Run EsLint AutoFix" || echo "No changes to commit"
-          git push
+          git add .  
+          git commit -m "Run EsLint AutoFix" || echo "No changes to commit"
+          git push origin HEAD:${{ github.head_ref }}  
