@@ -11,11 +11,7 @@ const testedExtensions = [".mp4", ".wmv", ".mov", ".mkv", ".avi"];
  * @returns {string} The final movie name.
  */
 function extractMovieName(fileName) {
-  // Remove extension
-  const indexOfExtension = fileName.lastIndexOf(".");
-  const nameWithoutExtension = fileName.substring(0, indexOfExtension);
-
-  // Clean the name
+  const nameWithoutExtension = fileName.replace(/\.[^/.]+$/, '');
   return cleanName(nameWithoutExtension);
 }
 
@@ -83,7 +79,7 @@ async function addMetadata(input_file, type) {
           episodeNumber = parseInt(seasonEpisodeMatch[2]);
 
           // Remove season and episode part from the name
-          const nameWithoutSeasonEpisode = fileName.replace(seasonEpisodeMatch[0], '');
+          const nameWithoutSeasonEpisode = fileName.replace(seasonEpisodeMatch[0], '').replace(/\.[^/.]+$/, '');
 
           // Clean the show name
           finalName = cleanName(nameWithoutSeasonEpisode);
@@ -111,7 +107,7 @@ async function addMetadata(input_file, type) {
       if (metadataCommand) {
         metadataCommand += `"${output_file}"`;
         execSync(metadataCommand);
-        console.log(`Metadata added successfully to ${input_file}.`);
+        //console.log(`Metadata added successfully to ${input_file}.`);
       }
     }
   } catch (error) {
