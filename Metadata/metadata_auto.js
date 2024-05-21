@@ -1,9 +1,35 @@
-import { directories, separator } from '../Storage/config.js';
+import { directories } from '../Storage/config.js';
 import { execSync } from 'child_process';
 import fs from 'fs';
 
 // Tested extensions. Can add more.
-const testedExtensions = [".mp4", ".wmv", ".mov", ".mkv", ".avi"];
+const testedExtensions = ['.mp4', '.wmv', '.mov', '.mkv', '.avi'];
+
+/**
+ * Cleans the name by removing extra details like year, resolution, and special characters.
+ * @param {string} name - The name to clean.
+ * @returns {string} - The cleaned name.
+ */
+function cleanName(name) {
+  const qualityMarkers = ['2160p', '1080p', '720p', '480p', '360p', 'BluRay', 'WEBRip', 'BRRip', 'DVDRip', 'HDRip', 'REPACK', '10bit'];
+
+  // Remove quality markers
+  qualityMarkers.forEach((marker) => {
+    const regex = new RegExp(`\\b${marker}\\b`, 'gi');
+    name = name.replace(regex, '');
+  });
+
+  // Remove extra details like year, resolution, etc.
+  name = name.replace(/\d{4}.*$/, '').replace(/[._]/g, ' ');
+
+  // Remove trailing spaces and special characters
+  name = name.trim().replace(/[\(\[]$/, '');
+
+  // Remove multiple spaces
+  name = name.replace(/\s\s+/g, ' ');
+
+  return name;
+}
 
 /**
  * Extracts the final movie name from a file name.
@@ -11,15 +37,8 @@ const testedExtensions = [".mp4", ".wmv", ".mov", ".mkv", ".avi"];
  * @returns {string} The final movie name.
  */
 function extractMovieName(fileName) {
-  // Remove extension
-  const indexOfExtension = fileName.lastIndexOf(".");
-  const nameWithoutExtension = fileName.substring(0, indexOfExtension);
-
-  // Remove extra details like year, resolution, etc.
-  const cleanedName = nameWithoutExtension.replace(/\d{4}.*$/, '').replace(/[._]/g, ' ');
-
-  // Trim any trailing spaces or special characters
-  return cleanedName.trim().replace(/[([]$/, '');
+  const nameWithoutExtension = fileName.replace(/\.[^/.]+$/, '');
+  return cleanName(nameWithoutExtension);
 }
 
 const directoryExists = async (directoryPath) => {
@@ -32,33 +51,19 @@ const directoryExists = async (directoryPath) => {
 };
 
 /**
- * Removes common quality markers from the name.
- * @param {string} name - The name to clean.
- * @returns {string} - The cleaned name.
- */
-const removeQualityMarkers = (name) => {
-  const qualityMarkers = ["2160p", "1080p", "720p", "480p", "BluRay", "WEBRip", "BRRip", "DVDRip", "HDRip"];
-  qualityMarkers.forEach(marker => {
-    const regex = new RegExp(`\\b${marker}\\b`, 'gi');
-    name = name.replace(regex, '');
-  });
-  return name.trim();
-};
-
-/**
  * Adds metadata to media files based on their type ('show' or 'movie').
- * @param {string} input_file - The path to the media file to which metadata should be added.
+ * @param {string} inputFile - The path to the media file to which metadata should be added.
  * @param {string} type - The type of media, expected to be either 'show' or 'movie'.
  */
-async function addMetadata(input_file, type) {
-  if (input_file.includes("_meta")) {
+async function addMetadata(inputFile, type) {
+  if (inputFile.includes('_meta')) {
     return;
   }
 
   try {
-    const extension = input_file.slice(input_file.lastIndexOf('.'));
-    const output_file = input_file.substring(0, input_file.lastIndexOf('.')) + "_meta" + input_file.substring(input_file.lastIndexOf('.'));
-    let finalName = "Unknown";
+    const extension = inputFile.slice(inputFile.lastIndexOf('.'));
+    const outputFile = inputFile.substring(0, inputFile.lastIndexOf('.')) + '_meta' + inputFile.substring(inputFile.lastIndexOf('.'));
+    let finalName = 'Unknown';
 
     let metadataCommand = '';
     let seasonNumber = 0;
@@ -66,60 +71,47 @@ async function addMetadata(input_file, type) {
 
     if (testedExtensions.includes(extension)) {
       if (type === 'show') {
-        const parts = input_file.split(separator);
-        const seasonEpisodePart = parts.find(part => {return /S\d+E\d+/i.test(part);});
+        const fileName = inputFile.split('/').pop(); // Extracting only the file name from the full path
+        const seasonEpisodeMatch = fileName.match(/S(\d+)E(\d+)/i);
 
-        // Find the index where the season and episode part starts
-        const indexOfSeasonEpisodePart = parts.indexOf(seasonEpisodePart);
+        if (seasonEpisodeMatch && seasonEpisodeMatch.length >= 3) {
+          seasonNumber = parseInt(seasonEpisodeMatch[1], 10);
+          episodeNumber = parseInt(seasonEpisodeMatch[2], 10);
 
-        if (seasonEpisodePart && indexOfSeasonEpisodePart > 0) {
-          // Extract the show name from the parts before the season and episode part
-          // Exclude parts containing 4-digit numbers (assumed to be year)
-          const showNameParts = parts.slice(0, indexOfSeasonEpisodePart).filter(part => {return !/\b\d{4}\b/.test(part);});
+          // Remove season and episode part from the name
+          const nameWithoutSeasonEpisode = fileName.replace(seasonEpisodeMatch[0], '').replace(/\.[^/.]+$/, '');
 
-          finalName = showNameParts.join(" ").split("/").pop();
+          // Clean the show name
+          finalName = cleanName(nameWithoutSeasonEpisode);
 
-          // Replace underscores, dashes, and dots with spaces in the final name
-          finalName = finalName.replace(/[_-]/g, ' ');
-          finalName = removeQualityMarkers(finalName);
+          console.log('Final show name:', finalName, 'Season:', seasonNumber, 'Episode:', episodeNumber);
 
-          // Extract season number and episode number from the seasonEpisodePart
-          const matches = seasonEpisodePart.match(/S(\d{1,2})E(\d{1,2})/);
-          if (matches && matches.length >= 3) {
-            seasonNumber = parseInt(matches[1]);
-            episodeNumber = parseInt(matches[2]);
-
-            console.log("Final show name:", finalName, "Season:", seasonNumber, "Episode:", episodeNumber);
-
-            metadataCommand = `ffmpeg -y -loglevel error -i "${input_file}" -c copy ` +
-              `-metadata title="${finalName}" ` +
-              `-metadata genre=${type} ` +
-              `-metadata comment="S:${seasonNumber} E:${episodeNumber}" `;
-          } else {
-            console.log("The show name was not formatted properly! The season and episode number have been set to 0.");
-          }
+          metadataCommand = `ffmpeg -y -loglevel error -i "${inputFile}" -c copy ` +
+            `-metadata title="${finalName}" ` +
+            `-metadata genre=${type} ` +
+            `-metadata comment="S:${seasonNumber} E:${episodeNumber}" `;
         } else {
-          console.log("Season and episode number not found in the filename!");
+          console.log('Season and episode number not found in the filename!');
         }
       } else if (type === 'movie') {
-        // Extracting only the file name from the full path
-        const fileName = input_file.split("/").pop(); 
+        const fileName = inputFile.split('/').pop(); // Extracting only the file name from the full path
         finalName = extractMovieName(fileName);
-        finalName = removeQualityMarkers(finalName);
 
-        console.log("Final movie name:", finalName);
+        console.log('Final movie name:', finalName);
 
-        metadataCommand = `ffmpeg -y -loglevel error -i "${input_file}" -c copy ` +
+        metadataCommand = `ffmpeg -y -loglevel error -i "${inputFile}" -c copy ` +
           `-metadata title="${finalName}" ` +
           `-metadata genre=${type} `;
       }
 
-      metadataCommand += `"${output_file}"`;
-      execSync(metadataCommand);
-      console.log(`Metadata added successfully to ${input_file}.`);
+      if (metadataCommand) {
+        metadataCommand += `"${outputFile}"`;
+        execSync(metadataCommand);
+        console.log(`Metadata added successfully to ${inputFile}.`);
+      }
     }
   } catch (error) {
-    console.error("An error occurred while adding metadata:", error);
+    console.error('An error occurred while adding metadata:', error);
   }
 }
 
@@ -140,7 +132,7 @@ async function processFiles(showsPathExists, moviesPathExists) {
       }
     });
   } else {
-    console.log("WARNING: Show path not found!");
+    console.log('WARNING: Show path not found!');
   }
   if (moviesPathExists) {
     fs.readdir(directories.movies, async (err, files) => {
@@ -153,7 +145,7 @@ async function processFiles(showsPathExists, moviesPathExists) {
       }
     });
   } else {
-    console.log("WARNING: Movie path not found!");
+    console.log('WARNING: Movie path not found!');
   }
 }
 
@@ -167,7 +159,7 @@ async function checkDirectories() {
     const moviesPathExists = await directoryExists(directories.movies);
 
     if (!showsPathExists && !moviesPathExists) {
-      console.log("Shows and Movies directory were both non-existent! Exiting program..");
+      console.log('Shows and Movies directory were both non-existent! Exiting program..');
       process.exit(1);
     } else {
       await processFiles(showsPathExists, moviesPathExists);
