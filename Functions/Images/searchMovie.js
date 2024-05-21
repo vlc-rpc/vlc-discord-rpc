@@ -25,10 +25,9 @@ async function fetchMovieData(movieName) {
   
     return data;
   } catch (error) {
-  
     console.error('Error occurred during the API request:', error);
-  
-    throw error;
+    // Prevent app from crashing
+    return {"Response": 'False'};
   }
 }
 
