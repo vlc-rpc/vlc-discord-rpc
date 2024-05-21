@@ -54,7 +54,7 @@ const directories = {
 };
 
 // Separator for file names used in metadata_auto.js
-// For example Breaking_Bad_S1E2.wmv is separated by  _
+// For example Breaking_Bad_S1E2.wmv is separated by _
 const separator = '_';
 
 // Modules to load
