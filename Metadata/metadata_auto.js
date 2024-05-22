@@ -2,8 +2,14 @@ import { directories } from '../Storage/config.js';
 import { execSync } from 'child_process';
 import fs from 'fs';
 
+// Tested extensions. Can add more.
 const testedExtensions = ['.mp4', '.wmv', '.mov', '.mkv', '.avi'];
 
+/**
+ * Cleans the name by removing extra details like year, resolution, and special characters.
+ * @param {string} name - The name to clean.
+ * @returns {string} - The cleaned name.
+ */
 function cleanName(name) {
   const qualityMarkers = [
     '2160p', '1080p', '720p', '480p', '360p', 'BluRay', 'WEBRip', 'BRRip',
@@ -11,21 +17,39 @@ function cleanName(name) {
     'x265', 'HEVC-PSA'
   ];
 
+  // Remove quality markers
   qualityMarkers.forEach(marker => {
     const regex = new RegExp(`\\b${marker}\\b`, 'gi');
     name = name.replace(regex, '');
   });
 
-  name = name.replace(/\d{4}.*$/, '').replace(/[._]/g, ' ').trim().replace(/[()[\]{}]+$/, '').replace(/\s\s+/g, ' ');
+  // Remove extra details like year, resolution, etc.
+  name = name.replace(/\d{4}.*$/, '').replace(/[._]/g, ' ');
+
+  // Remove trailing spaces and special characters
+  name = name.trim().replace(/[()\[\]{}]+$/, '');
+
+  // Remove multiple spaces
+  name = name.replace(/\s\s+/g, ' ');
 
   return name;
 }
 
+/**
+ * Extracts the final movie name from a file name.
+ * @param {string} fileName - The file name to extract the movie name from.
+ * @returns {string} - The final movie name.
+ */
 function extractMovieName(fileName) {
   const nameWithoutExtension = fileName.replace(/\.[^/.]+$/, '');
   return cleanName(nameWithoutExtension);
 }
 
+/**
+ * Extracts the final show name, season, episode, and episode title from a file name.
+ * @param {string} fileName - The file name to extract the show details from.
+ * @returns {object} - The final show name, season, episode, and episode title.
+ */
 function extractShowDetails(fileName) {
   const nameWithoutExtension = fileName.replace(/\.[^/.]+$/, '');
   const showDetails = nameWithoutExtension.match(/^(.*?)(S\d+E\d+)(.*?)$/i);
@@ -46,6 +70,11 @@ function extractShowDetails(fileName) {
   return { showName, season: seasonNumber, episode: episodeNumber, episodeTitle };
 }
 
+/**
+ * Checks if a directory exists.
+ * @param {string} directoryPath - The path to the directory.
+ * @returns {Promise<boolean>} - True if the directory exists, otherwise false.
+ */
 const directoryExists = async (directoryPath) => {
   try {
     await fs.promises.access(directoryPath, fs.constants.F_OK);
@@ -55,6 +84,11 @@ const directoryExists = async (directoryPath) => {
   }
 };
 
+/**
+ * Adds metadata to media files based on their type ('show' or 'movie').
+ * @param {string} inputFile - The path to the media file to which metadata should be added.
+ * @param {string} type - The type of media, expected to be either 'show' or 'movie'.
+ */
 async function addMetadata(inputFile, type) {
   if (inputFile.includes('_meta')) {
     return;
@@ -71,6 +105,7 @@ async function addMetadata(inputFile, type) {
     if (type === 'show') {
       const { showName, season, episode } = extractShowDetails(inputFile.split('/').pop());
       
+      // If showName is two letters with a space in between, remove the space
       finalName = showName.length === 3 && showName[1] === ' ' ? showName.replace(' ', '') : showName;
 
       console.log('Final show name:', finalName, 'Season:', season, 'Episode:', episode);
@@ -98,6 +133,11 @@ async function addMetadata(inputFile, type) {
   }
 }
 
+/**
+ * Processes files in the directories based on their existence.
+ * @param {boolean} showsPathExists - Indicates whether the "Shows" directory exists.
+ * @param {boolean} moviesPathExists - Indicates whether the "Movies" directory exists.
+ */
 async function processFiles(showsPathExists, moviesPathExists) {
   if (showsPathExists) {
     fs.readdir(directories.shows, async (err, files) => {
@@ -127,6 +167,9 @@ async function processFiles(showsPathExists, moviesPathExists) {
   }
 }
 
+/**
+ * Checks the existence of directories and processes files accordingly.
+ */
 async function checkDirectories() {
   try {
     const showsPathExists = await directoryExists(directories.shows);
