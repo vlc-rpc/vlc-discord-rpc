@@ -96,7 +96,7 @@ async function addMetadata(inputFile, type) {
 
   try {
     const extension = inputFile.slice(inputFile.lastIndexOf('.'));
-    if (!testedExtensions.includes(extension)) return;
+    if (!testedExtensions.includes(extension)) {return;}
 
     const outputFile = inputFile.replace(/\.[^/.]+$/, '_meta$&');
     let finalName = 'Unknown';
