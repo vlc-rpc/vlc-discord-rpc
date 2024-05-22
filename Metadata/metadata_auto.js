@@ -27,7 +27,7 @@ function cleanName(name) {
   name = name.replace(/\d{4}.*$/, '').replace(/[._]/g, ' ');
 
   // Remove trailing spaces and special characters
-  name = name.trim().replace(/[()\[\]{}]+$/, '');
+  name = name.trim().replace(/[()[\]{}]+$/, '');
 
   // Remove multiple spaces
   name = name.replace(/\s\s+/g, ' ');
