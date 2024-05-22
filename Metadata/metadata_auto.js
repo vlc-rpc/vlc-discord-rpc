@@ -58,7 +58,7 @@ function extractShowDetails(fileName) {
     return { showName: cleanName(nameWithoutExtension), season: 0, episode: 0, episodeTitle: '' };
   }
 
-  const [_, showNamePart, seasonEpisodePart, episodeTitlePart] = showDetails;
+  const [, showNamePart, seasonEpisodePart, episodeTitlePart] = showDetails;
   const seasonEpisodeMatch = seasonEpisodePart.match(/S(\d+)E(\d+)/i);
   
   const seasonNumber = seasonEpisodeMatch ? parseInt(seasonEpisodeMatch[1], 10) : 0;
