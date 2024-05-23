@@ -4,3 +4,6 @@ package-lock.json
 Storage/config.js
 Media
 ffmpeg
+.temp/
+.cache/
+.vuepress/dist/
