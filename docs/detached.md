@@ -10,9 +10,9 @@
 6. Check the box labelled Web.
 7. Back where we selected Main Interfaces, select the caret next to it.
 8. Select Lua.
-9. Enter a password into the Lua HTTP box. It does not matter what this is, but you will need to add it to your config.
+9. Enter a password into the Lua HTTP box. It does not matter what this is, but you will need to add it to your `config.js`.
 10. Make sure you have done the normal setup steps.
-11. In your config.js, change detached to true. You MUST set your own password and make sure to include it in VLC.
+11. In your `config.js`, change detached to true. You MUST set your own password and make sure to include it in VLC.
 12. Start VLC, then run the program as normal. You may open and close VLC, but be sure to keep the terminal running the command!
 
 <div align="center">
