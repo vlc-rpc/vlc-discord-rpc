@@ -7,21 +7,22 @@ This is a modified version of the [Pigpog/vlc-discord-rpc project](https://githu
 ![image](https://user-images.githubusercontent.com/61550272/234403580-4a910bd7-41a5-4ceb-8a31-180c2efda417.png)
 
 ## Support
-If you have any issues, that may not be a bug related, or any ideas for the project stop by our [Discord](https://discord.gg/CsKzGpt82s).
+If you have any issues, that may not be a bug related, or any ideas for the project stop by our [Discord](https://discord.gg/CsKzGpt82s). Please read all of the setup steps before joining.
 
 ## Setup
 1. Download the code from this repository, then unzip it.
 2. Install [Node.js](https://nodejs.org/en/download). You must use version 17.5 at the minimum due to [fetch](https://nodejs.org/dist/latest-v18.x/docs/api/globals.html#fetch)!
 3. Make an application and get your [Discord Application ID](https://discord.com/developers/applications).
 4. In the storage folder, make a file called `config.js`, and copy over the contents of `example_config.js`.
-5. Proceed to the next step if you would like to use spotify art, or just go to step 8.
+5. Proceed to the next step if you would like to use spotify art, or just go to step 9. If you add your api key, which is free, it will allow your songs to have iamges, as shown in the above images.
 6. OPTIONAL: Retrieve your [Spotify API key](https://developer.spotify.com/documentation/web-api/tutorials/getting-started). 
 7. Add both of these values in the `./Storage/config.js` file under the `richPresenceSettings` and `spotify` area if you are choosing to use the album art.
 8. In `./Storage/config.js` right before the `spotify` area, set useSpotify to true.
 9. OPTIONAL: Add your [OMDb Api Key](https://www.omdbapi.com/apikey.aspx) as the movieApiKey. This will allow you to display movies as movies, instead of videos. 
 10. Open a terminal, move to the folder you downloaded from this repository, and run `npm i` then run `node .`.
 
-## Detached State
+## Tired of not being able to close and open VLC without restarting?
+### Detached State
 1. Open VLC.
 2. Select Tools in the top menu bar.
 3. Select Preferences.
@@ -31,8 +32,9 @@ If you have any issues, that may not be a bug related, or any ideas for the proj
 7. Back where we selected Main Interfaces, select the caret next to it.
 8. Select Lua.
 9. Enter a password into the Lua HTTP box. It does not matter what this is, but you will need to add it to your config.
-10. Update any needed values in your config. Change detached to true. You MUST set your own password and make sure to include it in VLC.
-11. Start VLC, then run the program as normal.
+10. Make sure you have done the normal setup steps.
+11. In your config.js, change detached to true. You MUST set your own password and make sure to include it in VLC.
+12. Start VLC, then run the program as normal. You may open and close VLC, but be sure to keep the terminal running the command!
 ![image](https://github.com/vlc-rpc/vlc-discord-rpc/assets/61550272/4aa489d9-269c-4333-b595-bb3d0444fa24)
 ![image](https://github.com/vlc-rpc/vlc-discord-rpc/assets/61550272/292e8748-b6c6-4ff8-88a5-225e5dd2b467)
 
