@@ -4,6 +4,7 @@ import { viteBundler } from '@vuepress/bundler-vite'
 
 export default defineUserConfig({
   lang: 'en-US',
+  base: "/vlc-discord-rpc/",
 
   title: 'VLC-RPC',
   description: 'An updated Discord rich presence for VLC media player',
@@ -11,7 +12,6 @@ export default defineUserConfig({
 
 
   theme: defaultTheme({
-    base: "/vlc-discord-rpc/",
     logo: './images/image.png',
 
     navbar: [      
