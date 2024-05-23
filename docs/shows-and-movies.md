@@ -5,7 +5,8 @@ If you would like to display shows and movies as such, instead of a video, you w
 3. Optional: Add your movie api key to `config.js`. Movies will be displayed as videos otherwise.
 4. In the vlc-rpc project folder, change directories into the Metadata folder by using `cd Metadata` in the terminal/console.
 
-## Option 1:
+## Option 1 (saftest):
+### This is the safest option, since you need to input all of the information.
 1. Run `node metadata.js`. This script will ask you for an input and output file and will need to be done for each file.
 2. Fill in the prompts that it asks for with the correct information. For the movie/show name use the one found on IMDB. You generally do not need to worry about looking it up on IMDB, but if the show/movie is not found, check IMDB.
 
@@ -13,7 +14,8 @@ If you would like to display shows and movies as such, instead of a video, you w
 1. Run `node metadata_folder.js`. This script will go through a folder and automatically set the output file to the input file with `_meta` appended. For example `bb.mkv` would be changed to `bb_meta.mkv`.
 2. Fill in the prompts that it asks for with the correct information. For the movie/show name use the one found on IMDB. You generally do not need to worry about looking it up on IMDB, but if the show/movie is not found, check IMDB.
 
-## Option 3:
+## Option 3 (easiest):
+### This is the easiest option since you do not need to input anything.
 1. Fill out the `shows` and `movies` options in the `directories` portion of `config.js` and fill out the `separator` field based on your file names.
 2. Run `node metadata_auto.js`. This script will automatically go through a folder containing shows, or/and a folder containing movies and automatically add metadata to them.
 
