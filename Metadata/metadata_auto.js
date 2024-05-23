@@ -11,10 +11,14 @@ const testedExtensions = ['.mp4', '.wmv', '.mov', '.mkv', '.avi'];
  * @returns {string} - The cleaned name.
  */
 function cleanName(name) {
-  const qualityMarkers = ['2160p', '1080p', '720p', '480p', '360p', 'BluRay', 'WEBRip', 'BRRip', 'DVDRip', 'HDRip', 'REPACK', '10bit'];
+  const qualityMarkers = [
+    '2160p', '1080p', '720p', '480p', '360p', 'BluRay', 'WEBRip', 'BRRip',
+    'DVDRip', 'HDRip', 'REPACK', '10bit', 'DUAL-AUDIO', 'KOR-ENG', '6CH', 
+    'x265', 'HEVC-PSA'
+  ];
 
   // Remove quality markers
-  qualityMarkers.forEach((marker) => {
+  qualityMarkers.forEach(marker => {
     const regex = new RegExp(`\\b${marker}\\b`, 'gi');
     name = name.replace(regex, '');
   });
@@ -34,13 +38,43 @@ function cleanName(name) {
 /**
  * Extracts the final movie name from a file name.
  * @param {string} fileName - The file name to extract the movie name from.
- * @returns {string} The final movie name.
+ * @returns {string} - The final movie name.
  */
 function extractMovieName(fileName) {
   const nameWithoutExtension = fileName.replace(/\.[^/.]+$/, '');
   return cleanName(nameWithoutExtension);
 }
 
+/**
+ * Extracts the final show name, season, episode, and episode title from a file name.
+ * @param {string} fileName - The file name to extract the show details from.
+ * @returns {object} - The final show name, season, episode, and episode title.
+ */
+function extractShowDetails(fileName) {
+  const nameWithoutExtension = fileName.replace(/\.[^/.]+$/, '');
+  const showDetails = nameWithoutExtension.match(/^(.*?)(S\d+E\d+)(.*?)$/i);
+
+  if (!showDetails) {
+    return { showName: cleanName(nameWithoutExtension), season: 0, episode: 0, episodeTitle: '' };
+  }
+
+  const [, showNamePart, seasonEpisodePart, episodeTitlePart] = showDetails;
+  const seasonEpisodeMatch = seasonEpisodePart.match(/S(\d+)E(\d+)/i);
+  
+  const seasonNumber = seasonEpisodeMatch ? parseInt(seasonEpisodeMatch[1], 10) : 0;
+  const episodeNumber = seasonEpisodeMatch ? parseInt(seasonEpisodeMatch[2], 10) : 0;
+
+  const showName = cleanName(showNamePart);
+  const episodeTitle = cleanName(episodeTitlePart);
+
+  return { showName, season: seasonNumber, episode: episodeNumber, episodeTitle };
+}
+
+/**
+ * Checks if a directory exists.
+ * @param {string} directoryPath - The path to the directory.
+ * @returns {Promise<boolean>} - True if the directory exists, otherwise false.
+ */
 const directoryExists = async (directoryPath) => {
   try {
     await fs.promises.access(directoryPath, fs.constants.F_OK);
@@ -62,55 +96,37 @@ async function addMetadata(inputFile, type) {
 
   try {
     const extension = inputFile.slice(inputFile.lastIndexOf('.'));
-    const outputFile = inputFile.substring(0, inputFile.lastIndexOf('.')) + '_meta' + inputFile.substring(inputFile.lastIndexOf('.'));
+    if (!testedExtensions.includes(extension)) {return;}
+
+    const outputFile = inputFile.replace(/\.[^/.]+$/, '_meta$&');
     let finalName = 'Unknown';
-
     let metadataCommand = '';
-    let seasonNumber = 0;
-    let episodeNumber = 0;
 
-    if (testedExtensions.includes(extension)) {
-      if (type === 'show') {
-        // Extracting only the file name from the full path
-        const fileName = inputFile.split('/').pop();
-        const seasonEpisodeMatch = fileName.match(/S(\d+)E(\d+)/i);
+    if (type === 'show') {
+      const { showName, season, episode } = extractShowDetails(inputFile.split('/').pop());
+      
+      // If showName is two letters with a space in between, remove the space
+      finalName = showName.length === 3 && showName[1] === ' ' ? showName.replace(' ', '') : showName;
 
-        if (seasonEpisodeMatch && seasonEpisodeMatch.length >= 3) {
-          seasonNumber = parseInt(seasonEpisodeMatch[1], 10);
-          episodeNumber = parseInt(seasonEpisodeMatch[2], 10);
+      console.log('Final show name:', finalName, 'Season:', season, 'Episode:', episode);
 
-          // Remove season and episode part from the name
-          const nameWithoutSeasonEpisode = fileName.replace(seasonEpisodeMatch[0], '').replace(/\.[^/.]+$/, '');
+      metadataCommand = `ffmpeg -y -loglevel error -i "${inputFile}" -c copy ` +
+        `-metadata title="${finalName}" ` +
+        `-metadata genre=${type} ` +
+        `-metadata comment="S:${season} E:${episode}" "${outputFile}"`;
+    } else if (type === 'movie') {
+      finalName = extractMovieName(inputFile.split('/').pop());
 
-          // Clean the show name
-          finalName = cleanName(nameWithoutSeasonEpisode);
+      console.log('Final movie name:', finalName);
 
-          console.log('Final show name:', finalName, 'Season:', seasonNumber, 'Episode:', episodeNumber);
+      metadataCommand = `ffmpeg -y -loglevel error -i "${inputFile}" -c copy ` +
+        `-metadata title="${finalName}" ` +
+        `-metadata genre=${type} "${outputFile}"`;
+    }
 
-          metadataCommand = `ffmpeg -y -loglevel error -i "${inputFile}" -c copy ` +
-            `-metadata title="${finalName}" ` +
-            `-metadata genre=${type} ` +
-            `-metadata comment="S:${seasonNumber} E:${episodeNumber}" `;
-        } else {
-          console.log('Season and episode number not found in the filename!');
-        }
-      } else if (type === 'movie') {
-        // Extracting only the file name from the full path
-        const fileName = inputFile.split('/').pop();
-        finalName = extractMovieName(fileName);
-
-        console.log('Final movie name:', finalName);
-
-        metadataCommand = `ffmpeg -y -loglevel error -i "${inputFile}" -c copy ` +
-          `-metadata title="${finalName}" ` +
-          `-metadata genre=${type} `;
-      }
-
-      if (metadataCommand) {
-        metadataCommand += `"${outputFile}"`;
-        execSync(metadataCommand);
-        console.log(`Metadata added successfully to ${inputFile}.`);
-      }
+    if (metadataCommand) {
+      execSync(metadataCommand);
+      console.log(`Metadata added successfully to ${inputFile}.`);
     }
   } catch (error) {
     console.error('An error occurred while adding metadata:', error);
@@ -156,7 +172,6 @@ async function processFiles(showsPathExists, moviesPathExists) {
  */
 async function checkDirectories() {
   try {
-    // Check if the subfolders exist
     const showsPathExists = await directoryExists(directories.shows);
     const moviesPathExists = await directoryExists(directories.movies);
 
