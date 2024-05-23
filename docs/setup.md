@@ -1,8 +1,8 @@
 # Setup
 1. Download the code from this repository, then unzip it.
 2. Install [Node.js](https://nodejs.org/en/download). You must use version 17.5 at the minimum due to [fetch](https://nodejs.org/dist/latest-v18.x/docs/api/globals.html#fetch)!
-3. Make an application and get your [Discord Application ID](https://discord.com/developers/applications).
-4. In the storage folder, make a file called `config.js`, and copy over the contents of `example_config.js`.
+3. In the storage folder, make a file called `config.js`, and copy over the contents of `example_config.js`.
+4. Make an application and get your [Discord Application ID](https://discord.com/developers/applications). Set this as the id under richPresenseSettings.
 5. Proceed to the next step if you would like to use spotify art, or just go to step 9. If you add your api key, which is free, it will allow your songs to have iamges, as shown in the above images.
 6. OPTIONAL: Retrieve your [Spotify API key](https://developer.spotify.com/documentation/web-api/tutorials/getting-started). 
 7. Add both of these values in the `./Storage/config.js` file under the `richPresenceSettings` and `spotify` area if you are choosing to use the album art.
