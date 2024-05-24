@@ -1,6 +1,7 @@
 import { defaultTheme } from '@vuepress/theme-default'
 import { defineUserConfig } from 'vuepress/cli'
 import { viteBundler } from '@vuepress/bundler-vite'
+import { openGraphPlugin } from 'vuepress-plugin-open-graph';
 
 export default defineUserConfig({
   lang: 'en-US',
@@ -10,6 +11,12 @@ export default defineUserConfig({
   description: 'An updated Discord rich presence for VLC media player',
   head: [['link', { rel: 'icon', href: './images/image.png' }]],
 
+  plugins: [
+    openGraphPlugin({
+      host: "https://vlc-rpc.github.io/vlc-discord-rpc/",
+      defaultImage: "./images/image.png"
+    }),
+  ],
 
   theme: defaultTheme({
     logo: './images/image.png',
