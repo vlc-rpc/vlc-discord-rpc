@@ -3,6 +3,7 @@ name: docs
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   docs:
@@ -17,7 +18,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
+
+      - name: Clean up
+        run: |
+          rm -rf node_modules
+          rm -f package-lock.json
 
       - name: Install dependencies
         run: npm install
