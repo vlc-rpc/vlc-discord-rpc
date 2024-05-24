@@ -1,47 +1,34 @@
-
-name: Deploy Docs
+name: Deploy Documentation
 
 on:
   push:
     branches:
-      # make sure this is the branch you are using
-      - main
-
-permissions:
-  contents: write
-
+      - main 
 jobs:
-  deploy-gh-pages:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          # if your docs needs submodules, uncomment the following line
-          # submodules: true
+    - name: Checkout code
+      uses: actions/checkout@v2
 
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '20' 
 
+    - name: Install dependencies
+      run: npm install
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-          cache: npm
+    - name: Build documentation
+      run: npm run docs:build
 
-      - name: Install Deps
-        run: npm ci
-
-      - name: Build Docs
-        env:
-          NODE_OPTIONS: --max_old_space_size=8192
-        run: |-
-          npm run docs:build
-          > docs/.vuepress/dist/.nojekyll
-
-      - name: Deploy Docs
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          # This is the branch where the docs are deployed to
-          branch: gh-pages
-          folder: docs/.vuepress/dist
+    - name: Deploy to GitHub Pages
+      run: |
+        cd docs/.vuepress/dist
+        git init
+        git add -A
+        git commit -m 'deploy'
+        git push -f git@github.com:vlc-rpc/vlc-discord-rpc.git master:gh-pages
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
