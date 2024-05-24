@@ -14,7 +14,7 @@ export default defineUserConfig({
   plugins: [
     openGraphPlugin({
       host: "https://vlc-rpc.github.io/vlc-discord-rpc/",
-      defaultImage: "./images/image.png"
+      defaultImage: "https://vlc-rpc.github.io/vlc-discord-rpc/images/image.png"
     }),
   ],
 
