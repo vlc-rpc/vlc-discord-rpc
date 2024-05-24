@@ -1,39 +1,10 @@
+import { cleanName } from './metadata_functions.cjs';
 import { directories } from '../Storage/config.js';
 import { execSync } from 'child_process';
 import fs from 'fs';
 
 // Tested extensions. Can add more.
 const testedExtensions = ['.mp4', '.wmv', '.mov', '.mkv', '.avi'];
-
-/**
- * Cleans the name by removing extra details like year, resolution, and special characters.
- * @param {string} name - The name to clean.
- * @returns {string} - The cleaned name.
- */
-function cleanName(name) {
-  const qualityMarkers = [
-    '2160p', '1080p', '720p', '480p', '360p', 'BluRay', 'WEBRip', 'BRRip',
-    'DVDRip', 'HDRip', 'REPACK', '10bit', 'DUAL-AUDIO', 'KOR-ENG', '6CH', 
-    'x265', 'HEVC-PSA'
-  ];
-
-  // Remove quality markers
-  qualityMarkers.forEach(marker => {
-    const regex = new RegExp(`\\b${marker}\\b`, 'gi');
-    name = name.replace(regex, '');
-  });
-
-  // Remove extra details like year, resolution, etc.
-  name = name.replace(/\d{4}.*$/, '').replace(/[._]/g, ' ');
-
-  // Remove trailing spaces and special characters
-  name = name.trim().replace(/[()[\]{}]+$/, '');
-
-  // Remove multiple spaces
-  name = name.replace(/\s\s+/g, ' ');
-
-  return name;
-}
 
 /**
  * Extracts the final movie name from a file name.
