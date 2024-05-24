@@ -1,4 +1,6 @@
 const readline = require('readline');
+const fs = require("fs");
+
 /**
  * Creates a readline interface for user input.
  * @returns {readline.Interface} A readline interface for user input.
@@ -114,4 +116,63 @@ function cleanName(name) {
   return name;
 }
 
-module.exports = {createReadline, validateFileExtensions, askQuestion, getContentType, handleExistingOutputFile, cleanName};
+/**
+ * Extracts the final movie name from a file name.
+ * @param {string} fileName - The file name to extract the movie name from.
+ * @returns {string} - The final movie name.
+ */
+function extractMovieName(fileName) {
+  const nameWithoutExtension = fileName.replace(/\.[^/.]+$/, '');
+  return cleanName(nameWithoutExtension);
+}
+
+/**
+ * Extracts the final show name, season, episode, and episode title from a file name.
+ * @param {string} fileName - The file name to extract the show details from.
+ * @returns {object} - The final show name, season, episode, and episode title.
+ */
+function extractShowDetails(fileName) {
+  const nameWithoutExtension = fileName.replace(/\.[^/.]+$/, '');
+  const showDetails = nameWithoutExtension.match(/^(.*?)(S\d+E\d+)(.*?)$/i);
+
+  if (!showDetails) {
+    return { showName: cleanName(nameWithoutExtension), season: 0, episode: 0, episodeTitle: '' };
+  }
+
+  const [, showNamePart, seasonEpisodePart, episodeTitlePart] = showDetails;
+  const seasonEpisodeMatch = seasonEpisodePart.match(/S(\d+)E(\d+)/i);
+  
+  const seasonNumber = seasonEpisodeMatch ? parseInt(seasonEpisodeMatch[1], 10) : 0;
+  const episodeNumber = seasonEpisodeMatch ? parseInt(seasonEpisodeMatch[2], 10) : 0;
+
+  const showName = cleanName(showNamePart);
+  const episodeTitle = cleanName(episodeTitlePart);
+
+  return { showName, season: seasonNumber, episode: episodeNumber, episodeTitle };
+}
+
+/**
+ * Checks if a directory exists.
+ * @param {string} directoryPath - The path to the directory.
+ * @returns {Promise<boolean>} - True if the directory exists, otherwise false.
+ */
+const directoryExists = async (directoryPath) => {
+  try {
+    await fs.promises.access(directoryPath, fs.constants.F_OK);
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+module.exports = {
+  createReadline,
+  validateFileExtensions,
+  askQuestion, 
+  getContentType, 
+  handleExistingOutputFile, 
+  cleanName, 
+  extractMovieName, 
+  extractShowDetails,
+  directoryExists
+};
