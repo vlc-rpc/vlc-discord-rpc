@@ -5,7 +5,7 @@ If you would like to display shows and movies as such, instead of a video, you w
 3. Optional: Add your movie api key to `config.js`. Movies will be displayed as videos otherwise.
 4. In the vlc-rpc project folder, change directories into the Metadata folder by using `cd Metadata` in the terminal/console.
 
-## Option 1 (saftest):
+## Option 1 (safetest):
 ### This is the safest option, since you need to input all of the information.
 1. Run `node metadata.js`. This script will ask you for an input and output file and will need to be done for each file.
 2. Fill in the prompts that it asks for with the correct information. For the movie/show name use the one found on IMDB. You generally do not need to worry about looking it up on IMDB, but if the show/movie is not found, check IMDB.
