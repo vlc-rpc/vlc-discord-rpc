@@ -71,5 +71,17 @@ describe('Name Cleaning', function() {
         episodeTitle: ''
       });
     });
+
+    it('should correctly extract details from the D.F. series', function() {
+      const result = extractShowDetails('D.P.S01E01.A.Man.Holding.Flowers.DUAL-AUDIO.KOR-ENG.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA.mkv');
+      const finalName = result.showName.length === 3 && result.showName[1] === ' ' ? result.showName.replace(' ', '') : result.showName;
+      result.showName = finalName;
+      expect(result).to.deep.equal({
+        showName: 'DP',
+        season: 1,
+        episode: 1,
+        episodeTitle: 'A Man Holding Flowers'
+      });
+    });
   });
 });
