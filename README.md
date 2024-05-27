@@ -6,4 +6,4 @@ This is a modified version of the [Pigpog/vlc-discord-rpc project](https://githu
 ![image](https://user-images.githubusercontent.com/61550272/234398623-02c343fa-c500-421c-a7a8-cb4d33f88a81.png)
 ![image](https://user-images.githubusercontent.com/61550272/234403580-4a910bd7-41a5-4ceb-8a31-180c2efda417.png)
 
-Our [documentation](https://vlc-rpc.github.io/vlc-discord-rpc/) has been moved!
+Our [documentation](https://vlc-rpc.storinate.com/) has been moved!
