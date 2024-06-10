@@ -192,6 +192,11 @@ export async function format(status) {
     details = details.substring(0, 125) + "...";
   }
 
+  // Details field must be >= 2 characters
+  if(details.length < 2) {
+    details += ".";
+  }
+
   return {
     state: state,
     details: details,
