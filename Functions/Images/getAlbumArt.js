@@ -66,7 +66,7 @@ async function getAlbumArt(albumName, albumArtist) {
 async function getAlbumArtArchive(album, artist){
   let imageUrl = null;
   // Search string query
-  const query = querystring.escape(album+" AND artist:"+artist);
+  const query = querystring.escape(album+" AND artist:"+artist+" AND status:official");
 
   // Makes GET request to query the database for the album
   try{
