@@ -3,7 +3,7 @@
  */
 import { iconNames, movieApiKey, useSpotify } from "../Storage/config.js";
 import { fetchMovieData } from "./Images/searchMovie.js";
-import { getAlbumArt } from "./Images/getAlbumArt.js";
+import { getAlbumArt, getAlbumArtArchive } from "./Images/getAlbumArt.js";
 import { searchShow } from "./Images/searchShow.js";
 
 /**
@@ -118,12 +118,18 @@ async function handleMusic(meta, state) {
     partyMax = parseInt(meta.track_total, 10);
   }
   // Try to get the album art for the music
-  if(useSpotify) {
-    const art = await getAlbumArt(meta.album, meta.artist);
-    if (art) {
+  if(meta.album && meta.artist){
+    let art = null;
+    if(useSpotify){
+      art = await getAlbumArt(meta.album, meta.artist);
+    }else{
+      art = await getAlbumArtArchive(meta.album, meta.artist);
+    }
+    if(art){
       image = art;
     }
-  } 
+  }
+
   return {details, state, partySize, partyMax, image};
 }
 
