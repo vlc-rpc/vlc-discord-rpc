@@ -1,7 +1,7 @@
 /**
  * Description: Decides what information to display based on the nature of the media (video, music, etc)
  */
-import { getAlbumArt, getAlbumArtArchive } from "./Images/getAlbumArt.js";
+import { getAlbumArt, getAlbumArtArchive, getCustomArt } from "./Images/getAlbumArt.js";
 import { iconNames, movieApiKey, useSpotify } from "../Storage/config.js";
 import { fetchMovieData } from "./Images/searchMovie.js";
 import { searchShow } from "./Images/searchShow.js";
@@ -119,12 +119,11 @@ async function handleMusic(meta, state) {
   }
   // Try to get the album art for the music
   if(meta.album && meta.artist){
-    let art = null;
-    if(useSpotify){
-      art = await getAlbumArt(meta.album, meta.artist);
-    }else{
-      art = await getAlbumArtArchive(meta.album, meta.artist);
-    }
+    // Try to use custom_art.json. Returns null if not found in file.
+    let art = await getCustomArt(meta.album);
+    if(art === null) {
+      art = useSpotify ? await getAlbumArt(meta.album, meta.artist) : await getAlbumArtArchive(meta.album, meta.artist);
+  }
     if(art){
       image = art;
     }

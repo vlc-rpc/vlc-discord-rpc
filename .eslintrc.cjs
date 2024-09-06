@@ -7,7 +7,8 @@ module.exports = {
   parser: '@babel/eslint-parser',
   plugins: [
     '@stylistic/js',
-    'jsdoc'
+    'jsdoc',
+    "@babel/plugin-syntax-import-assertions"
   ],
   overrides: [
     {
