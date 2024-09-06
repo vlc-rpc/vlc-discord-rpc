@@ -1,9 +1,9 @@
 /**
  * Description: Decides what information to display based on the nature of the media (video, music, etc)
  */
+import { getAlbumArt, getAlbumArtArchive } from "./Images/getAlbumArt.js";
 import { iconNames, movieApiKey, useSpotify } from "../Storage/config.js";
 import { fetchMovieData } from "./Images/searchMovie.js";
-import { getAlbumArt, getAlbumArtArchive } from "./Images/getAlbumArt.js";
 import { searchShow } from "./Images/searchShow.js";
 
 /**
