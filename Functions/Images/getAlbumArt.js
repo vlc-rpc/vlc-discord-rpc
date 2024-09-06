@@ -1,17 +1,8 @@
+import albums from '../../Storage/custom_art.json' assert { type: 'json' };
 import axios from 'axios';
 import querystring from "querystring";
 import { spotify } from "../../Storage/config.js";
 import { XMLParser } from "fast-xml-parser";
-
-// Spotify API endpoint for searching albums
-const url = "https://api.spotify.com/v1/search";
-
-// Your Spotify app client ID and client secret
-const client_id = spotify.clientID;
-const client_secret = spotify.clientSecret;
-
-// Base64-encoded string of the form "client_id:client_secret"
-const credentials = Buffer.from(`${client_id}:${client_secret}`).toString("base64");
 
 /**
  * Retrieves the album cover art from Spotify based on the album name and artist.
@@ -20,6 +11,15 @@ const credentials = Buffer.from(`${client_id}:${client_secret}`).toString("base6
  * @returns {string|null} The URL of the album cover image if found, or null if not found or an error occurs.
  */
 async function getAlbumArt(albumName, albumArtist) {
+  // Spotify API endpoint for searching albums
+  const url = "https://api.spotify.com/v1/search";
+
+  // Your Spotify app client ID and client secret
+  const client_id = spotify.clientID;
+  const client_secret = spotify.clientSecret;
+
+  // Base64-encoded string of the form "client_id:client_secret"
+  const credentials = Buffer.from(`${client_id}:${client_secret}`).toString("base64");
   try {
     // Make POST request to obtain an access token using the Client Credentials Flow
     const tokenResponse = await axios.post("https://accounts.spotify.com/api/token", "grant_type=client_credentials", {
@@ -107,4 +107,20 @@ async function getAlbumArtArchive(album, artist){
   return imageUrl;
 }
 
-export {getAlbumArt, getAlbumArtArchive};
+/**
+ * Retrieves custom album artwork based on the album name.
+ * @async
+ * @function getCustomArt
+ * @param {string} albumName - The name of the album to get custom artwork for.
+ * @returns {Promise<string|null>} A promise that resolves to the custom artwork URL if found, or `null` if not found.
+ */
+async function getCustomArt(albumName) {
+  const customArt = albums[albumName];
+  if (customArt) {
+    return customArt; 
+  } else {
+    return null;
+  }
+}
+
+export {getAlbumArt, getAlbumArtArchive, getCustomArt};

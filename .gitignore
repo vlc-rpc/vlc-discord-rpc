@@ -6,3 +6,4 @@ ffmpeg
 .temp/
 .cache/
 docs/.vuepress/dist
+custom_art.json
