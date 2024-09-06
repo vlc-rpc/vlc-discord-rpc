@@ -1,8 +1,8 @@
+import albums from '../../Storage/custom_art.json' assert { type: 'json' };
 import axios from 'axios';
 import querystring from "querystring";
 import { spotify } from "../../Storage/config.js";
 import { XMLParser } from "fast-xml-parser";
-import albums from '../../Storage/custom_art.json' assert { type: 'json' };
 
 /**
  * Retrieves the album cover art from Spotify based on the album name and artist.
@@ -107,6 +107,13 @@ async function getAlbumArtArchive(album, artist){
   return imageUrl;
 }
 
+/**
+ * Retrieves custom album artwork based on the album name.
+ * @async
+ * @function getCustomArt
+ * @param {string} albumName - The name of the album to get custom artwork for.
+ * @returns {Promise<string|null>} A promise that resolves to the custom artwork URL if found, or `null` if not found.
+ */
 async function getCustomArt(albumName) {
   const customArt = albums[albumName];
   if (customArt) {

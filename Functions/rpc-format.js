@@ -123,7 +123,7 @@ async function handleMusic(meta, state) {
     let art = await getCustomArt(meta.album);
     if(art === null) {
       art = useSpotify ? await getAlbumArt(meta.album, meta.artist) : await getAlbumArtArchive(meta.album, meta.artist);
-  }
+    }
     if(art){
       image = art;
     }
