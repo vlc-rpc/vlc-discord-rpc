@@ -1,9 +1,9 @@
-import { Client } from "discord-rpc";
+import { Client } from "@xhayper/discord-rpc";
 import {diff} from "./status.js";
 import {format} from "./rpc-format.js";
 import {richPresenseSettings} from "../Storage/config.js";
 
-const client = new Client({ transport: "ipc" });
+const client = new Client({ clientId: richPresenseSettings.id });
 let awake = true;
 let timeInactive = 0;
 
@@ -15,7 +15,7 @@ async function update() {
   diff(async (status, shouldUpdate) => {
     if (shouldUpdate) {
       const formatted = await format(status);
-      client.setActivity(formatted);
+      client.user?.setActivity(formatted);
 
       if (!awake) {
         awake = true;
