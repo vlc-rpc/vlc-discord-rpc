@@ -30,7 +30,7 @@ async function update() {
           client.user?.clearActivity();
         } else {
           const formattedStatus = await format(status);
-          client.setActivity(formattedStatus);
+          client.user?.setActivity(formattedStatus);
           awake = false;
         }
       }
@@ -48,7 +48,7 @@ client.on("ready", () => {
 async function connectToDiscord() {
   try {
     console.log("Connecting to Discord...");
-    await client.login({ clientId: richPresenseSettings.id });
+    await client.login();
     setInterval(update, richPresenseSettings.updateInterval);
   } catch (error) {
     if (error.toString() === "Error: Could not connect") {
