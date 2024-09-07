@@ -27,7 +27,7 @@ async function update() {
         if (timeInactive >= richPresenseSettings.sleepTime || status.state === "stopped") {
           console.log("VLC not playing; going to sleep.", true);
           awake = false;
-          client.clearActivity();
+          client.user?.clearActivity();
         } else {
           const formattedStatus = await format(status);
           client.setActivity(formattedStatus);
