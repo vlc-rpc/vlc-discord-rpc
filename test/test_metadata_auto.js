@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 // describe and it are undefined because Mocha uses them globally
 import { extractMovieName, extractShowDetails } from '../Metadata/metadata_functions.cjs';
 import { expect } from 'chai';
