@@ -211,13 +211,7 @@ export async function format(status) {
     instance: true,
     endTimestamp: endTimestamp,
     partySize: partySize,
-    partyMax: partyMax,
-    buttons: [
-      {
-        label: "GitHub Repo",
-        url: "https://github.com/vlc-rpc/vlc-discord-rpc"
-      }
-    ]
+    partyMax: partyMax
   };
 }
 
