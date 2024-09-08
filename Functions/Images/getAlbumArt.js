@@ -84,20 +84,21 @@ async function getAlbumArtArchive(album, artist){
 
     const releases = parsedData.metadata['release-list'].release;
 
-    // Loops through matches until finding album cover
+    
     if(releases){
-      for (let i = 0; i < releases.length; i++) {
-        const release = releases[i];
-        const mbid = release['@_id'];
-        try{
-          // Makes GET request to get album cover
-          // If GET completes breaks from the loop
-          response = await axios.get("https://coverartarchive.org/release/"+mbid);
-          imageUrl = response.data.images[0].image;
-          break;
-        }catch(err){
-          // Cover art not avalible
+      if(releases.length){ // Multiple matches found
+        // Loops through matches until finding one with an album cover
+        for (let i = 0; i < releases.length; i++) {
+          const release = releases[i];
+          const mbid = release['@_id'];
+          imageUrl = fetchCover(mbid);
+          if(imageUrl){
+            break;
+          }
         }
+      }else{ //Single match found
+        const mbid = releases['@_id'];
+        imageUrl = fetchCover(mbid);
       }
     }
   }catch(error){
@@ -105,6 +106,24 @@ async function getAlbumArtArchive(album, artist){
     console.log(error);
   }
   return imageUrl;
+}
+
+/***
+ *  Gets cover from coverartarchive.org by looking up the releases's mbid
+ * @param {string} mbid - The id of the release in the musicbrainz database
+ * @returns {string|null} - The URL of the release's cover image if found, or null if it does not exist or an error occurs.
+ * */ 
+async function fetchCover(mbid) {
+  try{
+    // Makes GET request to get album cover
+    // If GET completes breaks from the loop
+    const response = await axios.get("https://coverartarchive.org/release/"+mbid);
+    const imageUrl = response.data.images[0].image;
+    return imageUrl;
+  }catch(err){
+    // Cover art not avalible
+    return null
+  }
 }
 
 /**
