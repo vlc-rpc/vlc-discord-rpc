@@ -3,6 +3,7 @@
  */
 import { getAlbumArt, getAlbumArtArchive, getCustomArt } from "./Images/getAlbumArt.js";
 import { iconNames, movieApiKey, useSpotify } from "../Storage/config.js";
+import { ActivityType } from "discord-api-types/v10";
 import { fetchMovieData } from "./Images/searchMovie.js";
 import { searchShow } from "./Images/searchShow.js";
 
@@ -211,7 +212,9 @@ export async function format(status) {
     instance: true,
     endTimestamp: endTimestamp,
     partySize: partySize,
-    partyMax: partyMax
+    partyMax: partyMax,
+    // Supported: https://discord.com/developers/docs/topics/gateway-events#activity-object-activity-types
+    type: ActivityType.Playing
   };
 }
 
