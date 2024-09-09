@@ -72,7 +72,7 @@ async function fetchCover(mbid) {
     return imageUrl;
   }catch(err){
     // Cover art not avalible
-    return null
+    return null;
   }
 }
 
@@ -89,7 +89,7 @@ async function getAlbumArtArchive(album, artist){
 
   // Makes GET request to query the database for the album
   try{
-    let response = await axios.get("https://musicbrainz.org/ws/2/release?query="+query, {
+    const response = await axios.get("https://musicbrainz.org/ws/2/release?query="+query, {
       headers: {
         Accept: 'application/xml'
       }
