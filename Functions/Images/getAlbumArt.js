@@ -104,7 +104,8 @@ async function getAlbumArtArchive(album, artist){
     const releases = parsedData.metadata['release-list'].release;
     
     if(releases){
-      if(releases.length){ // Multiple matches found
+      if(releases.length){
+        // Multiple matches found
         // Loops through matches until finding one with an album cover
         for (let i = 0; i < releases.length; i++) {
           const release = releases[i];
@@ -114,7 +115,8 @@ async function getAlbumArtArchive(album, artist){
             break;
           }
         }
-      }else{ //Single match found
+      }else{ 
+        //Single match found
         const mbid = releases['@_id'];
         imageUrl = fetchCover(mbid);
       }
