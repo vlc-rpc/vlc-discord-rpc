@@ -57,6 +57,8 @@ const directories = {
 // For example Breaking_Bad_S1E2.wmv is separated by _
 const separator = '_';
 
+const autoOMDB = false;
+
 // Modules to load
 export { 
   platformDefaults,
@@ -70,4 +72,5 @@ export {
   detached, 
   movieApiKey, 
   directories, 
-  separator };
+  separator,
+  autoOMDB };
