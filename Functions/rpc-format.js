@@ -175,6 +175,7 @@ async function searchAll(meta, state) {
 
     details = showResults[resultNumber].show.name ?? "Watching a show";
   }
+  
   if(mediaType === "movie") {
     const fileInformation = await fetchMovieData(fileMetadata.showName);
 
