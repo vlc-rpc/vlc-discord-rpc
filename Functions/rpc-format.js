@@ -174,6 +174,8 @@ async function searchAll(meta, state) {
       resultNumber = 0;
     }
 
+    console.log(`Using result number ${resultNumber} (${showResults[resultNumber].show.name})!`);
+
     showResultNumberrl.close();
 
     const imageResponse = await fetch(`http://api.tvmaze.com/shows/${showResults[resultNumber].show.id}/images`);
@@ -205,6 +207,8 @@ async function searchAll(meta, state) {
           console.log("Invalid file number... defaulting to 0");
           resultNumber = 0;
         }
+
+        console.log(`Using result number ${resultNumber} (${fileInformation.Search[resultNumber].Title})!`);
 
         movieResultNumberrl.close();
 
