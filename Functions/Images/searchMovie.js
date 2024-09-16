@@ -5,7 +5,7 @@ import { movieApiKey } from "../../Storage/config.js";
  * @returns {object | null} An object containing the name of the show and its image URL if found, or null if not found or an error occurs.
  */
 async function fetchMovieData(movieName) {
-  const url = `http://www.omdbapi.com/?i=tt3896198&apikey=${movieApiKey}&s=${movieName}&plot=full&type=movie`;
+  const url = `http://www.omdbapi.com/?i=tt3896198&apikey=${movieApiKey}&s=${movieName}&type=movie`;
   const options = {
     method: 'GET',
     headers: {
