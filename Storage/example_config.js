@@ -1,3 +1,5 @@
+import { ActivityType } from "discord-api-types/v10";
+
 // Where to look for VLC
 const platformDefaults = {
   win32: "C:/Program Files/VideoLAN/VLC/vlc.exe",
@@ -57,6 +59,8 @@ const directories = {
 // For example Breaking_Bad_S1E2.wmv is separated by _
 const separator = '_';
 
+const defaultActivityType = ActivityType.Playing;
+
 // Modules to load
 export { 
   platformDefaults,
@@ -70,4 +74,5 @@ export {
   detached, 
   movieApiKey, 
   directories, 
-  separator };
+  separator,
+  defaultActivityType };
