@@ -136,6 +136,42 @@ async function askMediaType() {
   return mediaType.toLowerCase();
 }
 
+async function getMovieNumber(fileInformation, currentPage, resultNumber, totalPages, itemsPerPage) {
+
+  for (let i = 0; i < fileInformation.Search.length; i++) {
+    console.log(`Result ${i}: ${fileInformation.Search[i].Title} (${fileInformation.Search[i].Year})`);
+
+    if ((i + 1) % itemsPerPage === 0 || i === fileInformation.Search.length - 1) {
+      console.log(`Page ${currentPage}/${totalPages}`);
+
+      if (i < fileInformation.Search.length - 1) {
+        const movieResultNumberrl = createReadline();
+
+        resultNumber = await askQuestion(movieResultNumberrl, "What result number would you like to use? Enter 'n' to see the next page. ");
+        if (resultNumber.toLowerCase() === 'n') {
+          currentPage++;
+        } else {
+          resultNumber = parseInt(resultNumber); 
+
+          if (isNaN(resultNumber) || resultNumber < 0 || resultNumber >= fileInformation.Search.length) {
+            console.log("Invalid result number. Defaulting to 0.");
+            resultNumber = 0;
+          }
+          
+          movieResultNumberrl.close();
+          break; 
+        }
+        movieResultNumberrl.close();
+      } else {
+        console.log("There are no more pages. Please select a result");
+        const movieResultNumberrl = createReadline();
+        resultNumber = await askQuestion(movieResultNumberrl, "What result number would you like to use? There are no more pages. ");
+      }
+    }
+  }
+  return resultNumber;
+}
+
 /**
  * Automatically convert the file name to a show or movie name and search for it.
  * @param {*} meta - Metadata object containing information about the movie or show.
@@ -195,36 +231,30 @@ async function searchAll(meta, state) {
   
   if(mediaType === "movie") {
     const fileInformation = await fetchMovieData(fileMetadata.showName.trim());
+    let resultNumber = 0;
+
     if(fileInformation.Response !== 'False') {
 
       console.log(`There are ${fileInformation.Search.length} results.`);
-
       if(fileInformation.Search.length > 0) {
-        for (let i = 0; i < fileInformation.Search.length; i++) {
-          console.log(`Result ${i}: ${fileInformation.Search[i].Title} (${fileInformation.Search[i].Year})`);
-        }
-
-        const movieResultNumberrl = createReadline();
-
-        let resultNumber = await askQuestion(movieResultNumberrl, "What result number would you like to use? ");
-        if(resultNumber > fileInformation.Search.length - 1 || resultNumber < 0) {
-          console.log("Invalid file number... defaulting to 0");
-          resultNumber = 0;
-        }
-
-        console.log(`Using result number ${resultNumber} (${fileInformation.Search[resultNumber].Title})!`);
-
-        movieResultNumberrl.close();
-
-        details = fileInformation.Search[resultNumber].Title ?? "Watching a movie";
-        state = `${fileInformation.Search[resultNumber].Year}`;
-        image = fileInformation.Search[resultNumber].Poster;
-      } else {
-        console.log(`Movie with name ${fileMetadata.showName.trim()} not found`);
+        const itemsPerPage = 10;
+        const currentPage = 1;
+        
+        const totalPages = Math.ceil(fileInformation.Search.length / itemsPerPage);
+        resultNumber = await getMovieNumber(fileInformation, currentPage, resultNumber, totalPages, itemsPerPage);
+          
       }
+
+      console.log(`Using result number ${resultNumber} (${fileInformation.Search[resultNumber].Title})!`);
+
+      details = fileInformation.Search[resultNumber].Title ?? "Watching a movie";
+      state = `${fileInformation.Search[resultNumber].Year}`;
+      image = fileInformation.Search[resultNumber].Poster;
     } else {
       console.log(`Movie with name ${fileMetadata.showName.trim()} not found`);
     }
+  } else {
+    console.log(`Movie with name ${fileMetadata.showName.trim()} not found`);
   }
   
   return { details, state, image };

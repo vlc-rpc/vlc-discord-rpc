@@ -6,6 +6,7 @@ import { movieApiKey } from "../../Storage/config.js";
  */
 async function fetchMovieData(movieName) {
   const url = `http://www.omdbapi.com/?i=tt3896198&apikey=${movieApiKey}&s=${movieName}&type=movie`;
+
   const options = {
     method: 'GET',
     headers: {
@@ -22,7 +23,26 @@ async function fetchMovieData(movieName) {
     }
   
     const data = await response.json();
+
+    const pages = Math.ceil(data.totalResults/10);
+    for(let i = 2; i <= pages; i++) {
+      const pagedURL = `http://www.omdbapi.com/?i=tt3896198&apikey=${movieApiKey}&s=${movieName}&type=movie&page=${i}`;
+      try {
   
+        const pageResponse = await fetch(pagedURL, options);
+      
+        if (!pageResponse.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const pageData = await pageResponse.json();
+        data.Search = data.Search.concat(pageData.Search);
+      } catch (error) {
+        console.error('Error occurred during the API request:', error);
+        // Prevent app from crashing
+        return {"Response": 'False'};
+      }
+    }
+
     return data;
   } catch (error) {
     console.error('Error occurred during the API request:', error);
