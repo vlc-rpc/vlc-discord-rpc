@@ -113,7 +113,9 @@ function cleanName(name) {
   // Remove multiple spaces
   name = name.replace(/\s\s+/g, ' ');
 
-  return name;
+  name = name.replace(/[!@#$%^&*(),.?":{}|<>-]+$/, '');
+
+  return name.trim();
 }
 
 /**
