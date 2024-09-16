@@ -204,7 +204,7 @@ async function searchAll(meta, state) {
   
   if(mediaType === "show") {
     const showResults = await searchShowMultipleResults(fileMetadata.showName.trim());
-    state = `Season ${fileMetadata.season} - Episode ${fileMetadata.episode}`;
+    state = fileMetadata.season > 0 ? `Season ${fileMetadata.season} - Episode ${fileMetadata.episode}` : "Unknown episode";
     if(showResults) {
       let resultNumber = 0;
       if(defaultResultNumber === -1) {
