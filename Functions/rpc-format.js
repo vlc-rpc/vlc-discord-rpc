@@ -161,33 +161,36 @@ async function searchAll(meta, state) {
   if(mediaType === "show") {
     const showResults = await searchShowMultipleResults(fileMetadata.showName.trim());
 
-    for (let i = 0; i < showResults.length; i++) {
-      console.log(`Result ${i}: ${showResults[i].show.name}`);
+    if(showResults) {
+
+      for (let i = 0; i < showResults.length; i++) {
+        console.log(`Result ${i}: ${showResults[i].show.name}`);
+      }
+
+      state = `Season ${fileMetadata.season} - Episode ${fileMetadata.episode}`;
+
+      const showResultNumberrl = createReadline();
+
+      let resultNumber = await askQuestion(showResultNumberrl, "What result number would you like to use? ");
+      if(resultNumber > showResults.length - 1 || resultNumber < 0) {
+        console.log("Invalid file number... defaulting to 0");
+        resultNumber = 0;
+      }
+
+      console.log(`Using result number ${resultNumber} (${showResults[resultNumber].show.name})!`);
+
+      showResultNumberrl.close();
+
+      const imageResponse = await fetch(`http://api.tvmaze.com/shows/${showResults[resultNumber].show.id}/images`);
+      const imageData = await imageResponse.json();
+      if(imageData && imageData.length > 0) {
+
+        // Get the first image (most common)
+        image = imageData[0].resolutions.original.url;
+      }
+
+      details = showResults[resultNumber].show.name ?? "Watching a show";
     }
-
-    state = `Season ${fileMetadata.season} - Episode ${fileMetadata.episode}`;
-
-    const showResultNumberrl = createReadline();
-
-    let resultNumber = await askQuestion(showResultNumberrl, "What result number would you like to use? ");
-    if(resultNumber > showResults.length - 1 || resultNumber < 0) {
-      console.log("Invalid file number... defaulting to 0");
-      resultNumber = 0;
-    }
-
-    console.log(`Using result number ${resultNumber} (${showResults[resultNumber].show.name})!`);
-
-    showResultNumberrl.close();
-
-    const imageResponse = await fetch(`http://api.tvmaze.com/shows/${showResults[resultNumber].show.id}/images`);
-    const imageData = await imageResponse.json();
-    if(imageData && imageData.length > 0) {
-
-      // Get the first image (most common)
-      image = imageData[0].resolutions.original.url;
-    }
-
-    details = showResults[resultNumber].show.name ?? "Watching a show";
   }
   
   if(mediaType === "movie") {
