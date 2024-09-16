@@ -149,16 +149,16 @@ async function searchAll(meta, state) {
 
   const fileMetadata = extractShowDetails(meta.filename);
 
-  console.log(`Finding results for... ${fileMetadata.showName}`);
+  console.log(`Finding results for... ${fileMetadata.showName.trim()}`);
   console.log(`If this name is incorrect please rename your file`);
   console.log("----------------");
 
-  let details = fileMetadata.showName;
+  let details = fileMetadata.showName.trim();
   let image = iconNames.vlc;
   state = "Watching media";
   
   if(mediaType === "show") {
-    const showResults = await searchShowMultipleResults(fileMetadata.showName);
+    const showResults = await searchShowMultipleResults(fileMetadata.showName.trim());
 
     for (let i = 0; i < showResults.length; i++) {
       console.log(`Result ${i}: ${showResults[i].show.name}`);
@@ -188,7 +188,7 @@ async function searchAll(meta, state) {
   }
   
   if(mediaType === "movie") {
-    const fileInformation = await fetchMovieData(fileMetadata.showName);
+    const fileInformation = await fetchMovieData(fileMetadata.showName.trim());
     if(fileInformation.Response !== 'False') {
 
       console.log(`There are ${fileInformation.Search.length} results.`);
@@ -212,10 +212,10 @@ async function searchAll(meta, state) {
         state = `${fileInformation.Search[resultNumber].Year}`;
         image = fileInformation.Search[resultNumber].Poster;
       } else {
-        console.log(`Movie with name ${fileMetadata.showName} not found`);
+        console.log(`Movie with name ${fileMetadata.showName.trim()} not found`);
       }
     } else {
-      console.log(`Movie with name ${fileMetadata.showName} not found`);
+      console.log(`Movie with name ${fileMetadata.showName.trim()} not found`);
     }
   }
   
