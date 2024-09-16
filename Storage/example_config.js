@@ -59,6 +59,12 @@ const separator = '_';
 
 const autoOMDB = false;
 
+// Set to "" to disable. Other accepted parameters are "show" or "movie"
+const defaultMovieorShow = "";
+
+// Set to -1 to disable. Any Number 0 through the number of results will work.
+const defaultResultNumber = -1;
+
 // Modules to load
 export { 
   platformDefaults,
@@ -73,4 +79,6 @@ export {
   movieApiKey, 
   directories, 
   separator,
-  autoOMDB };
+  autoOMDB,
+  defaultMovieorShow,
+  defaultResultNumber };

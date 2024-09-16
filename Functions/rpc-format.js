@@ -2,7 +2,7 @@
  * Description: Decides what information to display based on the nature of the media (video, music, etc)
  */
 import { askQuestion, createReadline, extractShowDetails } from '../Metadata/metadata_functions.cjs'; 
-import { autoOMDB, iconNames, logUpdates, movieApiKey, useSpotify } from "../Storage/config.js";   
+import { autoOMDB, defaultMovieorShow, defaultResultNumber, iconNames, logUpdates, movieApiKey, useSpotify } from "../Storage/config.js";   
 import { getAlbumArt, getAlbumArtArchive, getCustomArt } from "./Images/getAlbumArt.js";
 import { searchShow, searchShowMultipleResults } from "./Images/searchShow.js";
 import { activityCache } from './client.js';
@@ -60,7 +60,7 @@ async function handleShow(meta, state) {
   state = setShowState(meta, state);
 
   if(logUpdates) {
-    console.log("----------------\nSearch Show Function is running\n----------------");
+    console.log("----------------\nLog Updates\nSearch Show Function is running\n----------------\n");
   }
 
   const show = await searchShow(meta.title);
@@ -82,7 +82,7 @@ async function handleMovie(meta, state) {
   let details = meta.title;
 
   if(logUpdates) {
-    console.log("----------------\nFetch Movie Data Function is running\n----------------");
+    console.log("----------------\nLog Updates\nFetch Movie Data Function is running\n----------------\n");
   }
 
   // Try to search for the movie and get its image
@@ -179,16 +179,24 @@ async function getMovieNumber(fileInformation, currentPage, resultNumber, totalP
  */
 async function searchAll(meta, state) {
   if(logUpdates) {
-    console.log("----------------\nSearch All Function is running\n----------------");
+    console.log("----------------\nLog Updates\nSearch All Function is running\n----------------\n");
   }
 
-  const mediaType = await askMediaType();
+  let mediaType = "";
+
+  if(defaultMovieorShow.toLowerCase() !== "show" && defaultMovieorShow.toLowerCase() !== "movie")  {
+    mediaType = await askMediaType();
+  } else {
+    mediaType = defaultMovieorShow.toLowerCase();
+    console.log(`----------------\nUsing default media type from config.js: ${mediaType}\n----------------\n`);
+  }
 
   const fileMetadata = extractShowDetails(meta.filename);
 
+  console.log("----------------");
   console.log(`Finding results for... ${fileMetadata.showName.trim()}`);
   console.log(`If this name is incorrect please rename your file`);
-  console.log("----------------");
+  console.log("----------------\n");
 
   let details = fileMetadata.showName.trim();
   let image = iconNames.vlc;
@@ -196,26 +204,29 @@ async function searchAll(meta, state) {
   
   if(mediaType === "show") {
     const showResults = await searchShowMultipleResults(fileMetadata.showName.trim());
-
+    state = `Season ${fileMetadata.season} - Episode ${fileMetadata.episode}`;
     if(showResults) {
+      let resultNumber = 0;
+      if(defaultResultNumber === -1) {
+        for (let i = 0; i < showResults.length; i++) {
+          console.log(`Result ${i}: ${showResults[i].show.name}`);
+        }
 
-      for (let i = 0; i < showResults.length; i++) {
-        console.log(`Result ${i}: ${showResults[i].show.name}`);
+        const showResultNumberrl = createReadline();
+
+        resultNumber = await askQuestion(showResultNumberrl, "What result number would you like to use? ");
+        if(resultNumber > showResults.length - 1 || resultNumber < 0) {
+          console.log("Invalid file number... defaulting to 0");
+          resultNumber = 0;
+        }
+
+        console.log(`Using result number ${resultNumber} (${showResults[resultNumber].show.name})!`);
+
+        showResultNumberrl.close();
+      } else {
+        resultNumber = defaultResultNumber;
+        console.log(`----------------\nUsing default result number from config.js: ${defaultResultNumber}\n----------------\n`);
       }
-
-      state = `Season ${fileMetadata.season} - Episode ${fileMetadata.episode}`;
-
-      const showResultNumberrl = createReadline();
-
-      let resultNumber = await askQuestion(showResultNumberrl, "What result number would you like to use? ");
-      if(resultNumber > showResults.length - 1 || resultNumber < 0) {
-        console.log("Invalid file number... defaulting to 0");
-        resultNumber = 0;
-      }
-
-      console.log(`Using result number ${resultNumber} (${showResults[resultNumber].show.name})!`);
-
-      showResultNumberrl.close();
 
       const imageResponse = await fetch(`http://api.tvmaze.com/shows/${showResults[resultNumber].show.id}/images`);
       const imageData = await imageResponse.json();
@@ -227,9 +238,7 @@ async function searchAll(meta, state) {
 
       details = showResults[resultNumber].show.name ?? "Watching a show";
     }
-  }
-  
-  if(mediaType === "movie") {
+  } else if(mediaType === "movie") {
     const fileInformation = await fetchMovieData(fileMetadata.showName.trim());
     let resultNumber = 0;
 
@@ -237,12 +246,16 @@ async function searchAll(meta, state) {
 
       console.log(`There are ${fileInformation.Search.length} results.`);
       if(fileInformation.Search.length > 0) {
-        const itemsPerPage = 10;
-        const currentPage = 1;
+        if(defaultResultNumber !== -1) {
+          resultNumber = defaultResultNumber;
+          console.log(`----------------\nUsing default result number from config.js: ${defaultResultNumber}\n----------------\n`);
+        } else {
+          const itemsPerPage = 10;
+          const currentPage = 1;
         
-        const totalPages = Math.ceil(fileInformation.Search.length / itemsPerPage);
-        resultNumber = await getMovieNumber(fileInformation, currentPage, resultNumber, totalPages, itemsPerPage);
-          
+          const totalPages = Math.ceil(fileInformation.Search.length / itemsPerPage);
+          resultNumber = await getMovieNumber(fileInformation, currentPage, resultNumber, totalPages, itemsPerPage);
+        } 
       }
 
       console.log(`Using result number ${resultNumber} (${fileInformation.Search[resultNumber].Title})!`);
@@ -253,8 +266,6 @@ async function searchAll(meta, state) {
     } else {
       console.log(`Movie with name ${fileMetadata.showName.trim()} not found`);
     }
-  } else {
-    console.log(`Movie with name ${fileMetadata.showName.trim()} not found`);
   }
   
   return { details, state, image };
