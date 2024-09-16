@@ -237,6 +237,10 @@ async function searchAll(meta, state) {
       }
 
       details = showResults[resultNumber].show.name ?? "Watching a show";
+    } else {
+      console.log("----------------");
+      console.log(`WARNING: No results for... ${fileMetadata.showName.trim()}`);
+      console.log("----------------\n");
     }
   } else if(mediaType === "movie") {
     const fileInformation = await fetchMovieData(fileMetadata.showName.trim());
@@ -264,7 +268,9 @@ async function searchAll(meta, state) {
       state = `${fileInformation.Search[resultNumber].Year}`;
       image = fileInformation.Search[resultNumber].Poster;
     } else {
-      console.log(`Movie with name ${fileMetadata.showName.trim()} not found`);
+      console.log("----------------");
+      console.log(`WARNING: No results for... ${fileMetadata.showName.trim()}`);
+      console.log("----------------\n");
     }
   }
   
