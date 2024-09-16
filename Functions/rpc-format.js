@@ -104,15 +104,10 @@ async function handleMovie(meta, state) {
 }
 
 /**
- * Automatically convert the file name to a show or movie name and search for it.
- * @param {*} meta - Metadata object containing information about the movie or show.
- * @returns {object} - Object containing details, state, and image.
+ * Ask the user for the type of media.
+ * @returns mediaType - Whether it is a show or movie.
  */
-async function searchAll(meta, state) {
-  if(logUpdates) {
-    console.log("----------------\nSearch All Function is running\n----------------");
-  }
-
+async function askMediaType() {
   const showOrMovierl = createReadline();
   let mediaType = await askQuestion(showOrMovierl, "Is this a show (s) or movie (m)? ");
 
@@ -137,6 +132,20 @@ async function searchAll(meta, state) {
   }
 
   showOrMovierl.close();
+  return mediaType;
+}
+
+/**
+ * Automatically convert the file name to a show or movie name and search for it.
+ * @param {*} meta - Metadata object containing information about the movie or show.
+ * @returns {object} - Object containing details, state, and image.
+ */
+async function searchAll(meta, state) {
+  if(logUpdates) {
+    console.log("----------------\nSearch All Function is running\n----------------");
+  }
+
+  const mediaType = await askMediaType();
 
   const fileMetadata = extractShowDetails(meta.filename);
 
@@ -146,6 +155,7 @@ async function searchAll(meta, state) {
 
   let details = fileMetadata.showName;
   let image = iconNames.vlc;
+  state = "Watching media";
   
   if(mediaType === "show") {
     const showResults = await searchShowMultipleResults(fileMetadata.showName);
@@ -163,7 +173,8 @@ async function searchAll(meta, state) {
       console.log("Invalid file number... defaulting to 0");
       resultNumber = 0;
     }
-    showOrMovierl.close();
+
+    showResultNumberrl.close();
 
     const imageResponse = await fetch(`http://api.tvmaze.com/shows/${showResults[resultNumber].show.id}/images`);
     const imageData = await imageResponse.json();
@@ -178,27 +189,31 @@ async function searchAll(meta, state) {
   
   if(mediaType === "movie") {
     const fileInformation = await fetchMovieData(fileMetadata.showName);
+    if(fileInformation.Response !== 'False') {
 
-    console.log(`There are ${fileInformation.Search.length} results.`);
+      console.log(`There are ${fileInformation.Search.length} results.`);
 
-    if(fileInformation.Search.length > 0) {
-      for (let i = 0; i < fileInformation.Search.length; i++) {
-        console.log(`Result ${i}: ${fileInformation.Search[i].Title} (${fileInformation.Search[i].Year})`);
+      if(fileInformation.Search.length > 0) {
+        for (let i = 0; i < fileInformation.Search.length; i++) {
+          console.log(`Result ${i}: ${fileInformation.Search[i].Title} (${fileInformation.Search[i].Year})`);
+        }
+
+        const movieResultNumberrl = createReadline();
+
+        let resultNumber = await askQuestion(movieResultNumberrl, "What result number would you like to use? ");
+        if(resultNumber > fileInformation.Search.length - 1 || resultNumber < 0) {
+          console.log("Invalid file number... defaulting to 0");
+          resultNumber = 0;
+        }
+
+        movieResultNumberrl.close();
+
+        details = fileInformation.Search[resultNumber].Title ?? "Watching a movie";
+        state = `${fileInformation.Search[resultNumber].Year}`;
+        image = fileInformation.Search[resultNumber].Poster;
+      } else {
+        console.log(`Movie with name ${fileMetadata.showName} not found`);
       }
-
-      const movieResultNumberrl = createReadline();
-
-      let resultNumber = await askQuestion(movieResultNumberrl, "What result number would you like to use? ");
-      if(resultNumber > fileInformation.Search.length - 1 || resultNumber < 0) {
-        console.log("Invalid file number... defaulting to 0");
-        resultNumber = 0;
-      }
-
-      movieResultNumberrl.close();
-
-      details = fileInformation.Search[resultNumber].Title ?? "Watching a movie";
-      state = `${fileInformation.Search[resultNumber].Year}`;
-      image = fileInformation.Search[resultNumber].Poster;
     } else {
       console.log(`Movie with name ${fileMetadata.showName} not found`);
     }
