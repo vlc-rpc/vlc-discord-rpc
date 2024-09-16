@@ -111,17 +111,18 @@ async function askMediaType() {
   const showOrMovierl = createReadline();
   let mediaType = await askQuestion(showOrMovierl, "Is this a show (s) or movie (m)? ");
 
-  if(mediaType === "s") {
+  if(mediaType.toLowerCase() === "s") {
     mediaType = "show";
   }
 
-  if(mediaType === "m") {
+  if(mediaType.toLowerCase() === "m") {
     mediaType = "movie";
   }
 
-  while(mediaType !== "show" && mediaType !== "movie") {
+  while(mediaType.toLowerCase() !== "show" && mediaType.toLowerCase() !== "movie") {
     console.log("Invalid type. Please try again.");
     mediaType = await askQuestion(showOrMovierl, "Is this a show (s) or movie (m)? ");
+
     if(mediaType === "s") {
       mediaType = "show";
     }
@@ -132,7 +133,7 @@ async function askMediaType() {
   }
 
   showOrMovierl.close();
-  return mediaType;
+  return mediaType.toLowerCase();
 }
 
 /**
