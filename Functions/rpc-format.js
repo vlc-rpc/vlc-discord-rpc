@@ -267,6 +267,19 @@ async function handleMusic(meta, state) {
   return {details, state, partySize, partyMax, image};
 }
 
+function checkDetailLength(details) {
+  if (details.length > 125) {
+    details = details.substring(0, 125) + "...";
+  }
+
+  // Details field must be >= 2 characters
+  if(details.length < 2) {
+    details += ".";
+  }
+
+  return details;
+}
+
 /**
  * Main function for formatting status information based on content type.
  * @param {*} status - Object containing status information.
@@ -294,7 +307,11 @@ export async function format(status, changedFiles) {
     ({details} = showResult);
     ({state} = showResult);
     ({image} = showResult);
-  } 
+  } else if(meta.genre === "show" && !changedFiles) {
+    ({details} = activityCache);
+    ({state} = activityCache);
+    image = activityCache.largeImageKey;
+  }
 
   // If it's a movie
   else if (meta.genre === "movie" && meta.title && movieApiKey !== "" && changedFiles) {
@@ -302,7 +319,11 @@ export async function format(status, changedFiles) {
     ({details} = movieResult);
     ({state} = movieResult);
     ({image} = movieResult);
-  } 
+  } else if(meta.genre === "movie" && !changedFiles) {
+    ({details} = activityCache);
+    ({state} = activityCache);
+    image = activityCache.largeImageKey;
+  }
   
   // If it's a music video
   else if (meta.artist) {
@@ -339,14 +360,7 @@ export async function format(status, changedFiles) {
   }
 
   // Make sure the details variable is not too long to be displayed (limited by Discord)
-  if (details.length > 125) {
-    details = details.substring(0, 125) + "...";
-  }
-
-  // Details field must be >= 2 characters
-  if(details.length < 2) {
-    details += ".";
-  }
+  details = checkDetailLength(details);
 
   return {
     state: state,
