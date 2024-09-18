@@ -1,3 +1,4 @@
+import { handleRateLimits } from "./handleRateLimits.js";
 import { movieApiKey } from "../../Storage/config.js";
 /**
  * Searches for a movie by name using the OMDb API.
@@ -16,10 +17,10 @@ async function fetchMovieData(movieName) {
   
   try {
   
-    const response = await fetch(url, options);
+    let response = await fetch(url, options);
 
     if (response.status === 429) {
-      handleRateLimits(url, response);
+      response = await handleRateLimits(url, response);
     }
   
     if (!response.ok) {
@@ -33,10 +34,10 @@ async function fetchMovieData(movieName) {
       const pagedURL = `http://www.omdbapi.com/?i=tt3896198&apikey=${movieApiKey}&s=${movieName}&type=movie&page=${i}`;
       try {
   
-        const pageResponse = await fetch(pagedURL, options);
+        let pageResponse = await fetch(pagedURL, options);
       
         if (pageResponse.status === 429) {
-          handleRateLimits(pagedURL, pageResponse);
+          pageResponse = await handleRateLimits(pagedURL, pageResponse);
         }
 
         if (!pageResponse.ok) {

@@ -16,6 +16,7 @@ import { getAlbumArt, getAlbumArtArchive, getCustomArt } from "./Images/getAlbum
 import { searchShow, searchShowMultipleResults } from "./Images/searchShow.js";
 import { activityCache } from './client.js';
 import { fetchMovieData } from "./Images/searchMovie.js";
+import { handleRateLimits } from './Images/handleRateLimits.js';
 
 /**
  * Given a show with a description in its metadata, format the description to be in Season Episode format.
@@ -180,6 +181,68 @@ async function getMovieNumber(fileInformation, currentPage, resultNumber, totalP
   return resultNumber;
 }
 
+async function autoSearchShow(fileMetadata) {
+  let details = fileMetadata.showName.trim();
+  let image = iconNames.vlc;
+  state = "Watching media";
+
+  const showResults = await searchShowMultipleResults(fileMetadata.showName.trim());
+  state = fileMetadata.season > 0 ? `Season ${fileMetadata.season} - Episode ${fileMetadata.episode}` : "Unknown episode";
+  if(showResults) {
+    let resultNumber = 0;
+    if(defaultResultNumber === -1) {
+      for (let i = 0; i < showResults.length; i++) {
+        console.log(`Result ${i}: ${showResults[i].show.name}`);
+      }
+
+      const showResultNumberrl = createReadline();
+
+      resultNumber = await askQuestion(showResultNumberrl, "What result number would you like to use? ");
+      if(resultNumber > showResults.length - 1 || resultNumber < 0) {
+        console.log("Invalid file number... defaulting to 0");
+        resultNumber = 0;
+      }
+
+      console.log(`Using result number ${resultNumber} (${showResults[resultNumber].show.name})!`);
+
+      showResultNumberrl.close();
+    } else {
+      resultNumber = defaultResultNumber;
+      console.log(`----------------\nUsing default result number from config.js: ${defaultResultNumber}\n----------------\n`);
+    }
+
+    const imageURL = `http://api.tvmaze.com/shows/${showResults[resultNumber].show.id}/images`;
+    const imageResponse = await fetch(imageURL);
+
+    if(imageResponse.status === 429) {
+      const result = await handleRateLimits(imageURL, imageResponse);
+      const resultData = await result.json();
+
+      if(resultData && resultData.length > 0) {
+
+        // Get the first image (most common)
+        image = resultData[0].resolutions.original.url;
+      }
+    }
+
+    const imageData = await imageResponse.json();
+    if(imageData && imageData.length > 0) {
+
+      // Get the first image (most common)
+      image = imageData[0].resolutions.original.url;
+    }
+
+    details = showResults[resultNumber].show.name ?? "Watching a show";
+
+    return {details, state, image};
+  } else {
+    console.log("----------------");
+    console.log(`WARNING: No results for... ${fileMetadata.showName.trim()}`);
+    console.log("----------------\n");
+    return {details, state, image};
+  }
+}
+
 /**
  * Automatically convert the file name to a show or movie name and search for it.
  * @param {*} meta - Metadata object containing information about the movie or show.
@@ -211,51 +274,7 @@ async function searchAll(meta, state) {
   state = "Watching media";
   
   if(mediaType === "show") {
-    const showResults = await searchShowMultipleResults(fileMetadata.showName.trim());
-    state = fileMetadata.season > 0 ? `Season ${fileMetadata.season} - Episode ${fileMetadata.episode}` : "Unknown episode";
-    if(showResults) {
-      let resultNumber = 0;
-      if(defaultResultNumber === -1) {
-        for (let i = 0; i < showResults.length; i++) {
-          console.log(`Result ${i}: ${showResults[i].show.name}`);
-        }
-
-        const showResultNumberrl = createReadline();
-
-        resultNumber = await askQuestion(showResultNumberrl, "What result number would you like to use? ");
-        if(resultNumber > showResults.length - 1 || resultNumber < 0) {
-          console.log("Invalid file number... defaulting to 0");
-          resultNumber = 0;
-        }
-
-        console.log(`Using result number ${resultNumber} (${showResults[resultNumber].show.name})!`);
-
-        showResultNumberrl.close();
-      } else {
-        resultNumber = defaultResultNumber;
-        console.log(`----------------\nUsing default result number from config.js: ${defaultResultNumber}\n----------------\n`);
-      }
-
-      const imageURL = `http://api.tvmaze.com/shows/${showResults[resultNumber].show.id}/images`;
-      const imageResponse = await fetch(imageURL);
-
-      if(imageResponse.status === 429) {
-        handleRateLimits(imageURL, imageResponse);
-      }
-
-      const imageData = await imageResponse.json();
-      if(imageData && imageData.length > 0) {
-
-        // Get the first image (most common)
-        image = imageData[0].resolutions.original.url;
-      }
-
-      details = showResults[resultNumber].show.name ?? "Watching a show";
-    } else {
-      console.log("----------------");
-      console.log(`WARNING: No results for... ${fileMetadata.showName.trim()}`);
-      console.log("----------------\n");
-    }
+    ({details, state, image} = autoSearchShow(fileMetadata));
   } else if(mediaType === "movie") {
     const fileInformation = await fetchMovieData(fileMetadata.showName.trim());
     let resultNumber = 0;

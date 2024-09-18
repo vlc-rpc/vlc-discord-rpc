@@ -1,6 +1,11 @@
+import { maxRateLimitWait } from "../../Storage/config.js";
+
 async function handleRateLimits(url, response) {
-  // Set initial cooldown to he retry-after or 10 seconds
+  // Set initial cooldown to the retry-after or 10 seconds
   let cooldown = response.headers.get('Retry-After') || 10000;
+  if(cooldown > maxRateLimitWait) {
+    return { "response": null };
+  }
   console.log(`WARNING: Rate limit hit making request to ${url}! Waiting for cooldown (${cooldown/1000}s)...`);
   await new Promise((resolve) => {return setTimeout(resolve, cooldown);});
   
@@ -14,6 +19,9 @@ async function handleRateLimits(url, response) {
   
       // Extend cooldown by 10 seconds
       cooldown += imageResponse.headers.get('Retry-After') || 10000;
+      if(cooldown > maxRateLimitWait) {
+        return { "response": null };
+      }
   
       // Wait for cooldown duration
       await new Promise((resolve) => {return setTimeout(resolve, cooldown);});
@@ -34,4 +42,6 @@ async function handleRateLimits(url, response) {
     console.error("Error during fetch:", error);
   }
 }
+
+export {handleRateLimits};
   

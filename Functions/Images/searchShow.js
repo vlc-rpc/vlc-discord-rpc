@@ -1,3 +1,4 @@
+import { handleRateLimits } from "./handleRateLimits";
 /**
  * Searches for a TV show by name using the TVmaze API.
  * @param {string} showName - The name of the show to search for.
@@ -7,10 +8,10 @@ async function searchShow(showName) {
   try {
     // Use the TVmaze API to search for the show by name
     const showURL = `http://api.tvmaze.com/search/shows?q=${showName}`; 
-    const response = await fetch(showURL);
+    let response = await fetch(showURL);
 
     if(response.status === 429) {
-      handleRateLimits(showURL, response);
+      response = await handleRateLimits(showURL, response);
     }
 
     const data = await response.json();
@@ -22,10 +23,10 @@ async function searchShow(showName) {
 
       // Use the TVmaze API to get the show's image URL
       const showImageURL = `http://api.tvmaze.com/shows/${show.id}/images`;
-      const imageResponse = await fetch(showImageURL);
+      let imageResponse = await fetch(showImageURL);
 
       if(response.status === 429) {
-        handleRateLimits(showImageURL, imageResponse);
+        imageResponse = await handleRateLimits(showImageURL, imageResponse);
       }
 
       const imageData = await imageResponse.json();
@@ -60,10 +61,10 @@ async function searchShowMultipleResults(showName) {
   try {
     // Use the TVmaze API to search for the show by name
     const showURL = `http://api.tvmaze.com/search/shows?q=${showName}`;
-    const response = await fetch(showURL);
+    let response = await fetch(showURL);
 
     if(response.status === 429) {
-      handleRateLimits(showURL, response);
+      response = await handleRateLimits(showURL, response);
     }
 
     const data = await response.json();

@@ -69,6 +69,9 @@ const defaultResultNumber = -1;
 
 const defaultActivityType = ActivityType.Playing;
 
+// The maximum amount of time to wait for a rate limit before deciding to just display it as a video (no image and with file name) in seconds
+const maxRateLimitWait = 120;
+
 // Modules to load
 export { 
   platformDefaults,
@@ -86,4 +89,5 @@ export {
   autoOMDB,
   defaultMovieorShow,
   defaultResultNumber,
-  defaultActivityType };
+  defaultActivityType,
+  maxRateLimitWait };
