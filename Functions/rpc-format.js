@@ -261,6 +261,7 @@ async function searchAll(meta, state) {
     let resultNumber = 0;
 
     if(fileInformation.Response !== 'False') {
+      console.log(fileInformation);
 
       console.log(`There are ${fileInformation.Search.length} results.`);
       if(fileInformation.Search.length > 0) {
