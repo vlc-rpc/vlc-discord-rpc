@@ -1,13 +1,20 @@
 /**
  * Description: Decides what information to display based on the nature of the media (video, music, etc)
  */
-import { defaultActivityType, iconNames, movieApiKey, useSpotify } from "../Storage/config.js";
 import { askQuestion, createReadline, extractShowDetails } from '../Metadata/metadata_functions.cjs'; 
-import { autoOMDB, defaultMovieorShow, defaultResultNumber, iconNames, logUpdates, movieApiKey, useSpotify } from "../Storage/config.js";   
+import { 
+  autoOMDB, 
+  defaultActivityType, 
+  defaultMovieorShow, 
+  defaultResultNumber, 
+  iconNames, 
+  logUpdates,
+  movieApiKey, 
+  useSpotify 
+} from "../Storage/config.js";
 import { getAlbumArt, getAlbumArtArchive, getCustomArt } from "./Images/getAlbumArt.js";
 import { searchShow, searchShowMultipleResults } from "./Images/searchShow.js";
 import { activityCache } from './client.js';
-import { ActivityType } from "discord-api-types/v10";
 import { fetchMovieData } from "./Images/searchMovie.js";
 
 /**
