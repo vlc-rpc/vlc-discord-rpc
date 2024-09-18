@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
+  "engines": {
+    "node": ">=17.5 <22"
+  },
   "dependencies": {
     "@xhayper/discord-rpc": "^1.2.0",
     "axios": "^1.7.7",
