@@ -1,3 +1,5 @@
+import { ActivityType } from "discord-api-types/v10";
+
 // Where to look for VLC
 const platformDefaults = {
   win32: "C:/Program Files/VideoLAN/VLC/vlc.exe",
@@ -65,6 +67,8 @@ const defaultMovieorShow = "";
 // Set to -1 to disable. Any Number 0 through the number of results will work.
 const defaultResultNumber = -1;
 
+const defaultActivityType = ActivityType.Playing;
+
 // Modules to load
 export { 
   platformDefaults,
@@ -81,4 +85,5 @@ export {
   separator,
   autoOMDB,
   defaultMovieorShow,
-  defaultResultNumber };
+  defaultResultNumber,
+  defaultActivityType };

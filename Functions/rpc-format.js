@@ -1,6 +1,7 @@
 /**
  * Description: Decides what information to display based on the nature of the media (video, music, etc)
  */
+import { defaultActivityType, iconNames, movieApiKey, useSpotify } from "../Storage/config.js";
 import { askQuestion, createReadline, extractShowDetails } from '../Metadata/metadata_functions.cjs'; 
 import { autoOMDB, defaultMovieorShow, defaultResultNumber, iconNames, logUpdates, movieApiKey, useSpotify } from "../Storage/config.js";   
 import { getAlbumArt, getAlbumArtArchive, getCustomArt } from "./Images/getAlbumArt.js";
@@ -429,7 +430,7 @@ export async function format(status, changedFiles) {
     partySize: partySize,
     partyMax: partyMax,
     // Supported: https://discord.com/developers/docs/topics/gateway-events#activity-object-activity-types
-    type: ActivityType.Playing
+    type: defaultActivityType
   };
 }
 
