@@ -17,6 +17,10 @@ async function fetchMovieData(movieName) {
   try {
   
     const response = await fetch(url, options);
+
+    if (response.status === 429) {
+      handleRateLimits(url, response);
+    }
   
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -31,6 +35,10 @@ async function fetchMovieData(movieName) {
   
         const pageResponse = await fetch(pagedURL, options);
       
+        if (pageResponse.status === 429) {
+          handleRateLimits(pagedURL, pageResponse);
+        }
+
         if (!pageResponse.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }

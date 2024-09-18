@@ -6,7 +6,13 @@
 async function searchShow(showName) {
   try {
     // Use the TVmaze API to search for the show by name
-    const response = await fetch(`http://api.tvmaze.com/search/shows?q=${showName}`);
+    const showURL = `http://api.tvmaze.com/search/shows?q=${showName}`; 
+    const response = await fetch(showURL);
+
+    if(response.status === 429) {
+      handleRateLimits(showURL, response);
+    }
+
     const data = await response.json();
 
     // Make sure we actually found a show
@@ -15,8 +21,15 @@ async function searchShow(showName) {
       const [{show}] = data;
 
       // Use the TVmaze API to get the show's image URL
-      const imageResponse = await fetch(`http://api.tvmaze.com/shows/${show.id}/images`);
+      const showImageURL = `http://api.tvmaze.com/shows/${show.id}/images`;
+      const imageResponse = await fetch(showImageURL);
+
+      if(response.status === 429) {
+        handleRateLimits(showImageURL, imageResponse);
+      }
+
       const imageData = await imageResponse.json();
+
       if(imageData && imageData.length > 0) {
 
         // Get the first image (most common)
@@ -46,7 +59,13 @@ async function searchShow(showName) {
 async function searchShowMultipleResults(showName) {
   try {
     // Use the TVmaze API to search for the show by name
-    const response = await fetch(`http://api.tvmaze.com/search/shows?q=${showName}`);
+    const showURL = `http://api.tvmaze.com/search/shows?q=${showName}`;
+    const response = await fetch(showURL);
+
+    if(response.status === 429) {
+      handleRateLimits(showURL, response);
+    }
+
     const data = await response.json();
 
     // Make sure we actually found a show

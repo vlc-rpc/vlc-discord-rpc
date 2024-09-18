@@ -228,7 +228,13 @@ async function searchAll(meta, state) {
         console.log(`----------------\nUsing default result number from config.js: ${defaultResultNumber}\n----------------\n`);
       }
 
-      const imageResponse = await fetch(`http://api.tvmaze.com/shows/${showResults[resultNumber].show.id}/images`);
+      const imageURL = `http://api.tvmaze.com/shows/${showResults[resultNumber].show.id}/images`;
+      const imageResponse = await fetch(imageURL);
+
+      if(imageResponse.status === 429) {
+        handleRateLimits(imageURL, imageResponse);
+      }
+
       const imageData = await imageResponse.json();
       if(imageData && imageData.length > 0) {
 
