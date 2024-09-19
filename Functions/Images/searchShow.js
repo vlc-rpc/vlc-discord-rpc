@@ -1,4 +1,4 @@
-import { handleRateLimits } from "./handleRateLimits";
+import { handleRateLimits } from "./handleRateLimits.js";
 /**
  * Searches for a TV show by name using the TVmaze API.
  * @param {string} showName - The name of the show to search for.

@@ -118,7 +118,7 @@ async function handleMovie(meta, state) {
  */
 async function askMediaType() {
   const showOrMovierl = createReadline();
-  let mediaType = await askQuestion(showOrMovierl, "Is this a show (s) or movie (m)? ");
+  let mediaType = await askQuestion(showOrMovierl, "Is this a show (s), movie (m), or a video (v)? ");
 
   if(mediaType.toLowerCase() === "s") {
     mediaType = "show";
@@ -128,16 +128,24 @@ async function askMediaType() {
     mediaType = "movie";
   }
 
-  while(mediaType.toLowerCase() !== "show" && mediaType.toLowerCase() !== "movie") {
-    console.log("Invalid type. Please try again.");
-    mediaType = await askQuestion(showOrMovierl, "Is this a show (s) or movie (m)? ");
+  if(mediaType.toLowerCase() === "v") {
+    mediaType = "video";
+  }
 
-    if(mediaType === "s") {
+  while(mediaType.toLowerCase() !== "show" && mediaType.toLowerCase() !== "movie" && mediaType !== "video") {
+    console.log("Invalid type. Please try again.");
+    mediaType = await askQuestion(showOrMovierl, "Is this a show (s), movie (m), or video (v)? ");
+
+    if(mediaType.toLowerCase() === "s") {
       mediaType = "show";
     }
   
-    if(mediaType === "m") {
+    if(mediaType.toLowerCase() === "m") {
       mediaType = "movie";
+    }
+
+    if(mediaType.toLowerCase() === "v") {
+      mediaType = "video";
     }
   }
 
@@ -254,9 +262,19 @@ async function searchAll(meta, state) {
   }
 
   let mediaType = "";
+  let details = meta.filename;
+  let image = iconNames.vlc;
+  state = "Watching media";
 
-  if(defaultMovieorShow.toLowerCase() !== "show" && defaultMovieorShow.toLowerCase() !== "movie")  {
+  if(defaultMovieorShow.toLowerCase() !== "show" && defaultMovieorShow.toLowerCase() !== "movie" && defaultMovieorShow.toLowerCase() !== "video")  {
     mediaType = await askMediaType();
+  } else if (defaultMovieorShow.toLowerCase() === "video") {
+    console.log(`----------------\nUsing default media type from config.js: video\n----------------\n`);
+    console.log("----------------");
+    console.log(`Using file name... ${details}`);
+    console.log(`If this name is incorrect please rename your file`);
+    console.log("----------------\n");
+    return {details, state, image};
   } else {
     mediaType = defaultMovieorShow.toLowerCase();
     console.log(`----------------\nUsing default media type from config.js: ${mediaType}\n----------------\n`);
@@ -264,14 +282,14 @@ async function searchAll(meta, state) {
 
   const fileMetadata = extractShowDetails(meta.filename);
 
-  console.log("----------------");
-  console.log(`Finding results for... ${fileMetadata.showName.trim()}`);
-  console.log(`If this name is incorrect please rename your file`);
-  console.log("----------------\n");
+  if(mediaType === "show" || mediaType === "movie") {
+    details = fileMetadata.showName.trim();
 
-  let details = fileMetadata.showName.trim();
-  let image = iconNames.vlc;
-  state = "Watching media";
+    console.log("----------------");
+    console.log(`Finding results for... ${fileMetadata.showName.trim()}`);
+    console.log(`If this name is incorrect please rename your file`);
+    console.log("----------------\n");
+  }
   
   if(mediaType === "show") {
     ({details, state, image} = autoSearchShow(fileMetadata));
@@ -306,6 +324,13 @@ async function searchAll(meta, state) {
       console.log(`WARNING: No results for... ${fileMetadata.showName.trim()}`);
       console.log("----------------\n");
     }
+  } else if (mediaType === "video") {
+    console.log("----------------");
+    console.log(`Using file name... ${details}`);
+    console.log(`If this name is incorrect please rename your file`);
+    console.log("----------------\n");
+      
+    return {details, state, image};
   }
   
   return { details, state, image };

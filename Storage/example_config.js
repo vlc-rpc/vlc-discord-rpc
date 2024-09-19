@@ -61,12 +61,13 @@ const separator = '_';
 
 const autoOMDB = false;
 
-// Set to "" to disable. Other accepted parameters are "show" or "movie"
+// Set to "" to disable. Other accepted parameters are "show", "movie", or "video".
 const defaultMovieorShow = "";
 
 // Set to -1 to disable. Any Number 0 through the number of results will work.
 const defaultResultNumber = -1;
 
+// View VLC-RPC documentation online for valid types. Link is on the Github.
 const defaultActivityType = ActivityType.Playing;
 
 // The maximum amount of time to wait for a rate limit before deciding to just display it as a video (no image and with file name) in seconds
