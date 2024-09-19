@@ -62,7 +62,7 @@ const separator = '_';
 const autoOMDB = false;
 
 // Set to "" to disable. Other accepted parameters are "show", "movie", or "video".
-const defaultMovieorShow = "";
+const defaultMediaType = "";
 
 // Set to -1 to disable. Any Number 0 through the number of results will work.
 const defaultResultNumber = -1;
@@ -88,7 +88,7 @@ export {
   directories, 
   separator,
   autoOMDB,
-  defaultMovieorShow,
+  defaultMediaType,
   defaultResultNumber,
   defaultActivityType,
   maxRateLimitWait };

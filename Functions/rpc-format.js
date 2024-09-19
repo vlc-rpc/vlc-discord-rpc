@@ -5,7 +5,7 @@ import { askQuestion, createReadline, extractShowDetails } from '../Metadata/met
 import { 
   autoOMDB, 
   defaultActivityType, 
-  defaultMovieorShow, 
+  defaultMediaType, 
   defaultResultNumber, 
   iconNames, 
   logUpdates,
@@ -266,9 +266,9 @@ async function searchAll(meta, state) {
   let image = iconNames.vlc;
   state = "Watching media";
 
-  if(defaultMovieorShow.toLowerCase() !== "show" && defaultMovieorShow.toLowerCase() !== "movie" && defaultMovieorShow.toLowerCase() !== "video")  {
+  if(defaultMediaType.toLowerCase() !== "show" && defaultMediaType.toLowerCase() !== "movie" && defaultMediaType.toLowerCase() !== "video")  {
     mediaType = await askMediaType();
-  } else if (defaultMovieorShow.toLowerCase() === "video") {
+  } else if (defaultMediaType.toLowerCase() === "video") {
     console.log(`----------------\nUsing default media type from config.js: video\n----------------\n`);
     console.log("----------------");
     console.log(`Using file name... ${details}`);
@@ -276,7 +276,7 @@ async function searchAll(meta, state) {
     console.log("----------------\n");
     return {details, state, image};
   } else {
-    mediaType = defaultMovieorShow.toLowerCase();
+    mediaType = defaultMediaType.toLowerCase();
     console.log(`----------------\nUsing default media type from config.js: ${mediaType}\n----------------\n`);
   }
 
