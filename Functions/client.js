@@ -1,3 +1,4 @@
+import { ActivityType } from "discord-api-types/v10";
 import { Client } from "@xhayper/discord-rpc";
 import {diff} from "./status.js";
 import {format} from "./rpc-format.js";
@@ -6,16 +7,29 @@ import {richPresenseSettings} from "../Storage/config.js";
 const client = new Client({ clientId: richPresenseSettings.id });
 let awake = true;
 let timeInactive = 0;
+let activityCache = {
+  state: "",
+  details: "",
+  largeImageKey: "",
+  smallImageKey: "",
+  smallImageText: "",
+  instance: true,
+  endTimestamp: 0,
+  partySize: 0,
+  partyMax: 0,
+  // Supported: https://discord.com/developers/docs/topics/gateway-events#activity-object-activity-types
+  type: ActivityType.Playing
+};
 
 /**
  * Main function for updating Discord Rich Presence based on status changes.
  * @returns {void}
  */
 async function update() {
-  diff(async (status, shouldUpdate) => {
+  diff(async (status, shouldUpdate, changedFiles) => {
     if (shouldUpdate) {
-      const formatted = await format(status);
-      client.user?.setActivity(formatted);
+      activityCache = await format(status, changedFiles);
+      client.user?.setActivity(activityCache);
 
       if (!awake) {
         awake = true;
@@ -29,8 +43,8 @@ async function update() {
           awake = false;
           client.user?.clearActivity();
         } else {
-          const formattedStatus = await format(status);
-          client.user?.setActivity(formattedStatus);
+          activityCache = await format(status, changedFiles);
+          client.user?.setActivity(activityCache);
           awake = false;
         }
       }
@@ -62,3 +76,5 @@ async function connectToDiscord() {
   }
 }
 connectToDiscord();
+
+export {activityCache};

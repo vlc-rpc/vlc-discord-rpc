@@ -1,10 +1,22 @@
 /**
  * Description: Decides what information to display based on the nature of the media (video, music, etc)
  */
-import { defaultActivityType, iconNames, movieApiKey, useSpotify } from "../Storage/config.js";
+import { askQuestion, createReadline, extractShowDetails } from '../Metadata/metadata_functions.cjs'; 
+import { 
+  autoOMDB, 
+  defaultActivityType, 
+  defaultMovieorShow, 
+  defaultResultNumber, 
+  iconNames, 
+  logUpdates,
+  movieApiKey, 
+  useSpotify 
+} from "../Storage/config.js";
 import { getAlbumArt, getAlbumArtArchive, getCustomArt } from "./Images/getAlbumArt.js";
+import { searchShow, searchShowMultipleResults } from "./Images/searchShow.js";
+import { activityCache } from './client.js';
 import { fetchMovieData } from "./Images/searchMovie.js";
-import { searchShow } from "./Images/searchShow.js";
+import { handleRateLimits } from './Images/handleRateLimits.js';
 
 /**
  * Given a show with a description in its metadata, format the description to be in Season Episode format.
@@ -56,6 +68,10 @@ async function handleShow(meta, state) {
 
   state = setShowState(meta, state);
 
+  if(logUpdates) {
+    console.log("----------------\nLog Updates\nSearch Show Function is running\n----------------\n");
+  }
+
   const show = await searchShow(meta.title);
 
   if (show && show.image) {
@@ -74,6 +90,10 @@ async function handleMovie(meta, state) {
   let image = iconNames.vlc;
   let details = meta.title;
 
+  if(logUpdates) {
+    console.log("----------------\nLog Updates\nFetch Movie Data Function is running\n----------------\n");
+  }
+
   // Try to search for the movie and get its image
   const movie = await fetchMovieData(meta.title);
 
@@ -89,6 +109,230 @@ async function handleMovie(meta, state) {
     state = meta.title || "Video";
   }
 
+  return { details, state, image };
+}
+
+/**
+ * Ask the user for the type of media.
+ * @returns mediaType - Whether it is a show or movie.
+ */
+async function askMediaType() {
+  const showOrMovierl = createReadline();
+  let mediaType = await askQuestion(showOrMovierl, "Is this a show (s), movie (m), or a video (v)? ");
+
+  if(mediaType.toLowerCase() === "s") {
+    mediaType = "show";
+  }
+
+  if(mediaType.toLowerCase() === "m") {
+    mediaType = "movie";
+  }
+
+  if(mediaType.toLowerCase() === "v") {
+    mediaType = "video";
+  }
+
+  while(mediaType.toLowerCase() !== "show" && mediaType.toLowerCase() !== "movie" && mediaType !== "video") {
+    console.log("Invalid type. Please try again.");
+    mediaType = await askQuestion(showOrMovierl, "Is this a show (s), movie (m), or video (v)? ");
+
+    if(mediaType.toLowerCase() === "s") {
+      mediaType = "show";
+    }
+  
+    if(mediaType.toLowerCase() === "m") {
+      mediaType = "movie";
+    }
+
+    if(mediaType.toLowerCase() === "v") {
+      mediaType = "video";
+    }
+  }
+
+  showOrMovierl.close();
+  return mediaType.toLowerCase();
+}
+
+async function getMovieNumber(fileInformation, currentPage, resultNumber, totalPages, itemsPerPage) {
+
+  for (let i = 0; i < fileInformation.Search.length; i++) {
+    console.log(`Result ${i}: ${fileInformation.Search[i].Title} (${fileInformation.Search[i].Year})`);
+
+    if ((i + 1) % itemsPerPage === 0 || i === fileInformation.Search.length - 1) {
+      console.log(`Page ${currentPage}/${totalPages}`);
+
+      if (i < fileInformation.Search.length - 1) {
+        const movieResultNumberrl = createReadline();
+
+        resultNumber = await askQuestion(movieResultNumberrl, "What result number would you like to use? Enter 'n' to see the next page. ");
+        if (resultNumber.toLowerCase() === 'n') {
+          currentPage++;
+        } else {
+          resultNumber = parseInt(resultNumber); 
+
+          if (isNaN(resultNumber) || resultNumber < 0 || resultNumber >= fileInformation.Search.length) {
+            console.log("Invalid result number. Defaulting to 0.");
+            resultNumber = 0;
+          }
+          
+          movieResultNumberrl.close();
+          break; 
+        }
+        movieResultNumberrl.close();
+      } else {
+        console.log("There are no more pages. Please select a result");
+        const movieResultNumberrl = createReadline();
+        resultNumber = await askQuestion(movieResultNumberrl, "What result number would you like to use? There are no more pages. ");
+      }
+    }
+  }
+  return resultNumber;
+}
+
+async function autoSearchShow(fileMetadata) {
+  let details = fileMetadata.showName.trim();
+  let image = iconNames.vlc;
+  state = "Watching media";
+
+  const showResults = await searchShowMultipleResults(fileMetadata.showName.trim());
+  state = fileMetadata.season > 0 ? `Season ${fileMetadata.season} - Episode ${fileMetadata.episode}` : "Unknown episode";
+  if(showResults) {
+    let resultNumber = 0;
+    if(defaultResultNumber === -1) {
+      for (let i = 0; i < showResults.length; i++) {
+        console.log(`Result ${i}: ${showResults[i].show.name}`);
+      }
+
+      const showResultNumberrl = createReadline();
+
+      resultNumber = await askQuestion(showResultNumberrl, "What result number would you like to use? ");
+      if(resultNumber > showResults.length - 1 || resultNumber < 0) {
+        console.log("Invalid file number... defaulting to 0");
+        resultNumber = 0;
+      }
+
+      console.log(`Using result number ${resultNumber} (${showResults[resultNumber].show.name})!`);
+
+      showResultNumberrl.close();
+    } else {
+      resultNumber = defaultResultNumber;
+      console.log(`----------------\nUsing default result number from config.js: ${defaultResultNumber}\n----------------\n`);
+    }
+
+    const imageURL = `http://api.tvmaze.com/shows/${showResults[resultNumber].show.id}/images`;
+    const imageResponse = await fetch(imageURL);
+
+    if(imageResponse.status === 429) {
+      const result = await handleRateLimits(imageURL, imageResponse);
+      const resultData = await result.json();
+
+      if(resultData && resultData.length > 0) {
+
+        // Get the first image (most common)
+        image = resultData[0].resolutions.original.url;
+      }
+    }
+
+    const imageData = await imageResponse.json();
+    if(imageData && imageData.length > 0) {
+
+      // Get the first image (most common)
+      image = imageData[0].resolutions.original.url;
+    }
+
+    details = showResults[resultNumber].show.name ?? "Watching a show";
+
+    return {details, state, image};
+  } else {
+    console.log("----------------");
+    console.log(`WARNING: No results for... ${fileMetadata.showName.trim()}`);
+    console.log("----------------\n");
+    return {details, state, image};
+  }
+}
+
+/**
+ * Automatically convert the file name to a show or movie name and search for it.
+ * @param {*} meta - Metadata object containing information about the movie or show.
+ * @returns {object} - Object containing details, state, and image.
+ */
+async function searchAll(meta, state) {
+  if(logUpdates) {
+    console.log("----------------\nLog Updates\nSearch All Function is running\n----------------\n");
+  }
+
+  let mediaType = "";
+  let details = meta.filename;
+  let image = iconNames.vlc;
+  state = "Watching media";
+
+  if(defaultMovieorShow.toLowerCase() !== "show" && defaultMovieorShow.toLowerCase() !== "movie" && defaultMovieorShow.toLowerCase() !== "video")  {
+    mediaType = await askMediaType();
+  } else if (defaultMovieorShow.toLowerCase() === "video") {
+    console.log(`----------------\nUsing default media type from config.js: video\n----------------\n`);
+    console.log("----------------");
+    console.log(`Using file name... ${details}`);
+    console.log(`If this name is incorrect please rename your file`);
+    console.log("----------------\n");
+    return {details, state, image};
+  } else {
+    mediaType = defaultMovieorShow.toLowerCase();
+    console.log(`----------------\nUsing default media type from config.js: ${mediaType}\n----------------\n`);
+  }
+
+  const fileMetadata = extractShowDetails(meta.filename);
+
+  if(mediaType === "show" || mediaType === "movie") {
+    details = fileMetadata.showName.trim();
+
+    console.log("----------------");
+    console.log(`Finding results for... ${fileMetadata.showName.trim()}`);
+    console.log(`If this name is incorrect please rename your file`);
+    console.log("----------------\n");
+  }
+  
+  if(mediaType === "show") {
+    ({details, state, image} = autoSearchShow(fileMetadata));
+  } else if(mediaType === "movie") {
+    const fileInformation = await fetchMovieData(fileMetadata.showName.trim());
+    let resultNumber = 0;
+
+    if(fileInformation.Response !== 'False') {
+      console.log(fileInformation);
+
+      console.log(`There are ${fileInformation.Search.length} results.`);
+      if(fileInformation.Search.length > 0) {
+        if(defaultResultNumber !== -1) {
+          resultNumber = defaultResultNumber;
+          console.log(`----------------\nUsing default result number from config.js: ${defaultResultNumber}\n----------------\n`);
+        } else {
+          const itemsPerPage = 10;
+          const currentPage = 1;
+        
+          const totalPages = Math.ceil(fileInformation.Search.length / itemsPerPage);
+          resultNumber = await getMovieNumber(fileInformation, currentPage, resultNumber, totalPages, itemsPerPage);
+        } 
+      }
+
+      console.log(`Using result number ${resultNumber} (${fileInformation.Search[resultNumber].Title})!`);
+
+      details = fileInformation.Search[resultNumber].Title ?? "Watching a movie";
+      state = `${fileInformation.Search[resultNumber].Year}`;
+      image = fileInformation.Search[resultNumber].Poster;
+    } else {
+      console.log("----------------");
+      console.log(`WARNING: No results for... ${fileMetadata.showName.trim()}`);
+      console.log("----------------\n");
+    }
+  } else if (mediaType === "video") {
+    console.log("----------------");
+    console.log(`Using file name... ${details}`);
+    console.log(`If this name is incorrect please rename your file`);
+    console.log("----------------\n");
+      
+    return {details, state, image};
+  }
+  
   return { details, state, image };
 }
 
@@ -132,12 +376,26 @@ async function handleMusic(meta, state) {
   return {details, state, partySize, partyMax, image};
 }
 
+function checkDetailLength(details) {
+  if (details.length > 125) {
+    details = details.substring(0, 125) + "...";
+  }
+
+  // Details field must be >= 2 characters
+  if(details.length < 2) {
+    details += ".";
+  }
+
+  return details;
+}
+
 /**
  * Main function for formatting status information based on content type.
  * @param {*} status - Object containing status information.
+ * @param {*} changedFiles - Whether or not the file that is playing was changed to another file.
  * @returns {object} - Formatted status information for display.
  */
-export async function format(status) {
+export async function format(status, changedFiles) {
   // Initialize variables
   let details = "";
   let image = iconNames.vlc;
@@ -153,20 +411,28 @@ export async function format(status) {
   const {meta} = status.information.category;
 
   // If it's a TV show 
-  if (meta.genre === "show") {
+  if (meta.genre === "show" && changedFiles) {
     const showResult = await handleShow(meta, state);
     ({details} = showResult);
     ({state} = showResult);
     ({image} = showResult);
-  } 
+  } else if(meta.genre === "show" && !changedFiles) {
+    ({details} = activityCache);
+    ({state} = activityCache);
+    image = activityCache.largeImageKey;
+  }
 
   // If it's a movie
-  else if (meta.genre === "movie" && meta.title && movieApiKey !== "") {
+  else if (meta.genre === "movie" && meta.title && movieApiKey !== "" && changedFiles) {
     const movieResult = await handleMovie(meta, state);
     ({details} = movieResult);
     ({state} = movieResult);
     ({image} = movieResult);
-  } 
+  } else if(meta.genre === "movie" && !changedFiles) {
+    ({details} = activityCache);
+    ({state} = activityCache);
+    image = activityCache.largeImageKey;
+  }
   
   // If it's a music video
   else if (meta.artist) {
@@ -181,6 +447,16 @@ export async function format(status) {
     // Set the state to  the value of the "now_playing" meta data (if available) or "Stream"
     state = meta.now_playing || "Stream";
     details = meta.filename;
+  }
+  else if(autoOMDB && changedFiles) {
+    const result = await searchAll(meta, state);
+    ({details} = result);
+    ({state} = result);
+    ({image} = result);
+  } else if(autoOMDB && !changedFiles) {
+    ({details} = activityCache);
+    ({state} = activityCache);
+    image = activityCache.largeImageKey;
   } else {
     details = meta.filename;
     state = meta.title || "Video";
@@ -193,14 +469,7 @@ export async function format(status) {
   }
 
   // Make sure the details variable is not too long to be displayed (limited by Discord)
-  if (details.length > 125) {
-    details = details.substring(0, 125) + "...";
-  }
-
-  // Details field must be >= 2 characters
-  if(details.length < 2) {
-    details += ".";
-  }
+  details = checkDetailLength(details);
 
   return {
     state: state,

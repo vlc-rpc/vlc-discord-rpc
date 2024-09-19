@@ -82,5 +82,17 @@ describe('Name Cleaning', function() {
         episodeTitle: 'A Man Holding Flowers'
       });
     });
+
+    it('should correctly extract details from the Azumanga series', function() {
+      const result = extractShowDetails('Azumanga Daioh - S01E01.mp4');
+      const finalName = result.showName.length === 3 && result.showName[1] === ' ' ? result.showName.replace(' ', '') : result.showName;
+      result.showName = finalName;
+      expect(result).to.deep.equal({
+        showName: 'Azumanga Daioh',
+        season: 1,
+        episode: 1,
+        episodeTitle: ''
+      });
+    });
   });
 });
