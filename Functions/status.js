@@ -1,9 +1,5 @@
-// Import the 'vlc.js' library and the configuration file
+// Import the configuration file
 import {logUpdates, richPresenseSettings, vlcConfig} from "../Storage/config.js";
-import { VLCClient as _VLCClient } from "vlc.js";
-
-// Create a new instance of the VLC client
-const VLCClient = new _VLCClient(vlcConfig);
 
 // Keep track of the last known status of VLC
 const lastStatus = {
@@ -12,6 +8,22 @@ const lastStatus = {
   state: "",
   icon_url: "",
   time: 0
+};
+
+// Function to get VLC status using the HTTP API
+async function getVLCStatus() {
+  const url = `${vlcConfig.address+":"+vlcConfig.port}/requests/status.json`;
+  const response = await fetch(url, {
+    headers: {
+      "Authorization": "Basic " + btoa(`:${vlcConfig.password}`)
+    }
+  });
+
+  if (!response.ok) {
+    console.log("WARNING: Failed to fetch VLC status. Is it open?");
+  }
+
+  return response.json();
 };
 
 // Export a function that takes a callback as an argument
@@ -24,7 +36,7 @@ export const diff = async (callback) => {
   updating = true;
   try {
     // Get the current status of VLC
-    const status = await VLCClient.getStatus();
+    const status = await getVLCStatus();
     if (status.information) {
       // Get the metadata
       const { meta } = status.information.category;
