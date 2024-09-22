@@ -14,7 +14,7 @@ import {
 } from "../Storage/config.js";
 import { getAlbumArt, getAlbumArtArchive, getCustomArt } from "./Images/getAlbumArt.js";
 import { searchShow, searchShowMultipleResults } from "./Images/searchShow.js";
-import { activityCache } from './client.js';
+import { activityCache } from './Discord_Client.js';
 import { fetchMovieData } from "./Images/searchMovie.js";
 import { handleRateLimits } from './Images/handleRateLimits.js';
 
