@@ -38,7 +38,7 @@ const spotify = {
 const vlcConfig = {
   password: "",
   port: 8080,
-  address: "http://localhost"
+  address: "localhost"
 };
 
 // Do you want it to log every time your presence is updated? (Useful for debug)
