@@ -15,6 +15,7 @@
   },
   "scripts": {
     "test": "mocha",
+    "coverage": "nyc npm run test",
     "lint": "eslint --fix .",
     "docs:update-package": "npx vp-update",
     "deploy": "bash deploy.sh"
@@ -32,6 +33,8 @@
     "chai": "^5.1.1",
     "eslint": "^9.10.0",
     "eslint-plugin-jsdoc": "^50.2.2",
-    "mocha": "^10.7.3"
+    "mocha": "^10.7.3",
+    "nyc": "^17.1.0",
+    "path": "^0.12.7"
   }
 }

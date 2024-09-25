@@ -119,6 +119,8 @@ function cleanName(name) {
     return "Unknown";
   }
 
+  name = name.length === 3 && name[1] === ' ' ? name.replace(' ', '') : name;
+
   return name.trim();
 }
 
@@ -142,7 +144,7 @@ function extractShowDetails(fileName) {
   const showDetails = nameWithoutExtension.match(/^(.*?)(S\d+E\d+)(.*?)$/i);
 
   if (!showDetails) {
-    return { showName: cleanName(nameWithoutExtension), season: 0, episode: 0, episodeTitle: '' };
+    return { showName: cleanName(nameWithoutExtension), season: 0, episode: 0, episodeTitle: 'Unknown' };
   }
 
   const [, showNamePart, seasonEpisodePart, episodeTitlePart] = showDetails;
