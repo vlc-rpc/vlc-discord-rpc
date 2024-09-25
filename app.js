@@ -34,7 +34,6 @@ const params =     [
   "--http-port",
   vlcConfig.port
 ];
-console.log(startCommand + params.join(" "));
 
 if(!detached) {
 // Start the process
