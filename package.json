@@ -10,7 +10,7 @@
     "@xhayper/discord-rpc": "^1.2.0",
     "axios": "^1.7.7",
     "child-process": "^1.0.2",
-    "fast-xml-parser": "^4.4.1",
+    "fast-xml-parser": "^4.5.0",
     "url": "^0.11.4"
   },
   "scripts": {
