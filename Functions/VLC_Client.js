@@ -12,13 +12,11 @@ class Client {
 
   async getStatus() {
     const base = this.server.toString();
-    console.log(`Connecting to VLC server at: ${base}`);  
 
     const target = "http://" + base + "/requests/status.json";
     
     try {
       const data = await this.request(target);
-      console.log('Response from VLC:', data);
       return data;
     } catch (error) {
       console.error('Failed to fetch VLC status:', error);
@@ -28,7 +26,6 @@ class Client {
   async request(target) {
     try {
       const basicAuth = Buffer.from(":" + this.password).toString('base64');
-      console.log(target);
       const response = await fetch(target, {
         headers: {
           'Authorization': `Basic ${basicAuth}`,

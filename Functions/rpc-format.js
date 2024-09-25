@@ -332,7 +332,6 @@ async function searchAll(meta, state) {
     return {details, state, image};
   }
   
-  console.log(details);
   return { details, state, image };
 }
 
