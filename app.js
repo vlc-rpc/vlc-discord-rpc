@@ -24,16 +24,6 @@ if (process.platform === "win32" && !existsSync(platformDefaults.win32)) {
 
 // If VLC path is not specified use the default
 const startCommand = vlcPath || platformDefaults[process.platform];
-const params =     [
-  "--extraintf",
-  "http",
-  "--http-host",
-  vlcConfig.address,
-  "--http-password",
-  vlcConfig.password,
-  "--http-port",
-  vlcConfig.port
-];
 
 if(!detached) {
 // Start the process
