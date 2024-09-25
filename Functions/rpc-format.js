@@ -192,9 +192,10 @@ async function getMovieNumber(fileInformation, currentPage, resultNumber, totalP
 async function autoSearchShow(fileMetadata) {
   let details = fileMetadata.showName.trim();
   let image = iconNames.vlc;
-  state = "Watching media";
+  let state = "Watching media";
 
   const showResults = await searchShowMultipleResults(fileMetadata.showName.trim());
+
   state = fileMetadata.season > 0 ? `Season ${fileMetadata.season} - Episode ${fileMetadata.episode}` : "Unknown episode";
   if(showResults) {
     let resultNumber = 0;
@@ -292,14 +293,12 @@ async function searchAll(meta, state) {
   }
   
   if(mediaType === "show") {
-    ({details, state, image} = autoSearchShow(fileMetadata));
+    ({details, state, image} = await autoSearchShow(fileMetadata));
   } else if(mediaType === "movie") {
     const fileInformation = await fetchMovieData(fileMetadata.showName.trim());
     let resultNumber = 0;
 
     if(fileInformation.Response !== 'False') {
-      console.log(fileInformation);
-
       console.log(`There are ${fileInformation.Search.length} results.`);
       if(fileInformation.Search.length > 0) {
         if(defaultResultNumber !== -1) {
@@ -333,6 +332,7 @@ async function searchAll(meta, state) {
     return {details, state, image};
   }
   
+  console.log(details);
   return { details, state, image };
 }
 
@@ -377,16 +377,16 @@ async function handleMusic(meta, state) {
 }
 
 function checkDetailLength(details) {
-  if (details.length > 125) {
+  if (details && details.length > 125) {
     details = details.substring(0, 125) + "...";
   }
 
   // Details field must be >= 2 characters
-  if(details.length < 2) {
+  if(details && details.length < 2) {
     details += ".";
   }
 
-  return details;
+  return details ?? "Unknown";
 }
 
 /**
