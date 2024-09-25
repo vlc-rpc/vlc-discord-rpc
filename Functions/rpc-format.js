@@ -192,7 +192,7 @@ async function getMovieNumber(fileInformation, currentPage, resultNumber, totalP
 async function autoSearchShow(fileMetadata) {
   let details = fileMetadata.showName.trim();
   let image = iconNames.vlc;
-  state = "Watching media";
+  let state = "Watching media";
 
   const showResults = await searchShowMultipleResults(fileMetadata.showName.trim());
   state = fileMetadata.season > 0 ? `Season ${fileMetadata.season} - Episode ${fileMetadata.episode}` : "Unknown episode";
