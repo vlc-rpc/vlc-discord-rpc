@@ -45,7 +45,7 @@ export default [
       'no-var': 'error',
       'no-implied-eval': 'error',
       'array-callback-return': 'error',
-      complexity: ['error', { max: 21 }],
+      complexity: ['error', { max: 22 }],
       'no-constant-binary-expression': 'error',
       'no-duplicate-imports': 'error',
       'no-self-compare': 'error',

@@ -1,9 +1,6 @@
-// Import the 'vlc.js' library and the configuration file
+// Import the configuration file
 import {logUpdates, richPresenseSettings, vlcConfig} from "../Storage/config.js";
-import { VLCClient as _VLCClient } from "vlc.js";
-
-// Create a new instance of the VLC client
-const VLCClient = new _VLCClient(vlcConfig);
+import Client from "./VLC_Client.js";
 
 // Keep track of the last known status of VLC
 const lastStatus = {
@@ -13,6 +10,9 @@ const lastStatus = {
   icon_url: "",
   time: 0
 };
+
+const url = vlcConfig.address + ":" + vlcConfig.port;
+const VLCClient = new Client(url, vlcConfig.password);
 
 // Export a function that takes a callback as an argument
 let updating = false;
@@ -25,7 +25,7 @@ export const diff = async (callback) => {
   try {
     // Get the current status of VLC
     const status = await VLCClient.getStatus();
-    if (status.information) {
+    if (status && status.information) {
       // Get the metadata
       const { meta } = status.information.category;
 
@@ -88,8 +88,10 @@ export const diff = async (callback) => {
     }
 
     // Update the last status object
-    lastStatus.state = status.state;
-    lastStatus.time = status.time;
+    if(status) {
+      lastStatus.state = status.state;
+      lastStatus.time = status.time;
+    }
 
   } catch (err) {
     //  If there is an error connecting to VLC, log an error message and call the callback function with a stopped state

@@ -1,5 +1,5 @@
 // Require modules and configuations
-import "./Functions/client.js";
+import "./Functions/Discord_Client.js";
 import { detached, platformDefaults, vlcConfig, vlcPath } from "./Storage/config.js";
 import { existsSync } from "fs";
 import { spawn } from "child_process";
@@ -24,6 +24,17 @@ if (process.platform === "win32" && !existsSync(platformDefaults.win32)) {
 
 // If VLC path is not specified use the default
 const startCommand = vlcPath || platformDefaults[process.platform];
+const params =     [
+  "--extraintf",
+  "http",
+  "--http-host",
+  vlcConfig.address,
+  "--http-password",
+  vlcConfig.password,
+  "--http-port",
+  vlcConfig.port
+];
+console.log(startCommand + params.join(" "));
 
 if(!detached) {
 // Start the process
