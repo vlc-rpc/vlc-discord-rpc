@@ -1,3 +1,4 @@
+/* eslint no-unused-expressions: 0 */
 // describe and it are undefined because Mocha uses them globally
 import {  
   createReadline, directoryExists, extractMovieName, extractShowDetails, validateFileExtensions 
@@ -5,10 +6,6 @@ import {
 
 import { expect } from 'chai';
 import path from 'path';
-
-function askQuestion(rl, query) {
-  return new Promise(resolve => {return rl.question(query, resolve);});
-}
 
 describe('Name Cleaning', function() {
   describe('cleanName', function() {
@@ -104,6 +101,17 @@ describe('Name Cleaning', function() {
         episodeTitle: 'Unknown'
       });
     });
+
+    it('Should correctly handle a show without an episode or season number', function() {
+      const result = extractShowDetails('Azumanga Daioh.mp4');
+ 
+      expect(result).to.deep.equal({
+        showName: 'Azumanga Daioh',
+        season: 0,
+        episode: 0,
+        episodeTitle: 'Unknown'
+      });
+    });
   });
 });
 
@@ -119,7 +127,7 @@ describe('Validate file extensions', function() {
 describe('Create a readline interface', function() {
   it('Should Correctly create a readline interface', async function() {
     const rl = createReadline();
-    // eslint-disable-next-line no-unused-expressions
+     
     expect(rl).is.not.null;
     rl.close();
   });

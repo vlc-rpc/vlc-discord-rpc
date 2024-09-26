@@ -1,0 +1,17 @@
+{
+    "check-coverage": true,
+    "include": [
+      "Functions/**/*.js", 
+      "Metadata/metadata_functions.cjs"
+    ],
+    "exclude": [
+      "test/**", 
+      "node_modules/**",
+      "Storage/**",  
+      "Functions/Images/handleRateLimits.js"
+    ],
+    "extension": [".js", ".cjs"],
+    "reporter": ["text", "html"],
+    "all": true
+  }
+  

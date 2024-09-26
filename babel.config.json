@@ -1,0 +1,13 @@
+{
+  "presets": ["@babel/preset-env"],
+  "plugins": [
+    "istanbul",
+    [
+      "@babel/plugin-syntax-import-attributes",
+      {
+        "deprecatedAssertSyntax": true
+      }
+    ]
+  ],
+  "sourceMaps": "inline"
+}
