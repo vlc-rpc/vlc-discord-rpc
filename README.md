@@ -18,3 +18,7 @@ Our [documentation](https://vlc-rpc.storinate.com/) has been moved! If it is dow
   - List any new packages added and the reason they are needed
   - Why is this change needed?
   - What changes need to be made to the documentation?
+## Issue Guidlines
+- Use a descriptive title
+- Explain the expected behavior vs actual behavior
+- Post your config __without your keys__! At the very least, say whether you're using detatched or not. 
