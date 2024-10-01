@@ -21,7 +21,6 @@ export async function format(status, changedFiles) {
   let smallImageKey = "";
   let partySize = null;
   let partyMax = null;
-  let endTimestamp = null;
 
   smallImageKey = setSmallImageKey(status);
 
@@ -80,12 +79,6 @@ export async function format(status, changedFiles) {
     state = meta.title || "Video";
   }
 
-  // Get time left in video
-  const end = Math.floor(Date.now() / 1000 + (status.length - status.time) / status.rate);
-  if (status.state === "playing" && status.length !== 0) {
-    endTimestamp = end;
-  }
-
   // Make sure the details variable is not too long to be displayed (limited by Discord)
   details = checkDetailLength(details);
 
@@ -96,7 +89,6 @@ export async function format(status, changedFiles) {
     smallImageKey: smallImageKey,
     smallImageText: `Volume: ${Math.round(status.volume / 2.56)}%`,
     instance: true,
-    endTimestamp: endTimestamp,
     partySize: partySize,
     partyMax: partyMax,
     // Supported: https://discord.com/developers/docs/topics/gateway-events#activity-object-activity-types
