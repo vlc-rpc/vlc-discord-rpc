@@ -8,3 +8,4 @@ ffmpeg
 docs/.vuepress/dist
 custom_art.json
 coverage
+.nyc_output

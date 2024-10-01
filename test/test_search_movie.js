@@ -4,6 +4,7 @@ import { fetchMovieData } from "../Functions/Images/searchMovie.js";
 
 describe('Search for movies', function() {
   it('It should correctly find a movie', async function() {
+    this.timeout(5000);
     const movie = await fetchMovieData("Deadpool");
     expect(movie).is.not.null;
     expect(movie.Response).equal('True');
