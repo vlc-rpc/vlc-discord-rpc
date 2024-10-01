@@ -3,9 +3,9 @@ An updated Discord rich presence for VLC media player.
 
 This is a modified version of the [Pigpog/vlc-discord-rpc project](https://github.com/Pigpog/vlc-discord-rpc), which is no longer being actively maintained. We have updated and enhanced the project by adding new features, such as album and show covers. 
 
-![image](https://github.com/user-attachments/assets/4c5431de-2d38-47fc-a130-135a3c07d903)
-![image](https://github.com/user-attachments/assets/4a9f7c8e-5c84-4830-8e19-c3b39e441fab)
-![image](https://github.com/user-attachments/assets/d3de7834-512e-418d-abb0-36ef6a2d3a4a)
+![image](https://vlc-rpc.storinate.com/public/shrek.png)
+![image](https://vlc-rpc.storinate.com/public/rick.png)
+![image](https://vlc-rpc.storinate.com/public/juice.png)
 
 
 
