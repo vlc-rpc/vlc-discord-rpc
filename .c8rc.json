@@ -8,7 +8,9 @@
       "test/**", 
       "node_modules/**",
       "Storage/**",  
-      "Functions/Images/handleRateLimits.js"
+      "Functions/Images/handleRateLimits.js",
+      "Functions/Discord_Client.js",
+      "Functions/status.js"
     ],
     "extension": [".js", ".cjs"],
     "reporter": ["text", "html"],
