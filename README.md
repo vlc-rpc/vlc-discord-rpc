@@ -21,4 +21,9 @@ Our [documentation](https://vlc-rpc.storinate.com/) has been moved! If it is dow
 ## Issue Guidlines
 - Use a descriptive title
 - Explain the expected behavior vs actual behavior
-- Post your config __without your keys__! At the very least, say whether you're using detatched or not. 
+- Post your config __without your keys__! At the very least, say whether you're using detatched or not.
+
+## Removed Features
+Some features are no longer working due to Discord updates. This includes:
+- Displaying time left in show
+- Displaying buttons
