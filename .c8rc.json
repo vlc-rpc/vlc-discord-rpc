@@ -10,7 +10,8 @@
       "Storage/**",  
       "Functions/Images/handleRateLimits.js",
       "Functions/Discord_Client.js",
-      "Functions/status.js"
+      "Functions/status.js",
+      "Functions/searchFunctions.js"
     ],
     "extension": [".js", ".cjs"],
     "reporter": ["text", "html"],
