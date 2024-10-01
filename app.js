@@ -1,6 +1,7 @@
 // Require modules and configuations
 import "./Functions/Discord_Client.js";
 import { detached, platformDefaults, vlcConfig, vlcPath } from "./Storage/config.js";
+import Client from "./Functions/VLC_Client.js";
 import { existsSync } from "fs";
 import { spawn } from "child_process";
 
@@ -12,10 +13,15 @@ function randomPass() {
   return Math.random().toString(36).slice(-8);
 }
 
+let {password} = vlcConfig;
+
 // Generate a password if needed
 if (vlcConfig.password === "") {
-  vlcConfig.password = randomPass();
+  password = randomPass();
 }
+
+const url = vlcConfig.address + ":" + vlcConfig.port;
+const VLCClient = new Client(url, password);
 
 // If windows OS and default path cannot be found try other path
 if (process.platform === "win32" && !existsSync(platformDefaults.win32)) {
@@ -26,7 +32,7 @@ if (process.platform === "win32" && !existsSync(platformDefaults.win32)) {
 const startCommand = vlcPath || platformDefaults[process.platform];
 
 if(!detached) {
-// Start the process
+  // Start the process
   const child = spawn(
     startCommand,
     [
@@ -35,7 +41,7 @@ if(!detached) {
       "--http-host",
       vlcConfig.address,
       "--http-password",
-      vlcConfig.password,
+      password,
       "--http-port",
       vlcConfig.port
     ],
@@ -57,3 +63,5 @@ if(!detached) {
     setTimeout(process.exit, 30000, 1);
   }); 
 }
+
+export {VLCClient};
