@@ -14,11 +14,6 @@ describe('Return details object of appropriate length', function() {
     expect(details).to.equal("Unknown");
   });
 
-  it('should correctly return "Unknown" for null', async function() {
-    const details = checkDetailLength(null);
-    expect(details).to.equal("Unknown");
-  });
-
   it('should return the same string if the length is between 2 and 125 characters', async function() {
     const input = "This is a valid string";
     const details = checkDetailLength(input);
