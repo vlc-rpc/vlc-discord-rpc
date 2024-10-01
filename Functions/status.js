@@ -1,6 +1,6 @@
 // Import the configuration file
 import {logUpdates, richPresenseSettings, vlcConfig} from "../Storage/config.js";
-import Client from "./VLC_Client.js";
+import { VLCClient } from "../app.js";
 
 // Keep track of the last known status of VLC
 const lastStatus = {
@@ -10,9 +10,6 @@ const lastStatus = {
   icon_url: "",
   time: 0
 };
-
-const url = vlcConfig.address + ":" + vlcConfig.port;
-const VLCClient = new Client(url, vlcConfig.password);
 
 // Export a function that takes a callback as an argument
 let updating = false;
