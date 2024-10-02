@@ -32,6 +32,7 @@ jobs:
       - run: npm run coverage
         env:
           CI: true
+          movieApiKey: ${{ secrets.MOVIEAPIKEY }}
           
       - name: Delete custom_art.json
         run: rm Storage/custom_art.json
