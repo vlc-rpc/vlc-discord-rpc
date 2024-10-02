@@ -20,7 +20,24 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+      
+      - run: npm install
+      
+      - name: Create custom_art.json
+        run: echo "{}" > Storage/custom_art.json
+
+      - name: Copy example_config.js to config.js
+        run: cp Storage/example_config.js Storage/config.js
+
+      - name: Set movieApiKey in config.js
+        run: sed -i 's/const movieApiKey = "";/const movieApiKey = "${{ secrets.MOVIEAPIKEY }}";/g' Storage/config.js      
+      
       - run: npm run coverage
         env:
           CI: true
- 
+          
+      - name: Delete custom_art.json
+        run: rm Storage/custom_art.json
+      
+      - name: Delete config.js
+        run: rm Storage/config.js

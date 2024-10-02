@@ -12,7 +12,7 @@ describe('Search for movies', function() {
   });
 
   it('It should handle a non-existant movie', async function() {
-    const movie = await fetchMovieData("A Made Up Movie Name");
+    const movie = await fetchMovieData("dawfafawfawfggwgfagwwagwg");
     expect(movie).is.not.null;
     expect(movie.Response).equal('False');
     expect(movie.Search).is.undefined;
