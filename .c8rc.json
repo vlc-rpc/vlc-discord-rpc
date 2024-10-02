@@ -13,7 +13,9 @@
       "Functions/Images/handleRateLimits.js",
       "Functions/Discord_Client.js",
       "Functions/status.js",
-      "Functions/searchFunctions.js"
+      "Functions/searchFunctions.js",
+      "Functions/rpc-format.js",
+      "Functions/VLC_Client.js"
     ],
     "extension": [".js", ".cjs"],
     "reporter": ["text", "html"],
