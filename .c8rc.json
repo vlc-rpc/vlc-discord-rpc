@@ -1,0 +1,24 @@
+{
+    "check-coverage": true,
+    "statements": 70,
+    "lines": 70,
+    "include": [
+      "Functions/**/*.js", 
+      "Metadata/metadata_functions.cjs"
+    ],
+    "exclude": [
+      "test/**", 
+      "node_modules/**",
+      "Storage/**",  
+      "Functions/Images/handleRateLimits.js",
+      "Functions/Discord_Client.js",
+      "Functions/status.js",
+      "Functions/searchFunctions.js",
+      "Functions/rpc-format.js",
+      "Functions/VLC_Client.js"
+    ],
+    "extension": [".js", ".cjs"],
+    "reporter": ["text", "html"],
+    "all": true
+  }
+  

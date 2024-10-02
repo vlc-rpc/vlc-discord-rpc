@@ -57,16 +57,23 @@ async function askMediaType() {
 }
 
 function checkDetailLength(details) {
+
+  if (typeof details !== 'string') {
+    return "Unknown";
+  }
+  
   if (details && details.length > 125) {
     details = details.substring(0, 125) + "...";
   }
   
   // Details field must be >= 2 characters
-  if(details && details.length < 2) {
-    details += ".";
+  if (details && details.length < 2) {
+    while (details.length < 2) {
+      details += ".";
+    }
   }
   
-  return details ?? "Unknown";
+  return details || "Unknown";
 }
 
 export {askMediaType, checkDetailLength, setSmallImageKey};

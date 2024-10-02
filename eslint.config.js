@@ -6,16 +6,7 @@ export default [
   {
     languageOptions: {
       parser: babelParser,
-      sourceType: "module",
-      parserOptions: {
-        requireConfigFile: false,
-        babelOptions: {
-          babelrc: false,
-          configFile: false,
-          presets: ["@babel/preset-env"],
-          plugins: ["@babel/plugin-syntax-import-assertions"]
-        }
-      }
+      sourceType: "module"
     },
     plugins: {
       jsdoc: jsdoc,

@@ -1,5 +1,6 @@
 import { getAlbumArt, getAlbumArtArchive, getCustomArt } from "./Images/getAlbumArt.js";
 import { iconNames, logUpdates, useSpotify } from "../Storage/config.js";
+import { extractShowDetails } from "../Metadata/metadata_functions.cjs";
 import { fetchMovieData } from "./Images/searchMovie.js";
 import { searchShow } from "./Images/searchShow.js";
 
@@ -42,8 +43,8 @@ async function handleShow(meta, state) {
     console.log("----------------\nLog Updates\nSearch Show Function is running\n----------------\n");
   }
   
-  const show = await searchShow(meta.title);
-  
+  const show = await searchShow(extractShowDetails(meta.title).showName);
+
   if (show && show.image) {
     ({image} = show);
   }
@@ -69,9 +70,9 @@ async function handleMovie(meta, state) {
   
   // Make sure we actually got a movie
   if (movie && movie.Response !== 'False') {
-    details = movie.Title;
-    state = `${movie.Year}`;
-    image = movie.Poster;
+    details = movie.Search[0].Title;
+    state = `${movie.Search[0].Year}`;
+    image = movie.Search[0].Poster;
   } else {
     // Fallback in case we don't have a movie
     console.log("WARNING: Movie with that name not found! Please try and find it on IMDB and use that name!");
@@ -93,7 +94,7 @@ async function handleMusic(meta, state) {
   let image = iconNames.vlc;
   let partySize = null;
   let partyMax = null;
-    
+
   details = meta.title;
   state = meta.artist;
   
@@ -114,6 +115,7 @@ async function handleMusic(meta, state) {
     if(art === null) {
       art = useSpotify ? await getAlbumArt(meta.album, meta.artist) : await getAlbumArtArchive(meta.album, meta.artist);
     }
+
     if(art){
       image = art;
     }
