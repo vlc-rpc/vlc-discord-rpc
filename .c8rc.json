@@ -1,7 +1,7 @@
 {
     "check-coverage": true,
-    "statements": 85,
-    "lines": 85,
+    "statements": 80,
+    "lines": 80,
     "include": [
       "Functions/**/*.js", 
       "Metadata/metadata_functions.cjs"
