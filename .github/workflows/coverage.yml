@@ -31,6 +31,8 @@ jobs:
 
       - name: Set movieApiKey in config.js
         run: sed -i 's/const movieApiKey = "";/const movieApiKey = "'"${{ secrets.MOVIEAPIKEY }}"'";/g' Storage/config.js
+        env:
+          MOVIEAPIKEY: ${{ secrets.MOVIEAPIKEY }}
       
       - run: npm run coverage
         env:
