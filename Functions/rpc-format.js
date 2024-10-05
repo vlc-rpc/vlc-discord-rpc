@@ -68,16 +68,6 @@ export async function format(status, changedFiles) {
     details = meta.filename;
   }
   
-  const start = Math.floor(Date.now() / 1000 - (status.time) / status.rate);
-  if (status.state === "playing" && status.length !== 0) {
-    startTimestamp = start;
-  }
-  
-  const end = Math.floor(Date.now() / 1000 + (status.length - status.time) / status.rate);
-  if (status.state === "playing" && status.length !== 0) {
-    endTimestamp = end;
-  }
-  
   else if(autoOMDB && changedFiles) {
     const result = await searchAll(meta, state);
     ({details} = result);
@@ -95,6 +85,16 @@ export async function format(status, changedFiles) {
   // Make sure the details variable is not too long to be displayed (limited by Discord)
   details = checkDetailLength(details);
 
+  const start = Math.floor(Date.now() / 1000 - (status.time) / status.rate);
+  if (status.state === "playing" && status.length !== 0) {
+    startTimestamp = start;
+  }
+  
+  const end = Math.floor(Date.now() / 1000 + (status.length - status.time) / status.rate);
+  if (status.state === "playing" && status.length !== 0) {
+    endTimestamp = end;
+  }
+
   return {
     state: state,
     details: details,
@@ -104,8 +104,8 @@ export async function format(status, changedFiles) {
     instance: true,
     partySize: partySize,
     partyMax: partyMax,
-	startTimestamp: startTimestamp,
-	endTimestamp: endTimestamp,
+    startTimestamp: startTimestamp,
+    endTimestamp: endTimestamp,
     // Supported: https://discord.com/developers/docs/topics/gateway-events#activity-object-activity-types
     type: defaultActivityType
   };

@@ -16,6 +16,8 @@ let activityCache = {
   instance: true,
   partySize: 0,
   partyMax: 0,
+  startTimestamp: 0,
+  endTimestamp: 0,
   // Supported: https://discord.com/developers/docs/topics/gateway-events#activity-object-activity-types
   type: ActivityType.Playing
 };
