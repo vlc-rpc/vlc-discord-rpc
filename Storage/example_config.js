@@ -68,7 +68,7 @@ const defaultMediaType = "";
 const defaultResultNumber = -1;
 
 // View VLC-RPC documentation online for valid types. Link is on the Github.
-const defaultActivityType = ActivityType.Playing;
+const defaultActivityType = ActivityType.Watching;
 
 // The maximum amount of time to wait for a rate limit before deciding to just display it as a video (no image and with file name) in seconds
 const maxRateLimitWait = 120;
