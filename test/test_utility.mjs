@@ -267,5 +267,3 @@ describe('It should correctly return the media type after asking the user', func
     readline.createInterface.restore();
   });
 });
-
-// test
