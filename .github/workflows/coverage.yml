@@ -30,6 +30,7 @@ jobs:
         run: cp Storage/example_config.js Storage/config.js
 
       - name: Set movieApiKey in config.js
+        shell: bash
         env:
           MOVIEAPIKEY: ${{ secrets.MOVIEAPIKEY }}
         run: sed -i 's/const movieApiKey = "";/const movieApiKey = "'"$MOVIEAPIKEY"'";/g' Storage/config.js
