@@ -117,7 +117,7 @@ describe('Name Cleaning', function() {
 
 describe('Validate file extensions', function() {
   it('Should Correctly match mp4 file extensions', async function() {
-    const result = await validateFileExtensions("input.mp4", "output.mp4");
+    const result = await validateFileExtensions('input.mp4', 'output.mp4');
 
     // Expect the result to be the correct output file
     expect(result).to.deep.equal('output.mp4');
@@ -140,7 +140,7 @@ describe('Make sure directories exist', function() {
   });
 
   it('Should return false for a non-existant directory', async function() {
-    const exists = await directoryExists(path.join(process.cwd(), "../abc"));
+    const exists = await directoryExists(path.join(process.cwd(), '../abc'));
     expect(exists).equals(false);
   });
 });

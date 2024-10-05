@@ -1,18 +1,18 @@
-import { ActivityType } from "discord-api-types/v10";
-import { Client } from "@xhayper/discord-rpc";
-import {diff} from "./status.js";
-import {format} from "./rpc-format.js";
-import {richPresenseSettings} from "../Storage/config.js";
+import { ActivityType } from 'discord-api-types/v10';
+import { Client } from '@xhayper/discord-rpc';
+import {diff} from './status.js';
+import {format} from './rpc-format.js';
+import {richPresenseSettings} from '../Storage/config.js';
 
 const client = new Client({ clientId: richPresenseSettings.id });
 let awake = true;
 let timeInactive = 0;
 let activityCache = {
-  state: "",
-  details: "",
-  largeImageKey: "",
-  smallImageKey: "",
-  smallImageText: "",
+  state: '',
+  details: '',
+  largeImageKey: '',
+  smallImageKey: '',
+  smallImageText: '',
   instance: true,
   partySize: 0,
   partyMax: 0,
@@ -37,10 +37,10 @@ async function update() {
         timeInactive = 0;
       }
     } else if (awake) {
-      if (status && status.state !== "playing") {
+      if (status && status.state !== 'playing') {
         timeInactive += richPresenseSettings.updateInterval;
-        if (timeInactive >= richPresenseSettings.sleepTime || status.state === "stopped") {
-          console.log("VLC not playing; going to sleep.", true);
+        if (timeInactive >= richPresenseSettings.sleepTime || status.state === 'stopped') {
+          console.log('VLC not playing; going to sleep.', true);
           awake = false;
           client.user?.clearActivity();
         } else {
@@ -53,8 +53,8 @@ async function update() {
   });
 }
 
-client.on("ready", () => {
-  console.log("Logged in as", client.user.username);
+client.on('ready', () => {
+  console.log('Logged in as', client.user.username);
 });
 
 /**
@@ -62,16 +62,16 @@ client.on("ready", () => {
  */
 async function connectToDiscord() {
   try {
-    console.log("Connecting to Discord...");
+    console.log('Connecting to Discord...');
     await client.login();
     setInterval(update, richPresenseSettings.updateInterval);
   } catch (error) {
-    if (error.toString() === "Error: Could not connect") {
-      console.log("Failed to connect to Discord. Is your Discord client open? Retrying in 20 seconds...");
+    if (error.toString() === 'Error: Could not connect') {
+      console.log('Failed to connect to Discord. Is your Discord client open? Retrying in 20 seconds...');
       // Retry login
       setTimeout(connectToDiscord, 20000);
     } else {
-      console.log("An unknown error occurred when connecting to Discord");
+      console.log('An unknown error occurred when connecting to Discord');
       throw error;
     }
   }

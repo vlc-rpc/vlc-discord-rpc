@@ -1,5 +1,5 @@
-import { handleRateLimits } from "./handleRateLimits.js";
-import { movieApiKey } from "../../Storage/config.js";
+import { handleRateLimits } from './handleRateLimits.js';
+import { movieApiKey } from '../../Storage/config.js';
 /**
  * Searches for a movie by name using the OMDb API.
  * @param {string} movieName - The name of the movie to search for.
@@ -48,7 +48,7 @@ async function fetchMovieData(movieName) {
       } catch (error) {
         console.error('Error occurred during the API request:', error);
         // Prevent app from crashing
-        return {"Response": 'False'};
+        return {'Response': 'False'};
       }
     }
 
@@ -56,7 +56,7 @@ async function fetchMovieData(movieName) {
   } catch (error) {
     console.error('Error occurred during the API request:', error);
     // Prevent app from crashing
-    return {"Response": 'False'};
+    return {'Response': 'False'};
   }
 }
 

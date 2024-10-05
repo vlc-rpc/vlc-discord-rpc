@@ -1,44 +1,44 @@
-import { ActivityType } from "discord-api-types/v10";
+import { ActivityType } from 'discord-api-types/v10';
 
 // Where to look for VLC
 const platformDefaults = {
-  win32: "C:/Program Files/VideoLAN/VLC/vlc.exe",
-  winalt: "C:/Program Files (x86)/VideoLAN/VLC/vlc.exe",
-  linux: "/usr/bin/vlc",
-  unix: "/usr/bin/vlc",
-  darwin: "/Applications/VLC.app/Contents/MacOS/VLC"
+  win32: 'C:/Program Files/VideoLAN/VLC/vlc.exe',
+  winalt: 'C:/Program Files (x86)/VideoLAN/VLC/vlc.exe',
+  linux: '/usr/bin/vlc',
+  unix: '/usr/bin/vlc',
+  darwin: '/Applications/VLC.app/Contents/MacOS/VLC'
 };
 
 // Is VLC somewhere else?
-const vlcPath = "";
+const vlcPath = '';
 
 // Settings
 const richPresenseSettings = {
-  id: "",
+  id: '',
   updateInterval: 5000,
   removeAfter: 5000
 };
 
 // Default icons. Change if you would like.
 const iconNames = {
-  pause: "https://i.imgur.com/CCg9fxf.png",
-  playing: "https://i.imgur.com/8IYhOc2.png",
-  vlc: "https://i.imgur.com/7CRaCeT.png"
+  pause: 'https://i.imgur.com/CCg9fxf.png',
+  playing: 'https://i.imgur.com/8IYhOc2.png',
+  vlc: 'https://i.imgur.com/7CRaCeT.png'
 };
 
 // Must fill these out for album covers
 const useSpotify = false;
 
 const spotify = {
-  clientID: "",
-  clientSecret: ""
+  clientID: '',
+  clientSecret: ''
 };
 
 // Local VLC Config
 const vlcConfig = {
-  password: "",
+  password: '',
   port: 8080,
-  address: "localhost"
+  address: 'localhost'
 };
 
 // Do you want it to log every time your presence is updated? (Useful for debug)
@@ -47,12 +47,12 @@ const logUpdates = false;
 // READ THE READ ME. This is complicated to set up!
 const detached = false;
 
-const movieApiKey = "";
+const movieApiKey = '';
 
 // Directories for Metadata/metadata_auto.js to use
 const directories = {
-  "shows": "C:/Users/user/vlc-discord-rpc/Media/Shows",
-  "movies": "C:/Users/user/vlc-discord-rpc/Media/Movies"
+  'shows': 'C:/Users/user/vlc-discord-rpc/Media/Shows',
+  'movies': 'C:/Users/user/vlc-discord-rpc/Media/Movies'
 };
 
 // Separator for file names used in metadata_auto.js
@@ -62,7 +62,7 @@ const separator = '_';
 const autoOMDB = false;
 
 // Set to "" to disable. Other accepted parameters are "show", "movie", or "video".
-const defaultMediaType = "";
+const defaultMediaType = '';
 
 // Set to -1 to disable. Any Number 0 through the number of results will work.
 const defaultResultNumber = -1;

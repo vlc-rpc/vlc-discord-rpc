@@ -1,13 +1,13 @@
 // Import the configuration file
-import {logUpdates, richPresenseSettings, vlcConfig} from "../Storage/config.js";
-import { VLCClient } from "../app.js";
+import {logUpdates, richPresenseSettings, vlcConfig} from '../Storage/config.js';
+import { VLCClient } from '../app.js';
 
 // Keep track of the last known status of VLC
 const lastStatus = {
-  filename: "",
-  now_playing: "",
-  state: "",
-  icon_url: "",
+  filename: '',
+  now_playing: '',
+  state: '',
+  icon_url: '',
   time: 0
 };
 
@@ -43,7 +43,7 @@ export const diff = async (callback) => {
         }
 
         lastStatus.now_playing = meta.now_playing;
-        lastStatus.icon_url = meta.artwork_url || "vlc";
+        lastStatus.icon_url = meta.artwork_url || 'vlc';
 
         await callback(status, true, false);
         // Check if the state (playing, paused, stopped) has changed
@@ -92,9 +92,9 @@ export const diff = async (callback) => {
 
   } catch (err) {
     //  If there is an error connecting to VLC, log an error message and call the callback function with a stopped state
-    if (err.code === "ECONNREFUSED") {
-      console.log("Failed to reach VLC. Is it open?");
-      callback({ state: "stopped" }, false);
+    if (err.code === 'ECONNREFUSED') {
+      console.log('Failed to reach VLC. Is it open?');
+      callback({ state: 'stopped' }, false);
       // If there is any other error, throw it
     } else {
       throw err;

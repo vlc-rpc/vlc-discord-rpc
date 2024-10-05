@@ -1,5 +1,5 @@
 const { execSync } = require('child_process');
-const fs = require("fs").promises;  
+const fs = require('fs').promises;  
 const path = require('path');   
 import { askQuestion, createReadline, getContentType, handleExistingOutputFile } from './metadata_functions.cjs';    
 
@@ -22,21 +22,21 @@ async function directoryFiles(directory) {
  */
 async function addMetadata() {
   try {
-    const directory = await askQuestion("Enter the directory to add metadata to: ");
+    const directory = await askQuestion('Enter the directory to add metadata to: ');
     const files = await directoryFiles(directory);  
     for (const file of files) {
-      if(file.includes("meta")) {
+      if(file.includes('meta')) {
         continue;
       }
       const input_file = path.join(directory, file);
       const extension = input_file.slice(input_file.lastIndexOf('.'));
 
       // Tested extensions. Can add more.
-      const testedExtensions = [".mp4", ".wmv", ".mov", ".mkv", ".avi"];
+      const testedExtensions = ['.mp4', '.wmv', '.mov', '.mkv', '.avi'];
 
       if(testedExtensions.includes(extension)) {
 
-        const output_file = input_file.substring(0, input_file.lastIndexOf('.')) + "_meta" + input_file.substring(input_file.lastIndexOf('.'));
+        const output_file = input_file.substring(0, input_file.lastIndexOf('.')) + '_meta' + input_file.substring(input_file.lastIndexOf('.'));
 
         console.log(`Writing to ${output_file}`);
     
@@ -44,7 +44,7 @@ async function addMetadata() {
          * Check if output file exists and handle overwrite scenario. 
          * If the file doesn't already exist, just use -n (no)
          */
-        let overwrite = "-n"; 
+        let overwrite = '-n'; 
         if (fs.existsSync(output_file)) {
           overwrite = await handleExistingOutputFile();
         }
@@ -58,23 +58,23 @@ async function addMetadata() {
         // Execute the ffmpeg command
         let metadataCommand = `ffmpeg ${overwrite} -i "${input_file}" -c copy -metadata title="${name}" -metadata genre="${content_type}"`;
     
-        if (content_type === "show") {
-          const season = await askQuestion("Enter the season number: ");
-          const episode = await askQuestion("Enter the episode number: ");
+        if (content_type === 'show') {
+          const season = await askQuestion('Enter the season number: ');
+          const episode = await askQuestion('Enter the episode number: ');
 
           metadataCommand += ` -metadata comment="S:${season} E:${episode}"`;
         }
     
         metadataCommand += ` "${output_file}"`;
         execSync(metadataCommand);
-        console.log("Metadata added successfully.");
+        console.log('Metadata added successfully.');
       } else {
-        console.log("That extension has not been tested yet! If you know what you're doing add it on line 35 of metadata_folder.js");
-        console.log("If you don't want to add it yourself join the Discord on the Github or open an Github issue.");
+        console.log('That extension has not been tested yet! If you know what you\'re doing add it on line 35 of metadata_folder.js');
+        console.log('If you don\'t want to add it yourself join the Discord on the Github or open an Github issue.');
       }
     }
   }    catch (error) {
-    console.error("An error occurred while adding metadata:", error);
+    console.error('An error occurred while adding metadata:', error);
   } finally {
     rl.close();
   }}

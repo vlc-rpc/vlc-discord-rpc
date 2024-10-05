@@ -1,5 +1,5 @@
 const readline = require('readline');
-const fs = require("fs");
+const fs = require('fs');
 
 /**
  * Creates a readline interface for user input.
@@ -36,7 +36,7 @@ async function validateFileExtensions(input_file, output_file) {
     
   while (inputExt !== outputExt) {
     console.log(`The output file extension must match the input file extension (${inputExt}). Please enter a valid output file path.`);
-    output_file = await askQuestion("Enter the output file path: ");
+    output_file = await askQuestion('Enter the output file path: ');
     outputExt = output_file.slice(output_file.lastIndexOf('.'));
   }
   return output_file;
@@ -49,14 +49,14 @@ async function validateFileExtensions(input_file, output_file) {
  */
 async function getContentType(rl) {
   // This is async
-  let content_type = await askQuestion(rl, "Enter the content type (movie/show): ");
+  let content_type = await askQuestion(rl, 'Enter the content type (movie/show): ');
     
   // Need to wait before using toLowerCase
   content_type = content_type.toLowerCase();
     
-  while (content_type !== "movie" && content_type !== "show") {
-    console.log("Invalid option, please enter again.");
-    content_type = await askQuestion(rl, "Enter the content type (Movie/Show): ");
+  while (content_type !== 'movie' && content_type !== 'show') {
+    console.log('Invalid option, please enter again.');
+    content_type = await askQuestion(rl, 'Enter the content type (Movie/Show): ');
     content_type = content_type.toLowerCase();
   }
     
@@ -70,15 +70,15 @@ async function getContentType(rl) {
  */
 async function handleExistingOutputFile(rl) {
   // This is async
-  let overwrite = await askQuestion(rl, "That file already exists! Would you like to overwrite it (y/n): ");
+  let overwrite = await askQuestion(rl, 'That file already exists! Would you like to overwrite it (y/n): ');
     
   // Need to wait before using toLowerCase
   overwrite = overwrite.toLowerCase();
     
   // Ensure valid user input
-  while (overwrite !== "y" && overwrite !== "n") {
-    console.log("Invalid input, please enter 'y' for yes or 'n' for no.");
-    overwrite = await askQuestion(rl, "Would you like to overwrite it (y/n): ");
+  while (overwrite !== 'y' && overwrite !== 'n') {
+    console.log('Invalid input, please enter \'y\' for yes or \'n\' for no.');
+    overwrite = await askQuestion(rl, 'Would you like to overwrite it (y/n): ');
     overwrite = overwrite.toLowerCase();
   }
     
@@ -115,8 +115,8 @@ function cleanName(name) {
 
   name = name.replace(/[@#$%^&*(),.":{}|<>-]+$/, '');
 
-  if(name.trim() === "") {
-    return "Unknown";
+  if(name.trim() === '') {
+    return 'Unknown';
   }
 
   name = name.length === 3 && name[1] === ' ' ? name.replace(' ', '') : name;
