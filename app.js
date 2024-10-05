@@ -1,9 +1,9 @@
 // Require modules and configuations
-import "./Functions/Discord_Client.js";
-import { detached, platformDefaults, vlcConfig, vlcPath } from "./Storage/config.js";
-import Client from "./Functions/VLC_Client.js";
-import { existsSync } from "fs";
-import { spawn } from "child_process";
+import './Functions/Discord_Client.js';
+import { detached, platformDefaults, vlcConfig, vlcPath } from './Storage/config.js';
+import Client from './Functions/VLC_Client.js';
+import { existsSync } from 'fs';
+import { spawn } from 'child_process';
 
 /**
  * Generates a random password.
@@ -16,15 +16,15 @@ function randomPass() {
 let {password} = vlcConfig;
 
 // Generate a password if needed
-if (vlcConfig.password === "") {
+if (vlcConfig.password === '') {
   password = randomPass();
 }
 
-const url = vlcConfig.address + ":" + vlcConfig.port;
+const url = vlcConfig.address + ':' + vlcConfig.port;
 const VLCClient = new Client(url, password);
 
 // If windows OS and default path cannot be found try other path
-if (process.platform === "win32" && !existsSync(platformDefaults.win32)) {
+if (process.platform === 'win32' && !existsSync(platformDefaults.win32)) {
   platformDefaults.win32 = platformDefaults.winalt;
 }
 
@@ -36,29 +36,29 @@ if(!detached) {
   const child = spawn(
     startCommand,
     [
-      "--extraintf",
-      "http",
-      "--http-host",
+      '--extraintf',
+      'http',
+      '--http-host',
       vlcConfig.address,
-      "--http-password",
+      '--http-password',
       password,
-      "--http-port",
+      '--http-port',
       vlcConfig.port
     ],
     {
-      stdio: "inherit"
+      stdio: 'inherit'
     }
   );
   // When VLC closes
-  child.on("exit", () => {
-    console.log("VLC closed... exiting program.");
+  child.on('exit', () => {
+    console.log('VLC closed... exiting program.');
     process.exit(0);
   });
 
   // If an error occurs
-  child.on("error", () => {
+  child.on('error', () => {
     console.log(
-      "ERROR: A problem occurred while launching VLC. Make sure the path to VLC is correct in the config.js file. Program will exit after 30 seconds."
+      'ERROR: A problem occurred while launching VLC. Make sure the path to VLC is correct in the config.js file. Program will exit after 30 seconds.'
     );
     setTimeout(process.exit, 30000, 1);
   }); 

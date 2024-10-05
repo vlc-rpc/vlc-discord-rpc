@@ -1,12 +1,12 @@
-import babelParser from "@babel/eslint-parser";
-import jsdoc from "eslint-plugin-jsdoc";
+import babelParser from '@babel/eslint-parser';
+import jsdoc from 'eslint-plugin-jsdoc';
 import stylisticJs from '@stylistic/eslint-plugin-js';
 
 export default [
   {
     languageOptions: {
       parser: babelParser,
-      sourceType: "module"
+      sourceType: 'module'
     },
     plugins: {
       jsdoc: jsdoc,
@@ -61,7 +61,8 @@ export default [
       '@stylistic/js/indent': ['error', 2],
       '@stylistic/js/comma-dangle': 'error',
       '@stylistic/js/array-bracket-spacing': 'error',
-      'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 1, maxBOF: 0 }]
+      'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 1, maxBOF: 0 }],
+      'quotes': ['error', 'single']
     }
   }
 ];

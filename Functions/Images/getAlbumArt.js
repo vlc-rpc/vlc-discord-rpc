@@ -1,8 +1,8 @@
 import albums from '../../Storage/custom_art.json' assert { type: 'json' };
 import axios from 'axios';
-import querystring from "querystring";
-import { spotify } from "../../Storage/config.js";
-import { XMLParser } from "fast-xml-parser";
+import querystring from 'querystring';
+import { spotify } from '../../Storage/config.js';
+import { XMLParser } from 'fast-xml-parser';
 
 /**
  * Retrieves the album cover art from Spotify based on the album name and artist.
@@ -12,20 +12,20 @@ import { XMLParser } from "fast-xml-parser";
  */
 async function getAlbumArt(albumName, albumArtist) {
   // Spotify API endpoint for searching albums
-  const url = "https://api.spotify.com/v1/search";
+  const url = 'https://api.spotify.com/v1/search';
 
   // Your Spotify app client ID and client secret
   const client_id = spotify.clientID;
   const client_secret = spotify.clientSecret;
 
   // Base64-encoded string of the form "client_id:client_secret"
-  const credentials = Buffer.from(`${client_id}:${client_secret}`).toString("base64");
+  const credentials = Buffer.from(`${client_id}:${client_secret}`).toString('base64');
   try {
     // Make POST request to obtain an access token using the Client Credentials Flow
-    const tokenResponse = await axios.post("https://accounts.spotify.com/api/token", "grant_type=client_credentials", {
+    const tokenResponse = await axios.post('https://accounts.spotify.com/api/token', 'grant_type=client_credentials', {
       headers: {
         Authorization: `Basic ${credentials}`,
-        "Content-Type": "application/x-www-form-urlencoded"
+        'Content-Type': 'application/x-www-form-urlencoded'
       }
     });
 
@@ -41,8 +41,8 @@ async function getAlbumArt(albumName, albumArtist) {
     const response = await axios.get(url, {
       headers: headers,
       params: {
-        q: albumName + " " + albumArtist,
-        type: "album"
+        q: albumName + ' ' + albumArtist,
+        type: 'album'
       }
     });
 
@@ -52,7 +52,7 @@ async function getAlbumArt(albumName, albumArtist) {
     // Return the album cover image URL
     return album.images[0].url;
   } catch (error) {
-    console.log("Please report this issue to the VLC-RPC devs!");
+    console.log('Please report this issue to the VLC-RPC devs!');
     console.log(error);
     return null;
   }
@@ -67,7 +67,7 @@ async function fetchCover(mbid) {
   try{
     // Makes GET request to get album cover
     // If GET completes breaks from the loop
-    const response = await axios.get("https://coverartarchive.org/release/"+mbid);
+    const response = await axios.get('https://coverartarchive.org/release/'+mbid);
     const imageUrl = response.data.images[0].image;
     return imageUrl;
   }catch(err){
@@ -85,11 +85,11 @@ async function fetchCover(mbid) {
 async function getAlbumArtArchive(album, artist){
   let imageUrl = null;
   // Search string query
-  const query = querystring.escape(album+" AND artist:"+artist+" AND status:official");
+  const query = querystring.escape(album+' AND artist:'+artist+' AND status:official');
 
   // Makes GET request to query the database for the album
   try{
-    const response = await axios.get("https://musicbrainz.org/ws/2/release?query="+query, {
+    const response = await axios.get('https://musicbrainz.org/ws/2/release?query='+query, {
       headers: {
         Accept: 'application/xml'
       }
@@ -122,7 +122,7 @@ async function getAlbumArtArchive(album, artist){
       }
     }
   }catch(error){
-    console.log("Please report this issue to the VLC-RPC devs!");
+    console.log('Please report this issue to the VLC-RPC devs!');
     console.log(error);
   }
   return imageUrl;

@@ -1,8 +1,8 @@
-import { getAlbumArt, getAlbumArtArchive, getCustomArt } from "./Images/getAlbumArt.js";
-import { iconNames, logUpdates, useSpotify } from "../Storage/config.js";
-import { extractShowDetails } from "../Metadata/metadata_functions.cjs";
-import { fetchMovieData } from "./Images/searchMovie.js";
-import { searchShow } from "./Images/searchShow.js";
+import { getAlbumArt, getAlbumArtArchive, getCustomArt } from './Images/getAlbumArt.js';
+import { iconNames, logUpdates, useSpotify } from '../Storage/config.js';
+import { extractShowDetails } from '../Metadata/metadata_functions.cjs';
+import { fetchMovieData } from './Images/searchMovie.js';
+import { searchShow } from './Images/searchShow.js';
 
 /**
  * Given a show with a description in its metadata, format the description to be in Season Episode format.
@@ -12,18 +12,18 @@ import { searchShow } from "./Images/searchShow.js";
 function setShowState(meta) {
   if(meta.description || meta.Description) {
     const description = meta.description || meta.Description;
-    const sIndex = description.indexOf("S:");
-    const eIndex = description.indexOf("E:");
+    const sIndex = description.indexOf('S:');
+    const eIndex = description.indexOf('E:');
   
     if (sIndex !== -1 && eIndex !== -1) {
       const seasonNumber = description.slice(sIndex + 2, eIndex).trim();
       const episodeNumber = description.slice(eIndex + 2).trim();
       return ` Season ${seasonNumber} - Episode ${episodeNumber}`;
     } else {
-      return "Unknown Episode";
+      return 'Unknown Episode';
     }
   } else {
-    return "Unknown Episode";
+    return 'Unknown Episode';
   }
 }
 
@@ -40,7 +40,7 @@ async function handleShow(meta, state) {
   state = setShowState(meta, state);
   
   if(logUpdates) {
-    console.log("----------------\nLog Updates\nSearch Show Function is running\n----------------\n");
+    console.log('----------------\nLog Updates\nSearch Show Function is running\n----------------\n');
   }
   
   const show = await searchShow(extractShowDetails(meta.title).showName);
@@ -62,7 +62,7 @@ async function handleMovie(meta, state) {
   let details = meta.title;
   
   if(logUpdates) {
-    console.log("----------------\nLog Updates\nFetch Movie Data Function is running\n----------------\n");
+    console.log('----------------\nLog Updates\nFetch Movie Data Function is running\n----------------\n');
   }
   
   // Try to search for the movie and get its image
@@ -75,9 +75,9 @@ async function handleMovie(meta, state) {
     image = movie.Search[0].Poster;
   } else {
     // Fallback in case we don't have a movie
-    console.log("WARNING: Movie with that name not found! Please try and find it on IMDB and use that name!");
-    details = "Watching a movie";
-    state = meta.title || "Video";
+    console.log('WARNING: Movie with that name not found! Please try and find it on IMDB and use that name!');
+    details = 'Watching a movie';
+    state = meta.title || 'Video';
   }
   
   return { details, state, image };
@@ -90,7 +90,7 @@ async function handleMovie(meta, state) {
  * @returns {object} - Updated status information for music.
  */
 async function handleMusic(meta, state) {
-  let details = "";
+  let details = '';
   let image = iconNames.vlc;
   let partySize = null;
   let partyMax = null;
