@@ -29,19 +29,11 @@ jobs:
       - name: Copy example_config.js to config.js
         run: cp Storage/example_config.js Storage/config.js
 
-      - name: Check if movieApiKey is set
-        run: |
-          if [ -z "${MOVIEAPIKEY}" ]; then
-            echo "Error: MOVIEAPIKEY is not set." >&2
-            exit 1
-          fi
-        env:
-          MOVIEAPIKEY: ${{ secrets.MOVIEAPIKEY }}
-
       - name: Set movieApiKey in config.js
-        run: sed -i 's/const movieApiKey = "";/const movieApiKey = "'"${{ secrets.MOVIEAPIKEY }}"'";/g' Storage/config.js
         env:
           MOVIEAPIKEY: ${{ secrets.MOVIEAPIKEY }}
+        run: sed -i 's/const movieApiKey = "";/const movieApiKey = "'"$MOVIEAPIKEY"'";/g' Storage/config.js
+
       
       - run: npm run coverage
         env:
