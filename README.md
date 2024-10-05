@@ -30,3 +30,4 @@ Our [documentation](https://vlc-rpc.storinate.com/) has been moved! If it is dow
 ## Removed Features
 Some features are no longer working due to Discord updates. This includes:
 - Displaying buttons
+
