@@ -34,7 +34,8 @@ jobs:
         env:
           MOVIEAPIKEY: ${{ secrets.MOVIEAPIKEY }}
         run: |
-          sed -i 's/const movieApiKey = "";/const movieApiKey = "'"$MOVIEAPIKEY"'";/g' Storage/config.js
+          sed -i "s/const movieApiKey = \"\";/const movieApiKey = \"$MOVIEAPIKEY\";/g" Storage/config.js
+
       
       - run: npm run coverage
         env:
