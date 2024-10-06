@@ -173,7 +173,7 @@ describe('Correctly return media information', function() {
 
     expect(data).to.deep.equal({
       'details': 'Sick Boy',
-      'image': 'http://coverartarchive.org/release/c4107fcf-843c-4a9a-b5b7-a9c5a0950830/18868338457.jpg',
+      'image': 'https://i.scdn.co/image/ab67616d0000b2738e26bf4293c9da7a6439607b',
       'partyMax': 10,
       'partySize': 6,
       'state': 'The Chainsmokers | Sick Boy'
