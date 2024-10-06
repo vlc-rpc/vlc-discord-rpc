@@ -41,7 +41,7 @@ async function fetchMovieData(movieName) {
         }
 
         if (!pageResponse.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+          throw new Error(`HTTP error! Status: ${pageResponse.status}`);
         }
         const pageData = await pageResponse.json();
         data.Search = data.Search.concat(pageData.Search);
