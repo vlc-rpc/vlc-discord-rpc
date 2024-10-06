@@ -21,39 +21,39 @@ function setSmallImageKey(status) {
  */
 async function askMediaType() {
   const showOrMovierl = createReadline();
-  let mediaType = await askQuestion(showOrMovierl, 'Is this a show (s), movie (m), or a video (v)? ');
+  let mediaType = (await askQuestion(showOrMovierl, 'Is this a show (s), movie (m), or a video (v)? ')).toLowerCase();
   
-  if (mediaType.toLowerCase() === 's') {
+  if (mediaType === 's') {
     mediaType = 'show';
   }
   
-  if (mediaType.toLowerCase() === 'm') {
+  if (mediaType === 'm') {
     mediaType = 'movie';
   }
   
-  if (mediaType.toLowerCase() === 'v') {
+  if (mediaType === 'v') {
     mediaType = 'video';
   }
   
-  while (mediaType.toLowerCase() !== 'show' && mediaType.toLowerCase() !== 'movie' && mediaType !== 'video') {
+  while (mediaType !== 'show' && mediaType !== 'movie' && mediaType !== 'video') {
     console.log('Invalid type. Please try again.');
-    mediaType = await askQuestion(showOrMovierl, 'Is this a show (s), movie (m), or video (v)? ');
+    mediaType = (await askQuestion(showOrMovierl, 'Is this a show (s), movie (m), or video (v)? ')).toLowerCase();
   
-    if (mediaType.toLowerCase() === 's') {
+    if (mediaType === 's') {
       mediaType = 'show';
     }
     
-    if (mediaType.toLowerCase() === 'm') {
+    if (mediaType === 'm') {
       mediaType = 'movie';
     }
   
-    if (mediaType.toLowerCase() === 'v') {
+    if (mediaType === 'v') {
       mediaType = 'video';
     }
   }
   
   showOrMovierl.close();
-  return mediaType.toLowerCase();
+  return mediaType;
 }
 
 function checkDetailLength(details) {
