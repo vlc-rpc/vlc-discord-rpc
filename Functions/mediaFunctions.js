@@ -10,7 +10,7 @@ import { searchShow } from './Images/searchShow.js';
  * @returns {string} - Formatted state in Season Episode format.
  */
 function setShowState(meta) {
-  if(meta.description || meta.Description) {
+  if (meta.description || meta.Description) {
     const description = meta.description || meta.Description;
     const sIndex = description.indexOf('S:');
     const eIndex = description.indexOf('E:');
@@ -39,16 +39,16 @@ async function handleShow(meta, state) {
   
   state = setShowState(meta, state);
   
-  if(logUpdates) {
+  if (logUpdates) {
     console.log('----------------\nLog Updates\nSearch Show Function is running\n----------------\n');
   }
   
   const show = await searchShow(extractShowDetails(meta.title).showName);
 
   if (show && show.image) {
-    ({image} = show);
+    ({ image } = show);
   }
-  return {details, state, image};
+  return { details, state, image };
 }
 
 /**
@@ -61,7 +61,7 @@ async function handleMovie(meta, state) {
   let image = iconNames.vlc;
   let details = meta.title;
   
-  if(logUpdates) {
+  if (logUpdates) {
     console.log('----------------\nLog Updates\nFetch Movie Data Function is running\n----------------\n');
   }
   
@@ -109,19 +109,19 @@ async function handleMusic(meta, state) {
     partyMax = parseInt(meta.track_total, 10);
   }
   // Try to get the album art for the music
-  if(meta.album && meta.artist){
+  if (meta.album && meta.artist) {
     // Try to use custom_art.json. Returns null if not found in file.
     let art = await getCustomArt(meta.album);
-    if(art === null) {
+    if (art === null) {
       art = useSpotify ? await getAlbumArt(meta.album, meta.artist) : await getAlbumArtArchive(meta.album, meta.artist);
     }
 
-    if(art){
+    if (art) {
       image = art;
     }
   }
   
-  return {details, state, partySize, partyMax, image};
+  return { details, state, partySize, partyMax, image };
 }
 
-export {handleShow, handleMovie, handleMusic};
+export { handleShow, handleMovie, handleMusic };

@@ -62,7 +62,11 @@ export default [
       '@stylistic/js/comma-dangle': 'error',
       '@stylistic/js/array-bracket-spacing': 'error',
       'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 1, maxBOF: 0 }],
-      'quotes': ['error', 'single']
+      'quotes': ['error', 'single'],
+      'space-before-blocks': ['error', 'always'],
+      'object-curly-spacing': ['error', 'always'],
+      'keyword-spacing': ['error', { 'before': true, 'after': true }],
+      'prefer-template': 'error'
     }
   }
 ];

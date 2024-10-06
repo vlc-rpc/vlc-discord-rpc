@@ -27,7 +27,7 @@ describe('Return details object of appropriate length', function() {
 
   it('should truncate the string if the length is greater than 125 characters', function() {
     const input = 'a'.repeat(130);
-    const expected = 'a'.repeat(125) + '...';
+    const expected = `${'a'.repeat(125)  }...`;
     const details = checkDetailLength(input);
     expect(details).to.equal(expected);
   });

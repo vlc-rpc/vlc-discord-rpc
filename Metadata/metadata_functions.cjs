@@ -115,7 +115,7 @@ function cleanName(name) {
 
   name = name.replace(/[@#$%^&*(),.":{}|<>-]+$/, '');
 
-  if(name.trim() === '') {
+  if (name.trim() === '') {
     return 'Unknown';
   }
 

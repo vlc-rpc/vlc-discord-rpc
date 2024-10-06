@@ -1,5 +1,5 @@
 import { askQuestion, createReadline, extractShowDetails } from '../Metadata/metadata_functions.cjs'; 
-import { defaultMediaType, defaultResultNumber, iconNames, logUpdates} from '../Storage/config.js';
+import { defaultMediaType, defaultResultNumber, iconNames, logUpdates } from '../Storage/config.js';
 import { askMediaType } from './utilityFunctions.js';
 import { fetchMovieData } from './Images/searchMovie.js';
 import { handleRateLimits } from './Images/handleRateLimits.js';
@@ -49,9 +49,9 @@ async function autoSearchShow(fileMetadata) {
   const showResults = await searchShowMultipleResults(fileMetadata.showName.trim());
   
   state = fileMetadata.season > 0 ? `Season ${fileMetadata.season} - Episode ${fileMetadata.episode}` : 'Unknown episode';
-  if(showResults) {
+  if (showResults) {
     let resultNumber = 0;
-    if(defaultResultNumber === -1) {
+    if (defaultResultNumber === -1) {
       for (let i = 0; i < showResults.length; i++) {
         console.log(`Result ${i}: ${showResults[i].show.name}`);
       }
@@ -59,7 +59,7 @@ async function autoSearchShow(fileMetadata) {
       const showResultNumberrl = createReadline();
   
       resultNumber = await askQuestion(showResultNumberrl, 'What result number would you like to use? ');
-      if(resultNumber > showResults.length - 1 || resultNumber < 0) {
+      if (resultNumber > showResults.length - 1 || resultNumber < 0) {
         console.log('Invalid file number... defaulting to 0');
         resultNumber = 0;
       }
@@ -75,11 +75,11 @@ async function autoSearchShow(fileMetadata) {
     const imageURL = `http://api.tvmaze.com/shows/${showResults[resultNumber].show.id}/images`;
     const imageResponse = await fetch(imageURL);
   
-    if(imageResponse.status === 429) {
+    if (imageResponse.status === 429) {
       const result = await handleRateLimits(imageURL, imageResponse);
       const resultData = await result.json();
   
-      if(resultData && resultData.length > 0) {
+      if (resultData && resultData.length > 0) {
   
         // Get the first image (most common)
         image = resultData[0].resolutions.original.url;
@@ -87,7 +87,7 @@ async function autoSearchShow(fileMetadata) {
     }
   
     const imageData = await imageResponse.json();
-    if(imageData && imageData.length > 0) {
+    if (imageData && imageData.length > 0) {
   
       // Get the first image (most common)
       image = imageData[0].resolutions.original.url;
@@ -95,12 +95,12 @@ async function autoSearchShow(fileMetadata) {
   
     details = showResults[resultNumber].show.name ?? 'Watching a show';
   
-    return {details, state, image};
+    return { details, state, image };
   } else {
     console.log('----------------');
     console.log(`WARNING: No results for... ${fileMetadata.showName.trim()}`);
     console.log('----------------\n');
-    return {details, state, image};
+    return { details, state, image };
   }
 }
   
@@ -110,7 +110,7 @@ async function autoSearchShow(fileMetadata) {
    * @returns {object} - Object containing details, state, and image.
    */
 async function searchAll(meta, state) {
-  if(logUpdates) {
+  if (logUpdates) {
     console.log('----------------\nLog Updates\nSearch All Function is running\n----------------\n');
   }
   
@@ -119,7 +119,7 @@ async function searchAll(meta, state) {
   let image = iconNames.vlc;
   state = 'Watching media';
   
-  if(defaultMediaType.toLowerCase() !== 'show' && defaultMediaType.toLowerCase() !== 'movie' && defaultMediaType.toLowerCase() !== 'video')  {
+  if (defaultMediaType.toLowerCase() !== 'show' && defaultMediaType.toLowerCase() !== 'movie' && defaultMediaType.toLowerCase() !== 'video')  {
     mediaType = await askMediaType();
   } else if (defaultMediaType.toLowerCase() === 'video') {
     console.log('----------------\nUsing default media type from config.js: video\n----------------\n');
@@ -127,7 +127,7 @@ async function searchAll(meta, state) {
     console.log(`Using file name... ${details}`);
     console.log('If this name is incorrect please rename your file');
     console.log('----------------\n');
-    return {details, state, image};
+    return { details, state, image };
   } else {
     mediaType = defaultMediaType.toLowerCase();
     console.log(`----------------\nUsing default media type from config.js: ${mediaType}\n----------------\n`);
@@ -135,7 +135,7 @@ async function searchAll(meta, state) {
   
   const fileMetadata = extractShowDetails(meta.filename);
   
-  if(mediaType === 'show' || mediaType === 'movie') {
+  if (mediaType === 'show' || mediaType === 'movie') {
     details = fileMetadata.showName.trim();
   
     console.log('----------------');
@@ -144,16 +144,16 @@ async function searchAll(meta, state) {
     console.log('----------------\n');
   }
     
-  if(mediaType === 'show') {
-    ({details, state, image} = await autoSearchShow(fileMetadata));
-  } else if(mediaType === 'movie') {
+  if (mediaType === 'show') {
+    ({ details, state, image } = await autoSearchShow(fileMetadata));
+  } else if (mediaType === 'movie') {
     const fileInformation = await fetchMovieData(fileMetadata.showName.trim());
     let resultNumber = 0;
   
-    if(fileInformation.Response !== 'False') {
+    if (fileInformation.Response !== 'False') {
       console.log(`There are ${fileInformation.Search.length} results.`);
-      if(fileInformation.Search.length > 0) {
-        if(defaultResultNumber !== -1) {
+      if (fileInformation.Search.length > 0) {
+        if (defaultResultNumber !== -1) {
           resultNumber = defaultResultNumber;
           console.log(`----------------\nUsing default result number from config.js: ${defaultResultNumber}\n----------------\n`);
         } else {
@@ -181,10 +181,10 @@ async function searchAll(meta, state) {
     console.log('If this name is incorrect please rename your file');
     console.log('----------------\n');
         
-    return {details, state, image};
+    return { details, state, image };
   }
     
   return { details, state, image };
 }
 
-export {searchAll};
+export { searchAll };

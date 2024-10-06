@@ -15,11 +15,10 @@ async function getAlbumArt(albumName, albumArtist) {
   const url = 'https://api.spotify.com/v1/search';
 
   // Your Spotify app client ID and client secret
-  const client_id = spotify.clientID;
-  const client_secret = spotify.clientSecret;
+  const { clientID, clientSecret } = spotify;
 
-  // Base64-encoded string of the form "client_id:client_secret"
-  const credentials = Buffer.from(`${client_id}:${client_secret}`).toString('base64');
+  // Base64-encoded string of the form "clientID:clientSecret"
+  const credentials = Buffer.from(`${clientID}:${clientSecret}`).toString('base64');
   try {
     // Make POST request to obtain an access token using the Client Credentials Flow
     const tokenResponse = await axios.post('https://accounts.spotify.com/api/token', 'grant_type=client_credentials', {
@@ -30,7 +29,7 @@ async function getAlbumArt(albumName, albumArtist) {
     });
 
     // Extract the access token from the response
-    const {access_token} = tokenResponse.data;
+    const { access_token } = tokenResponse.data;
 
     // Set headers with access token for authorization
     const headers = {
@@ -41,7 +40,7 @@ async function getAlbumArt(albumName, albumArtist) {
     const response = await axios.get(url, {
       headers: headers,
       params: {
-        q: albumName + ' ' + albumArtist,
+        q: `${albumName} ${albumArtist}`,
         type: 'album'
       }
     });
@@ -64,13 +63,13 @@ async function getAlbumArt(albumName, albumArtist) {
  * @returns {string|null} - The URL of the release's cover image if found, or null if it does not exist or an error occurs.
  * */ 
 async function fetchCover(mbid) {
-  try{
+  try {
     // Makes GET request to get album cover
     // If GET completes breaks from the loop
-    const response = await axios.get('https://coverartarchive.org/release/'+mbid);
+    const response = await axios.get(`https://coverartarchive.org/release/${mbid}`);
     const imageUrl = response.data.images[0].image;
     return imageUrl;
-  }catch(err){
+  } catch (err) {
     // Cover art not avalible
     return null;
   }
@@ -82,14 +81,14 @@ async function fetchCover(mbid) {
  * @param {string} artist - The artist of the album
  * @returns {string|null} The URL of the album cover image if found, or null if not found or an error occurs.
  */
-async function getAlbumArtArchive(album, artist){
-  let imageUrl = null;
+async function getAlbumArtArchive(album, artist) {
+  let imageUrl = null; 
   // Search string query
-  const query = querystring.escape(album+' AND artist:'+artist+' AND status:official');
+  const query = querystring.escape(`${album} AND artist:${artist} AND status:official`);
 
   // Makes GET request to query the database for the album
-  try{
-    const response = await axios.get('https://musicbrainz.org/ws/2/release?query='+query, {
+  try {
+    const response = await axios.get(`https://musicbrainz.org/ws/2/release?query=${query}`, {
       headers: {
         Accept: 'application/xml'
       }
@@ -103,25 +102,24 @@ async function getAlbumArtArchive(album, artist){
 
     const releases = parsedData.metadata['release-list'].release;
     
-    if(releases){
-      if(releases.length){
+    if (releases) {
+      if (releases.length) {
         // Multiple matches found
         // Loops through matches until finding one with an album cover
         for (let i = 0; i < releases.length; i++) {
-          const release = releases[i];
-          const mbid = release['@_id'];
-          imageUrl = fetchCover(mbid);
-          if(imageUrl){
+          const mbid = releases[i]['@_id'];
+          imageUrl = await fetchCover(mbid);
+          if (imageUrl) {
             break;
           }
         }
-      }else{ 
+      } else { 
         //Single match found
         const mbid = releases['@_id'];
-        imageUrl = fetchCover(mbid);
+        imageUrl = await fetchCover(mbid);
       }
     }
-  }catch(error){
+  } catch (error) {
     console.log('Please report this issue to the VLC-RPC devs!');
     console.log(error);
   }
@@ -136,12 +134,7 @@ async function getAlbumArtArchive(album, artist){
  * @returns {Promise<string|null>} A promise that resolves to the custom artwork URL if found, or `null` if not found.
  */
 async function getCustomArt(albumName) {
-  const customArt = albums[albumName];
-  if (customArt) {
-    return customArt; 
-  } else {
-    return null;
-  }
+  return albums[albumName] || null;
 }
 
-export {getAlbumArt, getAlbumArtArchive, getCustomArt};
+export { getAlbumArt, getAlbumArtArchive, getCustomArt };

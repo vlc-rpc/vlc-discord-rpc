@@ -25,7 +25,7 @@ async function addMetadata() {
     const directory = await askQuestion('Enter the directory to add metadata to: ');
     const files = await directoryFiles(directory);  
     for (const file of files) {
-      if(file.includes('meta')) {
+      if (file.includes('meta')) {
         continue;
       }
       const input_file = path.join(directory, file);
@@ -34,9 +34,9 @@ async function addMetadata() {
       // Tested extensions. Can add more.
       const testedExtensions = ['.mp4', '.wmv', '.mov', '.mkv', '.avi'];
 
-      if(testedExtensions.includes(extension)) {
+      if (testedExtensions.includes(extension)) {
 
-        const output_file = input_file.substring(0, input_file.lastIndexOf('.')) + '_meta' + input_file.substring(input_file.lastIndexOf('.'));
+        const output_file = `${input_file.substring(0, input_file.lastIndexOf('.'))  }_meta${  input_file.substring(input_file.lastIndexOf('.'))}`;
 
         console.log(`Writing to ${output_file}`);
     

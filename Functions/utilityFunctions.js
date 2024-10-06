@@ -23,31 +23,31 @@ async function askMediaType() {
   const showOrMovierl = createReadline();
   let mediaType = await askQuestion(showOrMovierl, 'Is this a show (s), movie (m), or a video (v)? ');
   
-  if(mediaType.toLowerCase() === 's') {
+  if (mediaType.toLowerCase() === 's') {
     mediaType = 'show';
   }
   
-  if(mediaType.toLowerCase() === 'm') {
+  if (mediaType.toLowerCase() === 'm') {
     mediaType = 'movie';
   }
   
-  if(mediaType.toLowerCase() === 'v') {
+  if (mediaType.toLowerCase() === 'v') {
     mediaType = 'video';
   }
   
-  while(mediaType.toLowerCase() !== 'show' && mediaType.toLowerCase() !== 'movie' && mediaType !== 'video') {
+  while (mediaType.toLowerCase() !== 'show' && mediaType.toLowerCase() !== 'movie' && mediaType !== 'video') {
     console.log('Invalid type. Please try again.');
     mediaType = await askQuestion(showOrMovierl, 'Is this a show (s), movie (m), or video (v)? ');
   
-    if(mediaType.toLowerCase() === 's') {
+    if (mediaType.toLowerCase() === 's') {
       mediaType = 'show';
     }
     
-    if(mediaType.toLowerCase() === 'm') {
+    if (mediaType.toLowerCase() === 'm') {
       mediaType = 'movie';
     }
   
-    if(mediaType.toLowerCase() === 'v') {
+    if (mediaType.toLowerCase() === 'v') {
       mediaType = 'video';
     }
   }
@@ -63,7 +63,7 @@ function checkDetailLength(details) {
   }
   
   if (details && details.length > 125) {
-    details = details.substring(0, 125) + '...';
+    details = `${details.substring(0, 125)  }...`;
   }
   
   // Details field must be >= 2 characters
@@ -76,4 +76,4 @@ function checkDetailLength(details) {
   return details || 'Unknown';
 }
 
-export {askMediaType, checkDetailLength, setSmallImageKey};
+export { askMediaType, checkDetailLength, setSmallImageKey };

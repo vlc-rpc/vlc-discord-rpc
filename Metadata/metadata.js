@@ -16,7 +16,7 @@ async function addMetadata() {
 
     // Tested extensions. Can add more.
     const testedExtensions = ['.mp4', '.wmv', '.mov', '.mkv'];
-    if(testedExtensions.includes(extension)) {
+    if (testedExtensions.includes(extension)) {
       let output_file = await askQuestion(rl, 'Enter the output file path: ');
 
       while (input_file === output_file) {

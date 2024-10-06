@@ -1,8 +1,8 @@
 import { ActivityType } from 'discord-api-types/v10';
 import { Client } from '@xhayper/discord-rpc';
-import {diff} from './status.js';
-import {format} from './rpc-format.js';
-import {richPresenseSettings} from '../Storage/config.js';
+import { diff } from './status.js';
+import { format } from './rpc-format.js';
+import { richPresenseSettings } from '../Storage/config.js';
 
 const client = new Client({ clientId: richPresenseSettings.id });
 let awake = true;
@@ -78,4 +78,4 @@ async function connectToDiscord() {
 }
 connectToDiscord();
 
-export {activityCache};
+export { activityCache };

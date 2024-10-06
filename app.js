@@ -13,14 +13,14 @@ function randomPass() {
   return Math.random().toString(36).slice(-8);
 }
 
-let {password} = vlcConfig;
+let { password } = vlcConfig;
 
 // Generate a password if needed
 if (vlcConfig.password === '') {
   password = randomPass();
 }
 
-const url = vlcConfig.address + ':' + vlcConfig.port;
+const url = `${vlcConfig.address  }:${  vlcConfig.port}`;
 const VLCClient = new Client(url, password);
 
 // If windows OS and default path cannot be found try other path
@@ -31,7 +31,7 @@ if (process.platform === 'win32' && !existsSync(platformDefaults.win32)) {
 // If VLC path is not specified use the default
 const startCommand = vlcPath || platformDefaults[process.platform];
 
-if(!detached) {
+if (!detached) {
   // Start the process
   const child = spawn(
     startCommand,
@@ -64,4 +64,4 @@ if(!detached) {
   }); 
 }
 
-export {VLCClient};
+export { VLCClient };

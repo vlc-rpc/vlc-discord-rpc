@@ -1,11 +1,11 @@
 /**
  * Description: Decides what information to display based on the nature of the media (video, music, etc)
  */
-import { autoOMDB, defaultActivityType, iconNames, movieApiKey} from '../Storage/config.js';
+import { autoOMDB, defaultActivityType, iconNames, movieApiKey } from '../Storage/config.js';
 import { checkDetailLength, setSmallImageKey } from './utilityFunctions.js';
 import { handleMovie, handleMusic, handleShow } from './mediaFunctions.js';
 import { activityCache } from './Discord_Client.js';
-import {searchAll} from './searchFunctions.js';
+import { searchAll } from './searchFunctions.js';
 
 /**
  * Main function for formatting status information based on content type.
@@ -22,15 +22,15 @@ export async function format(status, changedFiles) {
   let partyMax = null;
 
   // Extract information about what's playing
-  const {meta} = status.information.category;
+  const { meta } = status.information.category;
 
   // If it's a TV show 
   if (meta.genre === 'show') {
-    if(changedFiles) {
+    if (changedFiles) {
       const showResult = await handleShow(meta, state);
-      ({details, state, image} = showResult);
+      ({ details, state, image } = showResult);
     } else if (!changedFiles) {
-      ({details, state} = activityCache);
+      ({ details, state } = activityCache);
       image = activityCache.largeImageKey;
     }
   } 
@@ -38,16 +38,16 @@ export async function format(status, changedFiles) {
   // If it's a movie
   else if (meta.genre === 'movie' && meta.title && movieApiKey !== '' && changedFiles) {
     const movieResult = await handleMovie(meta, state);
-    ({details, state, image} = movieResult);
-  } else if(meta.genre === 'movie' && !changedFiles) {
-    ({details, state} = activityCache);
+    ({ details, state, image } = movieResult);
+  } else if (meta.genre === 'movie' && !changedFiles) {
+    ({ details, state } = activityCache);
     image = activityCache.largeImageKey;
   }
   
   // If it's a music video
   else if (meta.artist) {
     const musicResult = await handleMusic(meta, state);
-    ({details, state, partySize, partyMax, image} = musicResult);
+    ({ details, state, partySize, partyMax, image } = musicResult);
     // If the video is currently playing
   } else if (meta.now_playing) {
     // Set the state to  the value of the "now_playing" meta data (if available) or "Stream"
@@ -55,12 +55,12 @@ export async function format(status, changedFiles) {
     details = meta.filename;
   }
   
-  else if(autoOMDB) {
-    if(changedFiles) {
+  else if (autoOMDB) {
+    if (changedFiles) {
       const result = await searchAll(meta, state);
-      ({details, state, image} = result);
+      ({ details, state, image } = result);
     } else if (!changedFiles) {
-      ({details, state} = activityCache);
+      ({ details, state } = activityCache);
       image = activityCache.largeImageKey;
     }
   } else {

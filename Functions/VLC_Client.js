@@ -13,7 +13,7 @@ class Client {
   async getStatus() {
     const base = this.server.toString();
 
-    const target = 'http://' + base + '/requests/status.json';
+    const target = `http://${base}/requests/status.json`;
     
     try {
       const data = await this.request(target);
@@ -25,7 +25,7 @@ class Client {
 
   async request(target) {
     try {
-      const basicAuth = Buffer.from(':' + this.password).toString('base64');
+      const basicAuth = Buffer.from(`:${  this.password}`).toString('base64');
       const response = await fetch(target, {
         headers: {
           'Authorization': `Basic ${basicAuth}`,
