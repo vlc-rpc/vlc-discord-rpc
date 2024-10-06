@@ -25,7 +25,7 @@ async function searchShow(showName) {
       const showImageURL = `http://api.tvmaze.com/shows/${show.id}/images`;
       let imageResponse = await fetch(showImageURL);
 
-      if (response.status === 429) {
+      if (imageResponse.status === 429) {
         imageResponse = await handleRateLimits(showImageURL, imageResponse);
       }
 
