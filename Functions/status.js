@@ -1,5 +1,5 @@
 // Import the configuration file
-import { logUpdates, richPresenseSettings, vlcConfig } from '../Storage/config.js';
+import { logUpdates, richPresenseSettings } from '../Storage/config.js';
 import { VLCClient } from '../app.js';
 
 // Keep track of the last known status of VLC
@@ -14,7 +14,7 @@ const lastStatus = {
 // Export a function that takes a callback as an argument
 let updating = false;
 export const diff = async (callback) => {
-  if (updating === true) {
+  if (updating) {
     return;
   }
 
