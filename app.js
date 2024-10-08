@@ -5,6 +5,15 @@ import Client from './Functions/VLC_Client.js';
 import { existsSync } from 'fs';
 import { spawn } from 'child_process';
 
+// Set process & terminal title to easily distinguish this process from other node processes.
+// Windows combines both, Linux sets them separately and allows only short process names.
+if (process.platform === 'win32') {
+  process.title = 'VLC Discord RPC';
+} else {
+  process.title = 'vlcrpc';
+  process.stdout.write(`${String.fromCharCode(27)}]0;VLC Discord RPC${String.fromCharCode(7)}`);
+}
+
 /**
  * Generates a random password.
  * @returns {string} A randomly generated password.
@@ -61,7 +70,7 @@ if (!detached) {
       'ERROR: A problem occurred while launching VLC. Make sure the path to VLC is correct in the config.js file. Program will exit after 30 seconds.'
     );
     setTimeout(process.exit, 30000, 1);
-  }); 
+  });
 }
 
 export { VLCClient };
