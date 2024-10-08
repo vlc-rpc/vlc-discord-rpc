@@ -16,7 +16,7 @@ const vlcPath = '';
 const richPresenseSettings = {
   id: '',
   updateInterval: 5000,
-  removeAfter: 5000
+  sleepTime: 5000
 };
 
 // Default icons. Change if you would like.
