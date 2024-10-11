@@ -7,6 +7,12 @@ import { handleMovie, handleMusic, handleShow } from './mediaFunctions.js';
 import { activityCache } from './Discord_Client.js';
 import { searchAll } from './searchFunctions.js';
 
+function formatTime(seconds) {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
+  return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+}
+
 /**
  * Main function for formatting status information based on content type.
  * @param {*} status - Object containing status information.
@@ -73,6 +79,10 @@ export async function format(status, changedFiles) {
 
   const start = Math.floor(Date.now() / 1000 - (status.time) / status.rate);
   const end = Math.floor(Date.now() / 1000 + (status.length - status.time) / status.rate);
+
+  if (status.state === 'paused') {
+    state = `${formatTime(Math.floor(status.time))}/${formatTime(Math.floor(status.length))}`;
+  }
 
   return {
     state: state,
