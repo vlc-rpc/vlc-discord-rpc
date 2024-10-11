@@ -73,6 +73,11 @@ const defaultActivityType = ActivityType.Watching;
 // The maximum amount of time to wait for a rate limit before deciding to just display it as a video (no image and with file name) in seconds
 const maxRateLimitWait = 120;
 
+// Things inside of these will be ignored.
+// The default is [], where anything inside [] will not appear in your status
+// Set to '' to ignore
+const markdownForIgnore = '[]';
+
 // Modules to load
 export { 
   platformDefaults,
@@ -91,4 +96,5 @@ export {
   defaultMediaType,
   defaultResultNumber,
   defaultActivityType,
-  maxRateLimitWait };
+  maxRateLimitWait,
+  markdownForIgnore };

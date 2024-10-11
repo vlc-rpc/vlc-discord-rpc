@@ -1,7 +1,7 @@
 /**
  * Description: Decides what information to display based on the nature of the media (video, music, etc)
  */
-import { autoOMDB, defaultActivityType, iconNames, movieApiKey } from '../Storage/config.js';
+import { autoOMDB, defaultActivityType, iconNames, markdownForIgnore, movieApiKey } from '../Storage/config.js';
 import { checkDetailLength, setSmallImageKey } from './utilityFunctions.js';
 import { handleMovie, handleMusic, handleShow } from './mediaFunctions.js';
 import { activityCache } from './Discord_Client.js';
@@ -11,6 +11,18 @@ function formatTime(seconds) {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = Math.floor(seconds % 60);
   return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+}
+
+function removeMarkdownForIgnore(input) {
+  if (markdownForIgnore === '') {
+    return input;
+  }
+
+  const regexObj = new RegExp('\\[[^\\]]*\\]');
+  
+  const output = input.replace(regexObj, '').trim();
+
+  return output;
 }
 
 /**
@@ -73,6 +85,9 @@ export async function format(status, changedFiles) {
     details = meta.filename;
     state = meta.title || 'Video';
   }
+
+  state = removeMarkdownForIgnore(state);
+  details = removeMarkdownForIgnore(details);
 
   // Make sure the details variable is not too long to be displayed (limited by Discord)
   details = checkDetailLength(details);
