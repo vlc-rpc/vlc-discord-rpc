@@ -97,12 +97,10 @@ async function askQuestions() {
   if (directories.toLowerCase === 'y') {
     const showPath = await askQuestion('Enter path to shows: ');
 
-    // eslint-disable-next-line
     shows = `'${showPath}'`;
 
     const moviePath = await askQuestion('Enter path to movies: ');
 
-    // eslint-disable-next-line
     movies = `'${moviePath}'`;
   }
 
@@ -114,22 +112,25 @@ async function askQuestions() {
     separate = `'${separateText}'`;
   }
 
-  const omdb = await askQuestion('Do you want to use OMDB? (If using other method say N) (Y/N) ')
+  const omdb = await askQuestion('Do you want to use OMDB? (If using other method say N) (Y/N) ');
   let autoOMDB = false;
+  // eslint-disable-next-line
   let movieApiKey = `''`;
   if (omdb.toLowerCase() === 'y') {
     autoOMDB = true;
   }
   movieApiKey = await askQuestion('Enter your api key if you have one: ');
 
+  // eslint-disable-next-line
   let defMediaType = `''`;
   defMediaType = await askQuestion('Enter a default media type: (Optional: Movie, TV, Video) (Default: none)');
 
   let defaultResultNumber = -1;
-  const defResultNumber = await askQuestion('Choose a default result number: (Default: -1) ');
-  if (!Number.isNaN(defResultNumber)) {
-    defaultResultNumber = defResultNumber;
+  let defResultNumber = await askQuestion('Choose a default result number: (Default: -1) ');
+  while (isNaN(defResultNumber)) {
+    defResultNumber = await askQuestion('Choose a default result number: (Default: -1) ');
   }
+  defaultResultNumber = defResultNumber;
   //next we need to do watching/playing ActivityType.Watching
   let defaultActivityType = 'ActivityType.Watching';
   const defActivityType = await askQuestion('Choose either playing or watching for the status: ');
@@ -138,10 +139,12 @@ async function askQuestions() {
   }
 
   let defaultMaxRateLimitWait = 120;
-  const maxRateLimitWait = await askQuestion('Choose a max rate limit wait value: (Default: 120)');
-  if (defaultMaxRateLimitWait !== maxRateLimitWait) {
-    defaultMaxRateLimitWait = maxRateLimitWait;
+  let maxRateLimitWait = await askQuestion('Choose a max rate limit wait value: (Default: 120)');
+  while (isNaN(maxRateLimitWait)) {
+    maxRateLimitWait = await askQuestion('Choose a max rate limit wait value: (Default: 120)');
   }
+  defaultMaxRateLimitWait = maxRateLimitWait;
+
   let defaultMarkdownIgnore = '[]';
   const markdownIgnore = await askQuestion('Enter list of items for markdown ignore: (Default: None) ');
   defaultMarkdownIgnore = markdownIgnore;
