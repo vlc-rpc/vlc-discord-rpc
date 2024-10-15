@@ -86,7 +86,7 @@ async function askQuestions() {
 
     if (vlcAddress === '') {
       // eslint-disable-next-line
-      vlcAddress = `'localhost'`
+      vlcAddress = `'localhost'`;
     }
   }
   const directories = await askQuestion('Do you want to set custom paths for metadata_auto.js? (Y/N) ');
@@ -98,12 +98,12 @@ async function askQuestions() {
     const showPath = await askQuestion('Enter path to shows: ');
 
     // eslint-disable-next-line
-    shows = `'${showPath}'`
+    shows = `'${showPath}'`;
 
     const moviePath = await askQuestion('Enter path to movies: ');
 
     // eslint-disable-next-line
-    movies = `'${moviePath}'`
+    movies = `'${moviePath}'`;
   }
 
   const separator = await askQuestion('Do you want to change the default separator? (Y/N) ');
@@ -113,6 +113,39 @@ async function askQuestions() {
     const separateText = await askQuestion('Enter the desired character: (Default: _) ');
     separate = `'${separateText}'`;
   }
+
+  const omdb = await askQuestion('Do you want to use OMDB? (If using other method say N) (Y/N) ')
+  let autoOMDB = false;
+  let movieApiKey = `''`;
+  if (omdb.toLowerCase() === 'y') {
+    autoOMDB = true;
+  }
+  movieApiKey = await askQuestion('Enter your api key if you have one: ');
+
+  let defMediaType = `''`;
+  defMediaType = await askQuestion('Enter a default media type: (Optional: Movie, TV, Video) (Default: none)');
+
+  let defaultResultNumber = -1;
+  const defResultNumber = await askQuestion('Choose a default result number: (Default: -1) ');
+  if (!Number.isNaN(defResultNumber)) {
+    defaultResultNumber = defResultNumber;
+  }
+  //next we need to do watching/playing ActivityType.Watching
+  let defaultActivityType = 'ActivityType.Watching';
+  const defActivityType = await askQuestion('Choose either playing or watching for the status: ');
+  if (defActivityType.toLowerCase() === 'playing') {
+    defaultActivityType = 'ActivityType.Playing';
+  }
+
+  let defaultMaxRateLimitWait = 120;
+  const maxRateLimitWait = await askQuestion('Choose a max rate limit wait value: (Default: 120)');
+  if (defaultMaxRateLimitWait !== maxRateLimitWait) {
+    defaultMaxRateLimitWait = maxRateLimitWait;
+  }
+  let defaultMarkdownIgnore = '[]';
+  const markdownIgnore = await askQuestion('Enter list of items for markdown ignore: (Default: None) ');
+  defaultMarkdownIgnore = markdownIgnore;
+
   rl.close(); 
 
   fileString = `import { ActivityType } from 'discord-api-types/v10';
@@ -164,7 +197,7 @@ const logUpdates = ${logging};
 // READ THE READ ME. This is complicated to set up!
 const detached = ${detach};
 
-const movieApiKey = '';
+const movieApiKey = ${movieApiKey};
 
 // Directories for Metadata/metadata_auto.js to use
 const directories = {
@@ -176,24 +209,24 @@ const directories = {
 // For example Breaking_Bad_S1E2.wmv is separated by _
 const separator = ${separate};
 
-const autoOMDB = false;
+const autoOMDB = ${autoOMDB};
 
 // Set to "" to disable. Other accepted parameters are "show", "movie", or "video".
-const defaultMediaType = '';
+const defaultMediaType = ${defMediaType};
 
 // Set to -1 to disable. Any Number 0 through the number of results will work.
-const defaultResultNumber = -1;
+const defaultResultNumber = ${defaultResultNumber};
 
 // View VLC-RPC documentation online for valid types. Link is on the Github.
-const defaultActivityType = ActivityType.Watching;
+const defaultActivityType = ${defaultActivityType};
 
 // The maximum amount of time to wait for a rate limit before deciding to just display it as a video (no image and with file name) in seconds
-const maxRateLimitWait = 120;
+const maxRateLimitWait = ${defaultMaxRateLimitWait};
 
 // Things inside of these will be ignored.
 // The default is [], where anything inside [] will not appear in your status
 // Set to '' to ignore
-const markdownForIgnore = '[]';
+const markdownForIgnore = ${defaultMarkdownIgnore};
 
 // Modules to load
 export { 
