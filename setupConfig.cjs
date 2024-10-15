@@ -2,6 +2,14 @@ const readline = require('readline');
 const fs = require('fs');
 const path = require('path');
 
+// eslint-disable-next-line
+let vlc_path_replaced = `C:/Program Files/VideoLAN/VLC/vlc.exe`
+
+if (process.argv.length >= 3) {
+  const [vlc_path_custom] = process.argv.slice(2);
+  vlc_path_replaced = vlc_path_custom.replace(/\\/g, '/');
+}
+
 // Configure readline for input/output
 const rl = readline.createInterface({
   input: process.stdin,
@@ -15,9 +23,7 @@ function askQuestion(query) {
   });
 }
 
-async function askQuestions() {
-  console.log('To enter a default hit enter!');
-  // richPresenseSettings
+async function getRichPresenceSettings() {
   const applicationId = await askQuestion('What is your Discord application ID: ');
   let updateInterval = await askQuestion('Choose an update interval (Default: 1000): ');
   let sleepTime = await askQuestion('Choose a sleep time (Default: 30000): ');
@@ -30,8 +36,11 @@ async function askQuestions() {
     sleepTime = '30000';
   }
 
-  // iconNames
-  const icons = await askQuestion('Do you want to use custom icons? (Y/N) ');
+  return { applicationId, updateInterval, sleepTime };
+}
+
+async function getIconNames() {
+  const icons = await askQuestion('Do you want to use custom icons? (Y/N): ');
   // eslint-disable-next-line
   let playingIcon = `'https://i.imgur.com/8IYhOc2.png'`;
   // eslint-disable-next-line
@@ -44,8 +53,12 @@ async function askQuestions() {
     pauseIcon = await askQuestion('Choose a link for your pause icon: ');
     vlcIcon = await askQuestion('Choose a link for your VLC icon: ');
   }
-  
-  const useSpotify = await askQuestion('Do you want to use Spotify for album art? (Y/N) ');
+
+  return { playingIcon, pauseIcon, vlcIcon };
+}
+
+async function getSpotify() {
+  const useSpotify = await askQuestion('Do you want to use Spotify for album art? (Y/N): ');
   let spotify = 'false';
   
   // eslint-disable-next-line
@@ -60,13 +73,20 @@ async function askQuestions() {
     spotifyClientSecret = await askQuestion('Enter your Spotify Client Secret: ');
   }
 
-  const logUpdates = await askQuestion('Do you want to log all status updates? (Y/N) ');
+  return { spotify, spotifyClientID, spotifyClientSecret };
+}
+
+async function getLogUpdates() {
+  const logUpdates = await askQuestion('Do you want to log all status updates? (Y/N): ');
   let logging = false;
   if (logUpdates.toLowerCase() === 'y') {
     logging = true;
   }
+  return logging;
+}
 
-  const detached = await askQuestion('Do you want to run in detached mode? (Y/N) ');
+async function getDetatched() {
+  const detached = await askQuestion('Do you want to run in detached mode? (Y/N): ');
   let detach = false;
   // eslint-disable-next-line
   let vlcPassword = `''`;
@@ -77,8 +97,8 @@ async function askQuestions() {
   if (detached.toLowerCase() === 'y') {
     detach = true;
     vlcPassword = await askQuestion('Enter the password you set for VLC: ');
-    vlcPort = await askQuestion('Enter the port VLC runs on: (Default: 8080) ');
-    vlcAddress = await askQuestion('Enter the address to VLC: (Default: localhost) ');
+    vlcPort = await askQuestion('Enter the port VLC runs on (Default: 8080): ');
+    vlcAddress = await askQuestion('Enter the address to VLC (Default: localhost): ');
 
     if (vlcPort === '') {
       vlcPort = '8080';
@@ -89,7 +109,28 @@ async function askQuestions() {
       vlcAddress = `'localhost'`;
     }
   }
-  const directories = await askQuestion('Do you want to set custom paths for metadata_auto.js? (Y/N) ');
+
+  return { detach, vlcAddress, vlcPort, vlcPassword };
+}
+
+async function askQuestions() {
+  console.log('To enter a default hit enter!');
+  // richPresenseSettings
+  ({ applicationId, updateInterval, sleepTime } = await getRichPresenceSettings());
+
+  // iconNames
+  ({ playingIcon, pauseIcon, vlcIcon } = await getIconNames());
+
+  // Spotify
+  ({ spotify, spotifyClientID, spotifyClientSecret } = await getSpotify());
+  
+  // logUpdates
+  logging = await getLogUpdates();
+  
+  // Detached
+  ({ detach, vlcAddress, vlcPort, vlcPassword } = await getDetatched());
+
+  const directories = await askQuestion('Do you want to set custom paths for metadata_auto.js (Y/N): ');
   // eslint-disable-next-line
   let shows = `'C:/Users/user/vlc-discord-rpc/Media/Shows'`;
   // eslint-disable-next-line
@@ -104,50 +145,71 @@ async function askQuestions() {
     movies = `'${moviePath}'`;
   }
 
-  const separator = await askQuestion('Do you want to change the default separator? (Y/N) ');
+  const separator = await askQuestion('Do you want to change the default separator? (Y/N): ');
   // eslint-disable-next-line
   let separate = `'_'`;
   if (separator.toLowerCase() === 'y') {
-    const separateText = await askQuestion('Enter the desired character: (Default: _) ');
+    const separateText = await askQuestion('Enter the desired character: (Default: _ ): ');
     separate = `'${separateText}'`;
   }
 
-  const omdb = await askQuestion('Do you want to use OMDB? (If using other method say N) (Y/N) ');
+  const omdb = await askQuestion('Do you want to have movie/show covers displayed (requires API key)? (Y/N): ');
   let autoOMDB = false;
   // eslint-disable-next-line
   let movieApiKey = `''`;
   if (omdb.toLowerCase() === 'y') {
     autoOMDB = true;
   }
-  movieApiKey = await askQuestion('Enter your api key if you have one: ');
 
-  // eslint-disable-next-line
-  let defMediaType = `''`;
-  defMediaType = await askQuestion('Enter a default media type: (Optional: Movie, TV, Video) (Default: none)');
+  let defMediaType = '';
+  defMediaType = await askQuestion('Enter a default media type (Optional: Movie, Show, or Video) (Default: none): ');
+
+  if (defMediaType === '') {
+    // eslint-disable-next-line
+    defMediaType = `''`;
+  }
 
   let defaultResultNumber = -1;
-  let defResultNumber = await askQuestion('Choose a default result number: (Default: -1) ');
+  let defResultNumber = await askQuestion('Choose a default result number (Default: -1): ');
   while (isNaN(defResultNumber)) {
-    defResultNumber = await askQuestion('Choose a default result number: (Default: -1) ');
+    defResultNumber = await askQuestion('Choose a default result number (Default: -1): ');
   }
-  defaultResultNumber = defResultNumber;
-  //next we need to do watching/playing ActivityType.Watching
+
+  if (defResultNumber !== '') {
+    defaultResultNumber = defResultNumber;
+  }
+
   let defaultActivityType = 'ActivityType.Watching';
-  const defActivityType = await askQuestion('Choose either playing or watching for the status: ');
-  if (defActivityType.toLowerCase() === 'playing') {
-    defaultActivityType = 'ActivityType.Playing';
+  let defActivityType = await askQuestion('Choose playing, watching, or listening for the status: ');
+  while (!['playing', 'listening', 'watching', ''].includes(defActivityType.toLowerCase())) {
+    defActivityType = await askQuestion('Choose playing, watching, or listening for the status: ');
+  }
+
+  if (defActivityType === 'playing') {
+    defaultActivityType = 'ActivityType.Playing;';
+  } else if (defActivityType === 'watching') {
+    defaultActivityType = 'ActivityType.Watching;';
+  } else if (defActivityType === 'listening') {
+    defaultActivityType = 'ActivityType.Listening;';
   }
 
   let defaultMaxRateLimitWait = 120;
-  let maxRateLimitWait = await askQuestion('Choose a max rate limit wait value: (Default: 120)');
+  let maxRateLimitWait = await askQuestion('Choose a max rate limit wait value (Default: 120): ');
   while (isNaN(maxRateLimitWait)) {
-    maxRateLimitWait = await askQuestion('Choose a max rate limit wait value: (Default: 120)');
+    maxRateLimitWait = await askQuestion('Choose a max rate limit wait value (Default: 120): ');
+  }
+  if ( maxRateLimitWait === '' ) {
+    maxRateLimitWait = 120;
   }
   defaultMaxRateLimitWait = maxRateLimitWait;
 
-  let defaultMarkdownIgnore = '[]';
-  const markdownIgnore = await askQuestion('Enter list of items for markdown ignore: (Default: None) ');
-  defaultMarkdownIgnore = markdownIgnore;
+  // eslint-disable-next-line
+  let defaultMarkdownIgnore = `'[]'`;
+  const markdownIgnore = await askQuestion('Enter list of items for markdown ignore (Default: None): ');
+
+  if (markdownIgnore !== '') {
+    defaultMarkdownIgnore = `'${markdownIgnore}'`;
+  }
 
   rl.close(); 
 
@@ -163,7 +225,7 @@ const platformDefaults = {
 };
 
 // Is VLC somewhere else?
-const vlcPath = '';
+const vlcPath = '${vlc_path_replaced}';
 
 // Settings
 const richPresenseSettings = {
