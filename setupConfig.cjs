@@ -94,7 +94,7 @@ async function askQuestions() {
   let shows = `'C:/Users/user/vlc-discord-rpc/Media/Shows'`;
   // eslint-disable-next-line
   let movies = `'C:/Users/user/vlc-discord-rpc/Media/Movies'`;
-  if (directories.toLowerCase === 'y') {
+  if (directories.toLowerCase() === 'y') {
     const showPath = await askQuestion('Enter path to shows: ');
 
     shows = `'${showPath}'`;
